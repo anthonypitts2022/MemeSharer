@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 
 class PostBox extends Component {
   state= {
-    likeCounter: 1
+    likeCounter: 1,
+    comments: [
+      "This is the default commment."
+    ]
   };
 
   render(){
@@ -20,6 +23,8 @@ class PostBox extends Component {
               <p className="card-text">These are</p>
               <p className="card-text">different</p>
               <p className="card-text">comments on a post</p>
+              <p className="card-text">{this.state.comments[0]}</p>
+
               <button
                 onClick={this.handleAddComment}
                 className="badge badge-pill badge-primary">Add Comment</button>
@@ -33,6 +38,15 @@ class PostBox extends Component {
 
   handleOnLikeClick= () => {
     this.setState({likeCounter:this.state.likeCounter+1});
+  }
+
+
+  handleAddComment= () => {
+    //need to add new comment array by looping through old one
+    //or just start mutations and queries with node
+    this.setState({
+      likeCounter:this.state.likeCounter
+    });
   }
 
 
