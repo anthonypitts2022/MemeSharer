@@ -1,0 +1,13 @@
+To create a new database and user for that database:
+
+mongo admin -u myUserAdmin -p abc123
+
+> use socialMediaFeedDB
+switched to db socialMediaFeedDB
+> db.createUser(
+... {
+... user:"socialMediaFeedUsr",
+... pwd:"Qrfiuj48726rr36",
+... roles: [ { role:    "dbOwner", db: "socialMediaFeedDB" } ]
+... }
+... )

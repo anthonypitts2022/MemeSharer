@@ -1,0 +1,89 @@
+type Query {
+  getLevel(id: ID!): Level
+  haveAuth(input: haveAuthInput): Boolean
+  whoHasAccess(functionality: String!): [String]
+  uniAccess(uni: String!): [String]
+}
+
+type Mutation {
+  createLevel(input: createLevelInput): Level
+  createUserPerms(input: createUserPermsInput): Boolean
+}
+
+
+#===============================================================================
+# LevelAccess
+#===============================================================================
+
+type LevelAccess {
+  id: ID!
+  levelId: String!
+  functionality: String!
+  errors: Error
+  success: Success
+  bulkAddReport: [BulkAddReport]
+}
+
+#===============================================================================
+# Level
+#===============================================================================
+
+type Level {
+  id: ID!
+  name: String!
+  errors: Error
+  success: Success
+  bulkAddReport: [BulkAddReport]
+}
+
+
+#===============================================================================
+# AccessTo
+#===============================================================================
+
+type AccessTo {
+  id: ID!
+  uni: String!
+  functionality: String!
+  levelId: String!
+  errors: Error
+  success: Success
+  bulkAddReport: [BulkAddReport]
+}
+
+
+#===============================================================================
+# Inputs
+#===============================================================================
+
+input createUserPermsInput{
+  uni: String!
+  levelId: String!
+}
+
+input createLevelInput{
+  name: String!
+  accessTo: [String]!
+}
+
+input haveAuthInput{
+  uni: String!
+  functionality: String!
+}
+
+#===============================================================================
+# Messages
+#===============================================================================
+
+type Error {
+  msg: String
+}
+
+type Success {
+  msg: String
+}
+
+type BulkAddReport {
+  msg: String
+  val: String
+}

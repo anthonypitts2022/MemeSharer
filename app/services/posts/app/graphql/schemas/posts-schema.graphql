@@ -1,0 +1,46 @@
+type Query {
+  getAllPosts: [Post]
+}
+
+type Mutation {
+  createPost(input: createPostInput): Post
+}
+
+
+#===============================================================================
+# Post
+#===============================================================================
+
+type Post {
+  id: ID!
+  userId: String!
+  caption: String
+  errors: Error
+  success: Success
+  bulkAddReport: [BulkAddReport]
+}
+
+#===============================================================================
+# Inputs
+#===============================================================================
+
+input createPostInput{
+  caption: String
+}
+
+#===============================================================================
+# Messages
+#===============================================================================
+
+type Error {
+  msg: String
+}
+
+type Success {
+  msg: String
+}
+
+type BulkAddReport {
+  msg: String
+  val: String
+}
