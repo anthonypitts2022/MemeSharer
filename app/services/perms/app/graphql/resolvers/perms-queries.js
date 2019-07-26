@@ -82,9 +82,6 @@ const haveAuthQuery = async (root, {input} ) => {
 // @access : Private(Root, Admin)
 // @desc   : which uni(s) have access to a functionality
 const whoHasAccessQuery = async (root, {functionality}, {user} ) => {
-
-  console.log(user.uni);
-
   //get acccessTo objects that have a certain functionality
   const accessTo = await AccessTo.find({ functionality: functionality });
 

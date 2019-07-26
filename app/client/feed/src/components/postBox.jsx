@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 class PostBox extends Component {
   state= {
     likeCounter: 1,
+    DislikeCounter: 0,
     comments: [
       "This is the default commment."
-    ]
+    ],
+    caption: "This is the default caption"
   };
 
   render(){
@@ -19,7 +21,11 @@ class PostBox extends Component {
                 onClick={this.handleOnLikeClick}
                 className="badge badge-pill badge-primary">Like</button>
               <span className="badge badge-success">{this.state.likeCounter}</span>
-              <h5 className="card-title">This is the caption</h5>
+              <button
+                onClick={this.handleOnDislikeClick}
+                className="badge badge-pill badge-danger">Dislike</button>
+              <span className="badge badge-success">{this.state.DislikeCounter}</span>
+              <h5 className="card-title">{this.state.caption}</h5>
               <p className="card-text">These are</p>
               <p className="card-text">different</p>
               <p className="card-text">comments on a post</p>
@@ -38,6 +44,9 @@ class PostBox extends Component {
 
   handleOnLikeClick= () => {
     this.setState({likeCounter:this.state.likeCounter+1});
+  }
+  handleOnDislikeClick= () => {
+    this.setState({DislikeCounter:this.state.DislikeCounter+1});
   }
 
 
