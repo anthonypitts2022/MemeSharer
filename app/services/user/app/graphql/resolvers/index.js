@@ -46,12 +46,6 @@ const {
   createUserMutation
 } = require("./user-mutations.js");
 
-// Groups mutation
-const {
-  createGroupMutation,
-  addUserGroupMutation
-} = require("./group-mutations.js");
-
 //==============================================================================
 // BODY
 //==============================================================================

@@ -31,6 +31,8 @@ note: Remember to export the query types resolver!
 // posts Queries Library
 const {
   getAllPostsQuery,
+  postLikeCountQuery,
+  postDislikeCountQuery
 } = require("./posts-queries.js");
 
 //---------------------------------
@@ -44,7 +46,8 @@ const {
 
 // posts Mutation Library
 const {
-  createPostMutation
+  createPostMutation,
+  createLikeMutation
 } = require("./posts-mutations.js");
 
 //==============================================================================
@@ -56,7 +59,9 @@ const {
 //---------------------------------
 
 const Query = {
-  getAllPosts: getAllPostsQuery
+  getAllPosts: getAllPostsQuery,
+  postLikeCount: postLikeCountQuery,
+  postDislikeCount: postDislikeCountQuery
 };
 
 //---------------------------------
@@ -64,7 +69,8 @@ const Query = {
 //---------------------------------
 
 const Mutation = {
-  createPost: createPostMutation
+  createPost: createPostMutation,
+  createLike: createLikeMutation
 };
 
 

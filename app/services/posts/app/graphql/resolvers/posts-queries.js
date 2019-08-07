@@ -33,8 +33,7 @@ const { logger } = require("app-root-path").require("/config/logger.js");
 
 const Post = require("../../models/Post-model.js");
 //const Comment = require("../../models/Comment-model.js");
-//const Like = require("../../models/Like-model.js");
-//const Dislike = require("../../models/Dislike-model.js");
+const Like = require("../../models/Like-model.js");
 
 
 //==============================================================================
@@ -54,6 +53,31 @@ const getAllPostsQuery = async (root, { args }) => {
   }
 };
 
+
+const postLikeCountQuery = async (root, { postId }) => {
+  const likeCount = await Like.countDocuments({postId: postId, isLike: true});
+
+  try {
+    return likeCount;
+  } catch (e) {
+    logger.error(`${e}`);
+  }
+};
+
+const postDislikeCountQuery = async (root, { postId }) => {
+  const dislikeCount = await Like.countDocuments({postId: postId, isLike: false});
+
+  try {
+    return dislikeCount;
+  } catch (e) {
+    logger.error(`${e}`);
+  }
+};
+
+
+
 module.exports = {
-  getAllPostsQuery
+  getAllPostsQuery,
+  postLikeCountQuery,
+  postDislikeCountQuery
 };

@@ -1,9 +1,12 @@
 type Query {
   getAllPosts: [Post]
+  postLikeCount(postId: String!): String
+  postDislikeCount(postId: String!): String
 }
 
 type Mutation {
   createPost(input: createPostInput): Post
+  createLike(input: createLikeInput): Like
 }
 
 
@@ -20,12 +23,27 @@ type Post {
   bulkAddReport: [BulkAddReport]
 }
 
+type Like {
+  id: ID!
+  userId: String!
+  postId: String!
+  isLike: Boolean!
+  errors: Error
+  success: Success
+  bulkAddReport: [BulkAddReport]
+}
+
 #===============================================================================
 # Inputs
 #===============================================================================
 
 input createPostInput{
   caption: String
+}
+
+input createLikeInput{
+  isLike: Boolean!
+  postId: String!
 }
 
 #===============================================================================
