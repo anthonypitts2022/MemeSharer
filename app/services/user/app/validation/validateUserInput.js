@@ -7,7 +7,7 @@
 
 /*
 Title:Company query
-Auth: mambanerd
+Auth: Anthony Pitts
 Vers: 1.0
 date: 4/6/19 *Last ModBODY
 desc: Validates the user input
@@ -28,79 +28,29 @@ module.exports = function validateUserInput(data) {
   let errors = {};
 
   // Set the inputs to empty string if empty
-  data.uni = !isEmpty(data.uni) ? data.uni : "";
-  data.firstName = !isEmpty(data.firstName) ? data.firstName : "";
-  data.lastName = !isEmpty(data.lastName) ? data.lastName : "";
-  data.phoneNumber = !isEmpty(data.phoneNumber) ? data.phoneNumber : "";
+  data.name = !isEmpty(data.name) ? data.name : "";
   data.email = !isEmpty(data.email) ? data.email : "";
-  data.userType = !isEmpty(data.userType) ? data.userType : "";
-  data.department = !isEmpty(data.department) ? data.department : "";
-  data.password = !isEmpty(data.password) ? data.password : "";
-  data.password2 = !isEmpty(data.password2) ? data.password2 : "";
 
-  // Check if the uni field is empty
-  if (Validator.isEmpty(data.uni)) {
-    errors.uni = "Uni field is required";
+  // Check if the name field is empty
+  if (Validator.isEmpty(data.name)) {
+    errors.name = "name field is required";
   }
-
-  // firstName validation
-  if (Validator.isEmpty(data.firstName)) {
-    errors.firstName = "First Name field is required";
-  }
-  if (!Validator.isAlpha(data.firstName)) {
-    errors.firstName = "Invalid characters inserted";
-  }
-
-  // lastName validation
-  if (Validator.isEmpty(data.lastName)) {
-    errors.lastName = "Last Name field is required";
-  }
-  if (!Validator.isAlpha(data.lastName)) {
-    errors.lastName = "Invalid characters inserted";
-  }
-  // email validation
+  // Check if the email field is empty
   if (Validator.isEmpty(data.email)) {
-    errors.email = "Email field is required";
-  }
-  if (!Validator.isEmail(data.email)) {
-    errors.email = "Email is invalid";
+    errors.email = "email field is required";
   }
 
-  // Phone number validation
-  if (Validator.isEmpty(data.phoneNumber)) {
-    errors.phoneNumber = "Phone number field is required";
-  }
-  if (!Validator.isNumeric(data.phoneNumber)) {
-    errors.phoneNumber = "Phone number is invalid";
+  // email validation
+  if (Validator.isEmail(data.email)) {
+    errors.email = "Invalid email format";
   }
 
-  // Address validation
-  if (!Validator.isNumeric(data.address) || !Validator.isAlpha(data.address)) {
-    errors.address = "Address contains invalid characters";
+  //length checks
+  if (!Validator.isLength(data.email, { min: 6, max: 30 })) {
+    errors.email = "email length must be between 6 and 30 characters";
   }
-
-  // Address2 validation
-  if (
-    !Validator.isNumeric(data.address2) ||
-    !Validator.isAlpha(data.address2)
-  ) {
-    errors.email = "Room/Suite contains invalid characters";
-  }
-
-  // userType validation
-  if (Validator.isEmpty(data.userType)) {
-    errors.userType = "User Type is required";
-  }
-  if (!Validator.isAlpha(data.userType)) {
-    errors.userType = "Invalid characters inserted";
-  }
-
-  // department validation
-  if (Validator.isEmpty(data.department)) {
-    errors.department = "Departments is required";
-  }
-  if (!Validator.isAlpha(data.department)) {
-    errors.department = "Invalid characters inserted";
+  if (!Validator.isLength(data.name, { min: 6, max: 30 })) {
+    errors.name = "name length must be between 6 and 30 characters";
   }
 
   // password validation

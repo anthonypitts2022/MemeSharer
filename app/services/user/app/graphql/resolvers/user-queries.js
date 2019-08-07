@@ -8,9 +8,8 @@
 //==============================================================================
 /*
 !Title : user-queries
-!Auth  : mambanerd
+!Auth  : aep2195
 !Vers  : 1.0
-!Date  : 6/20/19 *Last Mod
 !Desc  : Conatins all the queries for users
 */
 
@@ -41,9 +40,9 @@ const User = require("../../models/User-model.js");
 
 // @access : Private(Root, Admin, Staff)
 // @desc   : Existing users
-const userQuery = async (root, { uni }) => {
-  // TODO: Add perms
-  const user = await User.findOne({ uni: uni });
+const userQuery = async (root, { email }) => {
+
+  const user = await User.findOne({ email: email });
   try {
     return user;
   } catch (e) {
@@ -51,23 +50,4 @@ const userQuery = async (root, { uni }) => {
   }
 };
 
-// @access : Private(Root)
-// @desc   : Existing users
-const usersQuery = async (root, { args }) => {
-  // TODO: Add perms
-  const users = await User.find()
-    .skip(0)
-    .limit(200);
-  try {
-    return users;
-  } catch (e) {
-    logger.error(`${e}`);
-  }
-};
-
-// @access : Public(uses)
-// @desc   : Login using google login
-const googleLoginQuery = async (root, { code }) => {
-  console.log(code);
-};
-module.exports = { userQuery, usersQuery };
+module.exports = { userQuery };

@@ -8,9 +8,8 @@
 //==============================================================================
 /*
 !Title : User-model
-!Auth  : mambanerd
+!Auth  : Anthony Pitts
 !Vers  : 1.0
-!Date  : 6/20/19 *Last Mod
 !Desc  : Sets up the user schema
 */
 
@@ -27,42 +26,15 @@ const Schema = mongoose.Schema;
 
 const UserShema = new Schema({
   //Required
-  uni: {
-    type: String,
-    required: true,
-    text: true
-  },
-  firstName: {
-    type: String,
-    required: true,
-    text: true
-  },
-  lastName: {
+  name: {
     type: String,
     required: true,
     text: true
   },
   email: {
     type: String,
-    required: true
-  },
-  phoneNumber: {
-    type: Number,
-    required: true
-  },
-  address: {
-    type: String
-  },
-  address2: {
-    type: String
-  },
-  userType: {
-    type: String,
-    required: true
-  },
-  department: {
-    type: String,
-    required: true
+    required: true,
+    text: true
   },
   password: {
     type: String,
@@ -80,8 +52,7 @@ const UserShema = new Schema({
 
 UserShema.index({
   index: "text",
-  firstName: "text",
-  lastName: "text",
+  name: "text",
   email: "text"
 });
 module.exports = user = mongoose.model("User", UserShema);

@@ -1,17 +1,9 @@
 type Query {
-  user(uni: String!): User
-  users: [User]
-  groups: [Group]
-  userGroups(uni: String!): [UserGroup]
-  userOfficeHours(uni: String!): OfficeHours
-  googleLoginQuery(code: String!): User
+  user(email: String!): User
 }
 
 type Mutation {
   createUser(input: CreateUserInput): User
-  createGroup(input: CreateGroupInput): Group
-  addUserGroup(input: AddUserGroupInput): UserGroup
-  editOfficeHours(input: OfficeHoursInput): OfficeHours
 }
 
 #===============================================================================
@@ -20,15 +12,9 @@ type Mutation {
 
 type User {
   id: ID!
-  uni: String!
-  firstName: String
-  lastName: String
+  name: String!
   email: String
-  phoneNumber: String
-  address: String
-  address2: String
-  userType: String
-  department: String
+  password: String!
   errors: Error
   success: Success
   active: Boolean
@@ -39,75 +25,10 @@ type User {
 # Inputs
 #--------------------------------------
 input CreateUserInput {
-  uni: String!
-  firstName: String
-  lastName: String
-  email: String
-  phoneNumber: String
-  address: String
-  address2: String
-  userType: String
-  department: String
-  notifyUser: Boolean
-  password: String
-  password2: String
-}
-
-#===============================================================================
-# Groups
-#===============================================================================
-type Group {
-  id: ID!
-  groupName: String
-  groupEmail: String
-  errors: Error
-  success: Success
-}
-
-type UserGroup {
-  id: ID!
-  groupID: ID
-  uni: String
-  errors: Error
-  success: Success
-}
-
-#--------------------------------------
-# Inputs
-#--------------------------------------
-
-input CreateGroupInput {
-  groupName: String
-  groupEmail: String
-}
-
-input AddUserGroupInput {
-  groupID: ID
-  uni: String
-}
-
-#===============================================================================
-# Groups
-#===============================================================================
-type OfficeHours {
-  uni: String
-  mon: String
-  tue: String
-  wed: String
-  thu: String
-  fri: String
-}
-
-#--------------------------------------
-# Inputs
-#--------------------------------------
-input OfficeHoursInput {
-  uni: String
-  mon: String
-  tue: String
-  wed: String
-  thu: String
-  fri: String
+  name: String!
+  email: String!
+  password: String!
+  password2: String!
 }
 
 #===============================================================================

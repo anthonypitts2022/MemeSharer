@@ -8,9 +8,8 @@
 //==============================================================================
 /*
 Title: Index resolver
-Auth: ya2369
+Auth: aep2195
 Vers: 1.1
-date: 7/13/19 *Last ModBODY
 desc: Main resolvers component
 note: Remember to export the query types resolver!
 */
@@ -29,8 +28,9 @@ note: Remember to export the query types resolver!
 //---------------------------------
 
 // User Queries Library
-const { userQuery, usersQuery } = require("./user-queries.js");
-const { groupsQuery, userGroupsQuery } = require("./group-queries.js");
+const {
+  userQuery
+} = require("./user-queries.js");
 
 //---------------------------------
 // Mutations libraies import
@@ -43,8 +43,7 @@ const { groupsQuery, userGroupsQuery } = require("./group-queries.js");
 
 // User Mutation Library
 const {
-  createUserMutation,
-  editOfficeHoursMutation
+  createUserMutation
 } = require("./user-mutations.js");
 
 // Groups mutation
@@ -62,10 +61,7 @@ const {
 //---------------------------------
 
 const Query = {
-  user: userQuery,
-  users: usersQuery,
-  groups: groupsQuery,
-  userGroups: userGroupsQuery
+  user: userQuery
 };
 
 //---------------------------------
@@ -73,10 +69,7 @@ const Query = {
 //---------------------------------
 
 const Mutation = {
-  createUser: createUserMutation,
-  createGroup: createGroupMutation,
-  addUserGroup: addUserGroupMutation,
-  editOfficeHours: editOfficeHoursMutation
+  createUser: createUserMutation
 };
 
 //==============================================================================
