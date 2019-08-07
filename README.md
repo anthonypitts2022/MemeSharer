@@ -1,2 +1,2 @@
-# socialMediaFeedGeneric
-A generic feed page for posts that can be applied widely to different social media applications. Built on top of node/react/bootstrap.
+# MemeShare
+The social network for sharing memes. Built on the MERN (mongo, express, react, node) stack with utilzation of bootstrap. I choose to make this open source so that anyone can use parts of this code to make their own social media platform.
