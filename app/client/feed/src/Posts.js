@@ -20,14 +20,14 @@ const Posts = () => (
       if (loading) return <p>Loading...</p>;
       if (error) return <p>Error :(</p>;
       return(
-        <p>
+        <div>
           {data.getAllPosts.map(postInfo => (
-            <div>
-              <PostBox key={postInfo.id} postInfo={postInfo}/>
-              <p key={postInfo.id +"p"}></p>
+            <div key={postInfo.id}>
+              <PostBox postInfo={postInfo}/>
+              <p></p>
             </div>
           ))}
-        </p>
+        </div>
       );
     }}
   </Query>

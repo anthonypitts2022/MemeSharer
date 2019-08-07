@@ -1,9 +1,7 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
-import PostBox from './components/postBox.jsx';
 import NavBar from './components/navBar.jsx';
 import Posts from './Posts.js'
 

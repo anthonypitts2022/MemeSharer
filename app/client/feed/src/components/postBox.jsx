@@ -8,9 +8,6 @@ class PostBox extends Component {
 
   constructor(props){
     super(props);
-    console.log(props.postInfo.caption);
-    console.log(props.postInfo.likeCounter);
-    console.log(props.postInfo.dislikeCounter);
 
     this.state = {
       likeCounter: (typeof props.postInfo.likeCounter === 'undefined') ? 0: props.postInfo.likeCounter,
@@ -21,10 +18,6 @@ class PostBox extends Component {
 
 
   render(){
-    console.log(this.state.caption);
-    console.log(this.state.likeCounter);
-    console.log(this.state.dislikeCounter);
-
     return(
       <div className="row">
         <div className="col-md-6 offset-md-3">
@@ -45,7 +38,7 @@ class PostBox extends Component {
 
               <form>
                 <div className="form-group">
-                  <label for="InputComment"></label>
+                  <label htmlFor="InputComment"></label>
                   <input type="Comment" className="form-control" id="exampleInputEmail1" aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
                 </div>
                 <button type="submit" onClick={this.handleAddComment} className="badge badge-pill badge-primary">Add Comment</button>
