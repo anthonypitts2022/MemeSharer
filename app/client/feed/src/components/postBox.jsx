@@ -2,17 +2,29 @@ import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
+
+
 class PostBox extends Component {
-  state= {
-    likeCounter: 1,
-    DislikeCounter: 0,
-    comments: [
-      "This is the default commment."
-    ]
-  };
+
+  constructor(props){
+    super(props);
+    console.log(props.postInfo.caption);
+    console.log(props.postInfo.likeCounter);
+    console.log(props.postInfo.dislikeCounter);
+
+    this.state = {
+      likeCounter: (typeof props.postInfo.likeCounter === 'undefined') ? 0: props.postInfo.likeCounter,
+      dislikeCounter: (typeof props.postInfo.dislikeCounter === 'undefined') ? 0: props.postInfo.dislikeCounter,
+      caption: (typeof props.postInfo.caption === 'undefined') ? "" : props.postInfo.caption
+    };
+  }
 
 
   render(){
+    console.log(this.state.caption);
+    console.log(this.state.likeCounter);
+    console.log(this.state.dislikeCounter);
+
     return(
       <div className="row">
         <div className="col-md-6 offset-md-3">
@@ -26,19 +38,17 @@ class PostBox extends Component {
               <button
                 onClick={this.handleOnDislikeClick}
                 className="badge badge-pill badge-danger">Dislike</button>
-              <span className="badge badge-success">{this.state.DislikeCounter}</span>
+              <span className="badge badge-success">{this.state.dislikeCounter}</span>
 
 
-              <h5 className="card-title">{this.getCaption()}</h5>
-
-              <p className="card-text">{this.state.comments[0]}</p>
+              <h5 className="card-title">{this.state.caption}</h5>
 
               <form>
                 <div className="form-group">
                   <label for="InputComment"></label>
                   <input type="Comment" className="form-control" id="exampleInputEmail1" aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
                 </div>
-                <button type="submit" className="badge badge-pill badge-primary">Add Comment</button>
+                <button type="submit" onClick={this.handleAddComment} className="badge badge-pill badge-primary">Add Comment</button>
               </form>
 
             </div>
@@ -53,36 +63,15 @@ class PostBox extends Component {
     this.setState({likeCounter:this.state.likeCounter+1});
   }
   handleOnDislikeClick= () => {
-    this.setState({DislikeCounter:this.state.DislikeCounter+1});
+    this.setState({dislikeCounter:this.state.dislikeCounter+1});
   }
 
-  getCaption = () => {
-    const GET_POSTS = gql`
-    query getAllPosts{
-      caption
-    }`;
-
-    const Posts = ({ onPostSelected }) => (
-      <Query query={GET_POSTS}>
-        {({ loading, error, data }) => {
-        if (loading) return "Loading...";
-        if (error) return `Error! ${error.message}`;
-
-
-        return (
-          <h5 className="card-title">{data.getAllPosts[0].caption}</h5>
-        );
-        }}
-      </Query>
-    );
-
-  }
 
   handleAddComment= () => {
     //need to add new comment array by looping through old one
     //or just start mutations and queries with node
     this.setState({
-      likeCounter:this.state.likeCounter
+      comments: ["hey"]
     });
   }
 

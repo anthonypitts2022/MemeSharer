@@ -42,10 +42,6 @@ module.exports = function validateUserPermsInput(data) {
     errors.userId = "length must less than 20 characters";
   }
 
-
-  if ( (!Validator.isEmpty(data.caption)) && (!Validator.isAlphanumeric(Validator.blacklist(data.caption," "))) ){
-    errors.caption = "Invalid character inserted"
-  }
   if (!Validator.isLength(data.caption, { max: 10000 })) {
     errors.caption = "Caption length must less than 10,000 characters";
   }

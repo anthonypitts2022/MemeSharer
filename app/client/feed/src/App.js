@@ -1,26 +1,23 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "react-apollo";
+import PostBox from './components/postBox.jsx';
+import NavBar from './components/navBar.jsx';
+import Posts from './Posts.js'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const client = new ApolloClient({
+  uri: "http://localhost:3301/posts"
+});
+
+const App = () => (
+  <ApolloProvider client={client}>
+    <li>
+      <NavBar key={"nav"} />
+      <Posts key={"posts"} />
+    </li>
+  </ApolloProvider>
+);
 
 export default App;
