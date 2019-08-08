@@ -8,7 +8,7 @@
 //==============================================================================
 /*
 Title: Index resolver
-Auth: aep2195
+Auth: Anthony Pitts
 Vers: 1.1
 date: 7/13/19 *Last ModBODY
 desc: Main resolvers component
@@ -18,15 +18,12 @@ note: Remember to export the query types resolver!
 //==============================================================================
 // HEAD
 //==============================================================================
+const { handleErrors } = require("../../utils/handle-errors.js");
 
-//---------------------------------
-// Query library import
-/*
-  @Description:
-  Imports all Query libraries
-  This only handles queries!
-*/
-//---------------------------------
+//bring in models
+//const Post = require("../../models/Post-model.js");
+//const Comment = require("../../models/Comment-model.js");
+const Like = require("../../models/Like-model.js");
 
 // posts Queries Library
 const {
@@ -35,14 +32,7 @@ const {
   postDislikeCountQuery
 } = require("./posts-queries.js");
 
-//---------------------------------
-// Mutations libraies import
-/*
-  @Description:
-  Imports all Mutation libraries
-  This only handles Mutations!
-*/
-//---------------------------------
+
 
 // posts Mutation Library
 const {
@@ -75,10 +65,29 @@ const Mutation = {
 
 
 
+//==============================================================================
+// MODELS
+//==============================================================================
+const Post = {
+  likeCount: async (post) => {
+    try{
+      return await Like.countDocuments({postId: post.id, isLike: true});
+    } catch(err){
+      return handleErrors("001", {postId: "post does not exist."})
+    }
+  },
+  dislikeCount: async (post) => {
+    try{
+      return await Like.countDocuments({postId: post.id, isLike: false});
+    } catch(err){
+      return handleErrors("001", {postId: "post does not exist."})
+    }
+  }
+}
 
 //==============================================================================
 // !EXPORTS
 //==============================================================================
 
 //module.exports = { Query, Mutation };
-module.exports = { Query, Mutation };
+module.exports = { Query, Mutation, Post };

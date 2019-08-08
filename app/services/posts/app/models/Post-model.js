@@ -8,9 +8,9 @@
 //==============================================================================
 /*
 !Title : Post-model
-!Auth  : aep2195
+!Auth  : Anthony Pitts
 !Vers  : 1.0
-!Date  : 7/16/19 *Last Mod
+!Date  : 8/7/19 *Last Mod
 !Desc  : Sets up the Post schema
 */
 

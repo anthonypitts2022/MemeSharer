@@ -8,7 +8,7 @@
 //==============================================================================
 /*
 !Title : perms-queries
-!Auth  : aep2195
+!Auth  : Anthony Pitts
 !Vers  : 1.0
 !Date  : 7/13/19 *Last Mod
 !Desc  : Conatins all the queries for perms service
@@ -55,22 +55,24 @@ const getAllPostsQuery = async (root, { args }) => {
 
 
 const postLikeCountQuery = async (root, { postId }) => {
-  const likeCount = await Like.countDocuments({postId: postId, isLike: true});
-
   try {
+
+    const likeCount = await Like.countDocuments({postId: postId, isLike: true});
     return likeCount;
+
   } catch (e) {
-    logger.error(`${e}`);
+    return handleErrors("001", {postId: "post does not exist."});
   }
 };
 
 const postDislikeCountQuery = async (root, { postId }) => {
-  const dislikeCount = await Like.countDocuments({postId: postId, isLike: false});
-
   try {
+
+    const dislikeCount = await Like.countDocuments({postId: postId, isLike: false});
     return dislikeCount;
+
   } catch (e) {
-    logger.error(`${e}`);
+    return handleErrors("001", {postId: "post does not exist."});
   }
 };
 

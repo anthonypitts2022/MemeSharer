@@ -8,7 +8,7 @@
 //==============================================================================
 /*
 Title: Index resolver
-Auth: aep2195
+Auth: Anthony Pitts
 Vers: 1.1
 desc: Main resolvers component
 note: Remember to export the query types resolver!

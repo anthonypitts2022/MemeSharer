@@ -18,6 +18,8 @@ type Post {
   id: ID!
   userId: String!
   caption: String
+  likeCount: String
+  dislikeCount: String
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]
