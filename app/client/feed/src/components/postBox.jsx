@@ -10,8 +10,8 @@ class PostBox extends Component {
     super(props);
 
     this.state = {
-      likeCounter: (typeof props.postInfo.likeCounter === 'undefined') ? 0: props.postInfo.likeCounter,
-      dislikeCounter: (typeof props.postInfo.dislikeCounter === 'undefined') ? 0: props.postInfo.dislikeCounter,
+      likeCount: (typeof props.postInfo.likeCount === 'undefined') ? 0: props.postInfo.likeCount,
+      dislikeCount: (typeof props.postInfo.dislikeCount === 'undefined') ? 0: props.postInfo.dislikeCount,
       caption: (typeof props.postInfo.caption === 'undefined') ? "" : props.postInfo.caption
     };
   }
@@ -27,11 +27,11 @@ class PostBox extends Component {
               <button
                 onClick={this.handleOnLikeClick}
                 className="badge badge-pill badge-primary">Like</button>
-              <span className="badge badge-success">{this.state.likeCounter}</span>
+              <span className="badge badge-success">{this.state.likeCount}</span>
               <button
                 onClick={this.handleOnDislikeClick}
                 className="badge badge-pill badge-danger">Dislike</button>
-              <span className="badge badge-success">{this.state.dislikeCounter}</span>
+              <span className="badge badge-success">{this.state.dislikeCount}</span>
 
 
               <h5 className="card-title">{this.state.caption}</h5>
@@ -53,10 +53,10 @@ class PostBox extends Component {
   }
 
   handleOnLikeClick= () => {
-    this.setState({likeCounter:this.state.likeCounter+1});
+    this.setState({likeCount:this.state.likeCount+1});
   }
   handleOnDislikeClick= () => {
-    this.setState({dislikeCounter:this.state.dislikeCounter+1});
+    this.setState({dislikeCount:this.state.dislikeCount+1});
   }
 
 

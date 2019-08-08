@@ -12,6 +12,8 @@ const Posts = () => (
           caption
           id
           userId
+          likeCount
+          dislikeCount
         }
       }
     `}
