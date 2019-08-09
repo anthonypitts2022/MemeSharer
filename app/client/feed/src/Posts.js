@@ -14,6 +14,13 @@ const Posts = () => (
           userId
           likeCount
           dislikeCount
+          comments{
+            text
+            userId
+            postId
+            id
+            userName
+          }
         }
       }
     `}

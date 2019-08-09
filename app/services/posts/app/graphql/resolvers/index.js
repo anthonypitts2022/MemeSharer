@@ -22,7 +22,7 @@ const { handleErrors } = require("../../utils/handle-errors.js");
 
 //bring in models
 //const Post = require("../../models/Post-model.js");
-//const Comment = require("../../models/Comment-model.js");
+const Comment = require("../../models/Comment-model.js");
 const Like = require("../../models/Like-model.js");
 
 // posts Queries Library
@@ -37,7 +37,9 @@ const {
 // posts Mutation Library
 const {
   createPostMutation,
-  createLikeMutation
+  createLikeMutation,
+  createCommentMutation,
+  deleteAllCommentsMutation
 } = require("./posts-mutations.js");
 
 //==============================================================================
@@ -60,7 +62,9 @@ const Query = {
 
 const Mutation = {
   createPost: createPostMutation,
-  createLike: createLikeMutation
+  createLike: createLikeMutation,
+  createComment: createCommentMutation,
+  deleteAllComments: deleteAllCommentsMutation
 };
 
 
@@ -82,7 +86,14 @@ const Post = {
     } catch(err){
       return handleErrors("001", {postId: "post does not exist."})
     }
-  }
+  },
+  comments: async (post) => {
+    try{
+      return await Comment.find({postId: post.id}).limit(20);
+    } catch(err){
+      return handleErrors("001", {postId: "failed to get comments"})
+    }
+  },
 }
 
 //==============================================================================

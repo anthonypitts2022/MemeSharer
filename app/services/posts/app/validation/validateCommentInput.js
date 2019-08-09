@@ -6,11 +6,11 @@
 //==============================================================================
 
 /*
-Title: Like validation
+Title: Comment validation
 Auth: Anthony Pitts
 Vers: 1.0
 date: 8/7/19 *Last ModBODY
-desc: Validates the Like Input
+desc: Validates the Comment Input
 */
 
 
@@ -25,27 +25,31 @@ const isEmpty = require("./is-empty");
 // BODY
 //==============================================================================
 
-module.exports = function validateLikeInput(data) {
+module.exports = function validateCommentInput(data) {
   let errors = {};
 
   // Set the inputs to empty string if empty
   data.userId = !isEmpty(data.userId) ? data.userId : "";
   data.postId = !isEmpty(data.postId) ? data.postId : "";
-  data.isLike = !isEmpty(data.isLike) ? data.isLike : null;
+  data.text = !isEmpty(data.text) ? data.text : "";
 
   //required checks
   if (Validator.isEmpty(data.postId)){
     errors.postId = "postId is required"
   }
-  if (data.isLike===null){
-    errors.isLike = "isLike is required"
+  if (Validator.isEmpty(data.text)){
+    errors.text = "text is required"
   }
+
 
   if (!Validator.isLength(data.userId, { max: 20 })) {
     errors.userId = "length must less than 20 characters";
   }
   if (!Validator.isLength(data.postId, { max: 20 })) {
     errors.postId = "length must less than 20 characters";
+  }
+  if (!Validator.isLength(data.text, { max: 500 })) {
+    errors.text = "length must less than 500 characters";
   }
 
 

@@ -38,7 +38,7 @@ const axios = require("axios");
 //---------------------------------
 
 const Post = require("../../models/Post-model.js");
-//const Comment = require("../../models/Comment-model.js");
+const Comment = require("../../models/Comment-model.js");
 const Like = require("../../models/Like-model.js");
 
 //---------------------------------
@@ -46,10 +46,8 @@ const Like = require("../../models/Like-model.js");
 //---------------------------------
 
 const validatePostInput = require("../../validation/validatePostInput.js");
-//const validateCommentInput = require("../../validation/validateCommentInput.js");
-const validateLikeInput = require("../../validation/validateLikeInput.js"); // to make sure they don't like something more than once? maybe can just do in mutation
-//const validateDislikeInput = require("../../validation/validateDislikeInput.js");
-
+const validateCommentInput = require("../../validation/validateCommentInput.js");
+const validateLikeInput = require("../../validation/validateLikeInput.js");
 
 //==============================================================================
 // Body
@@ -81,6 +79,44 @@ const createPostMutation = async (parent, { input }, {user}) => {
     newPost.save();
 
     return newPost;
+    // Initiate sending the new post to the database
+  } catch (err) {
+    // Database response after post has been created
+    console.log(err);
+  }
+};
+
+
+//==============================================================================
+// Create A Comment
+//==============================================================================
+
+// @access : Private, User
+// @desc   : Create a Comment Object
+const createCommentMutation = async (parent, { input }, {user}) => {
+
+  // Validate the Post input and return errors if any
+  const { msg, isValid } = validateCommentInput(input);
+  if (!isValid) {
+    return handleErrors("001", msg);
+  }
+
+  try {
+    //checks if the post does not exist
+    if(!(await Post.findById(input.postId))){
+      return handleErrors("001", {postId: "post does not exist"});
+    }
+
+    // Create a Comment object based on the input
+    var newComment = new Comment({
+      userId: user.id,
+      postId: input.postId,
+      text: input.text,
+      userName: user.name
+    });
+    newComment.save();
+
+    return newComment;
     // Initiate sending the new post to the database
   } catch (err) {
     // Database response after post has been created
@@ -149,6 +185,10 @@ const createLikeMutation = async (parent, { input }, {user}) => {
       }
     }
 
+    //checks if the post does not exist
+    if(!(await Post.findById(input.postId))){
+      return handleErrors("001", {postId: "post does not exist"});
+    }
 
     //---------  if not already liked or disliked ---------//
 
@@ -168,7 +208,27 @@ const createLikeMutation = async (parent, { input }, {user}) => {
   }
 };
 
+//==============================================================================
+// Delete All Comments
+//==============================================================================
+
+// @access : Private, User
+// @desc   : Delete all Comments Objects
+const deleteAllCommentsMutation = async (parent, { isActual }, {user}) => {
+  try{
+    await Comment.deleteMany();
+    return true;
+  } catch (err) {
+    // Database response after post has been created
+    console.log(err);
+    return false;
+  }
+};
+
+
 module.exports = {
   createPostMutation,
-  createLikeMutation
+  createLikeMutation,
+  createCommentMutation,
+  deleteAllCommentsMutation
 };

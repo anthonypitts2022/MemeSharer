@@ -6,7 +6,7 @@
 //==============================================================================
 
 /*
-Title: User Perms validation
+Title: Post validation
 Auth: Anthony Pitts
 Vers: 1.0
 date: 8/7/19 *Last ModBODY

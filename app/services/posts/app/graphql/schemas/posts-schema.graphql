@@ -7,6 +7,8 @@ type Query {
 type Mutation {
   createPost(input: createPostInput): Post
   createLike(input: createLikeInput): Like
+  createComment(input: createCommentInput): Comment
+  deleteAllComments(isActual: Boolean!): Boolean
 }
 
 
@@ -20,6 +22,7 @@ type Post {
   caption: String
   likeCount: String
   dislikeCount: String
+  comments: [Comment]
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]
@@ -35,6 +38,17 @@ type Like {
   bulkAddReport: [BulkAddReport]
 }
 
+type Comment {
+  id: ID!
+  userId: String!
+  userName: String!
+  postId: String!
+  text: String!
+  errors: Error
+  success: Success
+  bulkAddReport: [BulkAddReport]
+}
+
 #===============================================================================
 # Inputs
 #===============================================================================
@@ -45,6 +59,11 @@ input createPostInput{
 
 input createLikeInput{
   isLike: Boolean!
+  postId: String!
+}
+
+input createCommentInput{
+  text: String!
   postId: String!
 }
 

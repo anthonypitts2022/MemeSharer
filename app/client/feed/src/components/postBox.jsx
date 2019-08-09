@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Query } from 'react-apollo';
+import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import AddLike from '../AddLike.js';
+import AddComment from '../AddComment.js';
 
 
 
@@ -12,10 +14,18 @@ class PostBox extends Component {
     this.state = {
       likeCount: (typeof props.postInfo.likeCount === 'undefined') ? 0: props.postInfo.likeCount,
       dislikeCount: (typeof props.postInfo.dislikeCount === 'undefined') ? 0: props.postInfo.dislikeCount,
-      caption: (typeof props.postInfo.caption === 'undefined') ? "" : props.postInfo.caption
+      caption: (typeof props.postInfo.caption === 'undefined') ? "" : props.postInfo.caption,
+      postId: (typeof props.postInfo.id === 'undefined') ? "" : props.postInfo.id,
+      comments: (typeof props.postInfo.comments === 'undefined') ? [] : props.postInfo.comments,
+      addCommentText: ''
     };
+
+    this.handleAddCommentChange = this.handleAddCommentChange.bind(this);
   }
 
+  handleAddCommentChange(event) {
+    this.setState({addCommentText: event.target.value});
+  }
 
   render(){
     return(
@@ -24,24 +34,36 @@ class PostBox extends Component {
           <div className="card">
             <img className="card-img-top" src="https://tinyurl.com/yxl6uy3s" width="200" height="200"></img>
             <div className="card-body">
-              <button
-                onClick={this.handleOnLikeClick}
-                className="badge badge-pill badge-primary">Like</button>
+              <Mutation mutation={AddLike} variables={{"input": { "isLike":true, "postId": this.state.postId } }}>
+                {addLike => <button onClick={addLike} className="badge badge-pill badge-primary">Like</button>}
+              </Mutation>
               <span className="badge badge-success">{this.state.likeCount}</span>
-              <button
-                onClick={this.handleOnDislikeClick}
-                className="badge badge-pill badge-danger">Dislike</button>
+
+              <Mutation mutation={AddLike} variables={{"input": { "isLike":false, "postId": this.state.postId } }}>
+                {addLike => <button onClick={addLike} className="badge badge-pill badge-danger">Dislike</button>}
+              </Mutation>
               <span className="badge badge-success">{this.state.dislikeCount}</span>
 
 
               <h5 className="card-title">{this.state.caption}</h5>
 
+              <div>
+                {this.state.comments.map(comment => (
+                  <div key={comment.id}>
+                    <p className="card-text">{comment.userName + ": "}{comment.text}</p>
+                    <p></p>
+                  </div>
+                ))}
+              </div>
+
               <form>
                 <div className="form-group">
                   <label htmlFor="InputComment"></label>
-                  <input type="Comment" className="form-control" id="exampleInputEmail1" aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
+                  <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id="commentInput" aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
                 </div>
-                <button type="submit" onClick={this.handleAddComment} className="badge badge-pill badge-primary">Add Comment</button>
+                <Mutation mutation={AddComment} variables={{"input": { "text":this.state.addCommentText, "postId": this.state.postId } }}>
+                  {addComment => <button type="submit" onClick={addComment} className="badge badge-pill badge-primary">Add Comment</button>}
+                </Mutation>
               </form>
 
             </div>
@@ -52,21 +74,6 @@ class PostBox extends Component {
     );
   }
 
-  handleOnLikeClick= () => {
-    this.setState({likeCount:this.state.likeCount+1});
-  }
-  handleOnDislikeClick= () => {
-    this.setState({dislikeCount:this.state.dislikeCount+1});
-  }
-
-
-  handleAddComment= () => {
-    //need to add new comment array by looping through old one
-    //or just start mutations and queries with node
-    this.setState({
-      comments: ["hey"]
-    });
-  }
 
 
 }
