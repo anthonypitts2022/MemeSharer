@@ -17,7 +17,6 @@ class SignUpForm extends Component {
     };
 
     //bindings
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -26,9 +25,6 @@ class SignUpForm extends Component {
   }
 
 
-  handleSubmit() {
-    //handle submit
-  }
   handleNameChange(event) {
     this.setState({name: event.target.value});
   }
@@ -74,9 +70,9 @@ class SignUpForm extends Component {
                       </div>
                   </form>
                 </div>
-                <div>
-                   <button onClick={this.handSubmit} type="submit" className="btn btn-lg btn-primary btn-block ">Sign Up</button>
-                </div>
+                <Mutation mutation={CreateUser} variables={{"input": { "name": this.state.name, "email": this.state.email, "password": this.state.password, "password2": this.state.password2 } }}>
+                  {createUser => <button onClick={createUser} type="submit" className="btn btn-lg btn-primary btn-block ">Sign Up</button>}
+                </Mutation>
                 <div className="col-md-12 ">
                    <div className="login-or">
                       <hr className="hr-or" />

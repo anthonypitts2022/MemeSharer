@@ -1,9 +1,11 @@
 type Query {
   user(email: String!): User
+  users: [User]
 }
 
 type Mutation {
   createUser(input: CreateUserInput): User
+  deleteAllUsers(isActual: Boolean!): Boolean
 }
 
 #===============================================================================

@@ -50,4 +50,17 @@ const userQuery = async (root, { email }) => {
   }
 };
 
-module.exports = { userQuery };
+
+const getAllUsersQuery = async (root, { args }) => {
+  const users = await User.find()
+    .skip(0)
+    .limit(200);
+
+  try {
+    return users;
+  } catch (e) {
+    logger.error(e.message);
+  }
+};
+
+module.exports = { userQuery, getAllUsersQuery };

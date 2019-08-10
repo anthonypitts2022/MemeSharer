@@ -29,7 +29,8 @@ note: Remember to export the query types resolver!
 
 // User Queries Library
 const {
-  userQuery
+  userQuery,
+  getAllUsersQuery
 } = require("./user-queries.js");
 
 //---------------------------------
@@ -43,7 +44,8 @@ const {
 
 // User Mutation Library
 const {
-  createUserMutation
+  createUserMutation,
+  deleteAllUsersMutation
 } = require("./user-mutations.js");
 
 //==============================================================================
@@ -55,7 +57,8 @@ const {
 //---------------------------------
 
 const Query = {
-  user: userQuery
+  user: userQuery,
+  users: getAllUsersQuery
 };
 
 //---------------------------------
@@ -63,7 +66,8 @@ const Query = {
 //---------------------------------
 
 const Mutation = {
-  createUser: createUserMutation
+  createUser: createUserMutation,
+  deleteAllUsers: deleteAllUsersMutation
 };
 
 //==============================================================================

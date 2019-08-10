@@ -92,4 +92,23 @@ const createUserMutation = async (parent, { input }) => {
   }
 };
 
-module.exports = { createUserMutation, };
+
+//==============================================================================
+// Delete All Users
+//==============================================================================
+
+// @access : Private, User
+// @desc   : Delete all Users Objects
+const deleteAllUsersMutation = async (parent, { isActual }, {user}) => {
+  try{
+    await User.deleteMany();
+    return true;
+  } catch (err) {
+    // Database response after post has been created
+    console.log(err);
+    return false;
+  }
+};
+
+
+module.exports = { createUserMutation, deleteAllUsersMutation };

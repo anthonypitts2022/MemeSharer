@@ -4,16 +4,15 @@ import gql from "graphql-tag";
 
 
 const CreateUser = gql`
-  mutation createUser($input: createCommentInput){
-    Comment: createComment(input: $input){
+  mutation createUser($input: CreateUserInput){
+    User: createUser(input: $input){
       errors{
         msg
       }
       id
-      userId
-      userName
-      postId
-      text
+      name
+      email
+      password
     }
   }
 `
