@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import CheckLogin from '../queries-mutations/CheckLogin.js'
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "react-apollo";
 
-
+const userClient = new ApolloClient({
+  uri: "http://localhost:3302/user"
+});
 
 class LoginForm extends Component {
 
@@ -17,10 +22,21 @@ class LoginForm extends Component {
     //bindings
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
 
   }
 
-
+  handleSubmit(event){
+    var submitPage = (
+      <div>
+        <p>Hey</p>
+        <ApolloProvider client={userClient}>
+          <CheckLogin variables={{"input": { "email": this.state.email, "password": this.state.password } }}/>
+        </ApolloProvider>
+      </div>
+    );
+    ReactDOM.render(submitPage, document.getElementById('root'));
+  }
   handleEmailChange(event) {
     this.setState({email: event.target.value});
   }
@@ -54,9 +70,7 @@ class LoginForm extends Component {
                       </div>
                   </form>
                 </div>
-                <Mutation mutation={CheckLogin} variables={{"input": { "name": this.state.name, "email": this.state.email, "password": this.state.password, "password2": this.state.password2 } }}>
-                  {checkLogin => <button onClick={checkLogin} type="submit" className="btn btn-lg btn-primary btn-block ">Sign In</button>}
-                </Mutation>
+                <button onClick={this.handleSubmit} type="submit" className="btn btn-lg btn-primary btn-block ">Sign In</button>
                 <div className="col-md-12 ">
                    <div className="login-or">
                       <hr className="hr-or" />

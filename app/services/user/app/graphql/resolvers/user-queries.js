@@ -72,6 +72,7 @@ const getAllUsersQuery = async (root, { args }) => {
 const checkLoginQuery = async (root, { input }) => {
 
   try {
+    logger.error(input)
     var requestedUser = await User.findOne({email: input.email});
 
     //if there was no user with the inputted email

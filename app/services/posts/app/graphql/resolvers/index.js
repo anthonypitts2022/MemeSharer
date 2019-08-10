@@ -29,7 +29,8 @@ const Like = require("../../models/Like-model.js");
 const {
   getAllPostsQuery,
   postLikeCountQuery,
-  postDislikeCountQuery
+  postDislikeCountQuery,
+  userPostsQuery
 } = require("./posts-queries.js");
 
 
@@ -53,7 +54,8 @@ const {
 const Query = {
   getAllPosts: getAllPostsQuery,
   postLikeCount: postLikeCountQuery,
-  postDislikeCount: postDislikeCountQuery
+  postDislikeCount: postDislikeCountQuery,
+  userPosts: userPostsQuery
 };
 
 //---------------------------------

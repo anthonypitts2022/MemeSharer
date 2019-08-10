@@ -76,10 +76,30 @@ const postDislikeCountQuery = async (root, { postId }) => {
   }
 };
 
+const userPostsQuery = async (root, { args }, {user}) => {
+  try {
+    //checks if user is signed in
+    if(!user){
+      return handleErrors("001", {user: "user not signed in"});
+    }
+    //gets 200 post from user
+    const posts = await Post.find({userId: user.id}).limit(200);
+
+    //if no posts were found
+    if(!posts){
+      return handleErrors("001", {posts: "no post for this user"});
+    }
+    return posts;
+  } catch (e) {
+    logger.error(`${e}`);
+  }
+};
+
 
 
 module.exports = {
   getAllPostsQuery,
   postLikeCountQuery,
-  postDislikeCountQuery
+  postDislikeCountQuery,
+  userPostsQuery
 };

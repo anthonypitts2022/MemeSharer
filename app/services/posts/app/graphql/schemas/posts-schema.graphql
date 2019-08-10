@@ -2,6 +2,7 @@ type Query {
   getAllPosts: [Post]
   postLikeCount(postId: String!): String
   postDislikeCount(postId: String!): String
+  userPosts: [Post]
 }
 
 type Mutation {

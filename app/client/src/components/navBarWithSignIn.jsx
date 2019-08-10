@@ -10,7 +10,7 @@ class NavBarWithSignIn extends Component {
             <a className="navbar-brand" href="/">MemeShare</a>
           </div>
           <ul className="nav navbar-nav navbar-right">
-            <li><a href="/signUp"><span className="glyphicon glyphicon-user"></span> Sign Up</a></li>
+            <li><a href="/signup"><span className="glyphicon glyphicon-user"></span> Sign Up</a></li>
             <li><a href="/login"><span className="glyphicon glyphicon-log-in"></span> Login</a></li>
           </ul>
         </div>
