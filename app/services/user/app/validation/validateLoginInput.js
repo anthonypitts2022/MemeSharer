@@ -6,11 +6,11 @@
 //==============================================================================
 
 /*
-Title: sign up Validation
+Title: Login Validation
 Auth: Anthony Pitts
 Vers: 1.0
 date: 8/10/19 *Last ModBODY
-desc: Validates the user input
+desc: Validates the user login input
 */
 
 //==============================================================================
@@ -24,47 +24,25 @@ const isEmpty = require("./is-empty");
 // BODY
 //==============================================================================
 
-module.exports = function validateUserInput(data) {
+module.exports = function validateLoginInput(data) {
   let errors = {};
 
   // Set the inputs to empty string if empty
-  data.name = !isEmpty(data.name) ? data.name : "";
   data.email = !isEmpty(data.email) ? data.email : "";
+  data.password = !isEmpty(data.password) ? data.password : "";
 
   // Check if the name field is empty
-  if (Validator.isEmpty(data.name)) {
-    errors.name = "name field is required";
-  }
-  // Check if the email field is empty
   if (Validator.isEmpty(data.email)) {
     errors.email = "email field is required";
+  }
+  // Check if the email field is empty
+  if (Validator.isEmpty(data.password)) {
+    errors.password = "password field is required";
   }
 
   // email validation
   if (!data.email.includes("@")) {
     errors.email = "Invalid email format";
-  }
-
-  //length checks
-  if (!Validator.isLength(data.email, { min: 6, max: 30 })) {
-    errors.email = "email length must be between 6 and 30 characters";
-  }
-  if (!Validator.isLength(data.name, { min: 6, max: 30 })) {
-    errors.name = "name length must be between 6 and 30 characters";
-  }
-
-  // password validation
-  if (Validator.isEmpty(data.password)) {
-    errors.password = "Password is required";
-  }
-  if (!Validator.isLength(data.password, { min: 6, max: 30 })) {
-    errors.password = "Password length must be between 6 and 30 characters";
-  }
-  if (Validator.isEmpty(data.password2)) {
-    errors.password2 = "Password2 is required";
-  }
-  if (!Validator.equals(data.password, data.password2)) {
-    errors.password2 = "passwords do not match";
   }
 
   return {

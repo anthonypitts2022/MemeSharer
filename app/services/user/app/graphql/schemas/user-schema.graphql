@@ -1,6 +1,7 @@
 type Query {
   user(email: String!): User
   users: [User]
+  checkLogin(input: LoginInput): Boolean
 }
 
 type Mutation {
@@ -26,11 +27,17 @@ type User {
 #--------------------------------------
 # Inputs
 #--------------------------------------
+
 input CreateUserInput {
   name: String!
   email: String!
   password: String!
   password2: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 #===============================================================================

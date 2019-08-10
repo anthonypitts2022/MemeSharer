@@ -25,6 +25,9 @@ const { handleErrors } = require("@lib/handle-errors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const config = require("../../../config/config.js");
+const { generatePassword } = require("@lib/passGen");
+const path = require("path");
+const axios = require("axios");
 
 // const { logger } = reqlib("/config/logger.js");
 
@@ -63,4 +66,25 @@ const getAllUsersQuery = async (root, { args }) => {
   }
 };
 
-module.exports = { userQuery, getAllUsersQuery };
+
+// @access : Private(Root, Admin, Staff)
+// @desc   : checks if login input is correct
+const checkLoginQuery = async (root, { input }) => {
+
+  try {
+    var requestedUser = await User.findOne({email: input.email});
+
+    //if there was no user with the inputted email
+    if(!requestedUser){
+      return false;
+    }
+
+    //bcrypt checks if the inputted password matches the hashed password
+    return await bcrypt.compare(input.password, requestedUser.password);
+
+  } catch (e) {
+    return false;
+  }
+};
+
+module.exports = { userQuery, getAllUsersQuery, checkLoginQuery };

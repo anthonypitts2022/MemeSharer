@@ -30,7 +30,8 @@ note: Remember to export the query types resolver!
 // User Queries Library
 const {
   userQuery,
-  getAllUsersQuery
+  getAllUsersQuery,
+  checkLoginQuery
 } = require("./user-queries.js");
 
 //---------------------------------
@@ -58,7 +59,8 @@ const {
 
 const Query = {
   user: userQuery,
-  users: getAllUsersQuery
+  users: getAllUsersQuery,
+  checkLogin: checkLoginQuery
 };
 
 //---------------------------------
