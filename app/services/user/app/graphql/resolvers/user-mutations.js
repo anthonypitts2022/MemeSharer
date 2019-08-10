@@ -26,9 +26,9 @@ const { handleErrors } = require("@lib/handle-errors");
 const { generatePassword } = require("@lib/passGen");
 const config = require("../../../config/config.js");
 const bcrypt = require("bcrypt");
-
 const path = require("path");
 const axios = require("axios");
+
 
 //---------------------------------
 // Models
@@ -55,18 +55,16 @@ const createUserMutation = async (parent, { input }) => {
   }
 
   // Initiate the models by finding if the fields below exist
-  var user = await User.countDocuments({ email: input.email });
+  var userCount = await User.countDocuments({ email: input.email });
 
   try {
 
-    if (user!=0) throw "User already exists!";
+    if (userCount!=0) return handleErrors("001",{email: "User already exists!"} );
 
     // Create a user object based on the input
     const newUser = new User({
-
       email: input.email,
       name: input.name,
-      // If no password was inserted, then create a password
       password: input.password
     });
 

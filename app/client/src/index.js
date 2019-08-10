@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Feed from './pages/Feed';
 import SignUpPage from './pages/SignUpPage';
 import Page404 from './pages/Page404';
+import LoginPage from './pages/LoginPage';
 import * as serviceWorker from './config/serviceWorker';
 import "bootstrap/dist/css/bootstrap.css";
 import { Route, Link, BrowserRouter as Router, Switch } from 'react-router-dom';
@@ -14,6 +15,7 @@ const routing = (
       <Switch>
         <Route exact path="/" component={Feed} />
         <Route path="/signUp" component={SignUpPage} />
+        <Route path="/login" component={LoginPage} />
         <Route component={Page404} />
       </Switch>
     </div>

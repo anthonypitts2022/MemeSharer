@@ -3,7 +3,7 @@ import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag";
 
 
-const CreateUser = gql`
+const CheckLogin = gql`
   mutation createUser($input: CreateUserInput){
     User: createUser(input: $input){
       errors{
@@ -17,4 +17,4 @@ const CreateUser = gql`
   }
 `;
 
-export default CreateUser;
+export default CheckLogin;
