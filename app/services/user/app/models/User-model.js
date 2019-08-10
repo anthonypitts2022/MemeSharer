@@ -55,4 +55,4 @@ UserShema.index({
   name: "text",
   email: "text"
 });
-module.exports = user = mongoose.model("User", UserShema);
+module.exports = User = mongoose.model("User", UserShema);

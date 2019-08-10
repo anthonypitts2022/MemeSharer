@@ -33,7 +33,7 @@ const axios = require("axios");
 //---------------------------------
 // Models
 //---------------------------------
-const Users = require("../../models/User-model.js");
+const User = require("../../models/User-model.js");
 
 //---------------------------------
 // Validation
@@ -55,18 +55,16 @@ const createUserMutation = async (parent, { input }) => {
   }
 
   // Initiate the models by finding if the fields below exist
-  let user = await Users.find({
-    $or: [{ email: input.email }]
-  });
+  var user = await User.countDocuments({ email: input.email });
 
   try {
-    // Throw errors if the conditions are met
-    if (user) throw "User already exists!";
+
+    if (user!=0) throw "User already exists!";
 
     // Create a user object based on the input
-    const newUser = new Users({
+    const newUser = new User({
 
-      username: input.username,
+      email: input.email,
       name: input.name,
       // If no password was inserted, then create a password
       password: input.password
@@ -81,6 +79,7 @@ const createUserMutation = async (parent, { input }) => {
         resolve(hash);
       });
     });
+    newUser.password = hashedPassword;
 
     // Save the user to the database
     return newUser.save();

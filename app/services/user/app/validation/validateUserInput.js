@@ -41,7 +41,7 @@ module.exports = function validateUserInput(data) {
   }
 
   // email validation
-  if (Validator.isEmail(data.email)) {
+  if (!data.email.includes("@")) {
     errors.email = "Invalid email format";
   }
 
