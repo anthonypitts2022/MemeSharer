@@ -7,10 +7,10 @@
 //
 //==============================================================================
 /*
-!Title : User-model
+!Title : Follower-model
 !Auth  : Anthony Pitts
 !Vers  : 1.0
-!Desc  : Sets up the user schema
+!Desc  : Sets up the follower schema
 */
 
 //==============================================================================
@@ -25,29 +25,21 @@ const shortid = require("shortid");
 // BODY
 //==============================================================================
 
-const UserShema = new Schema({
+const FollowerShema = new Schema({
   _id: {
     type: String,
     default: shortid.generate,
-    description: "The User's id"
+    description: "The follower Object id"
   },
-  name: {
+  userFollowingId: {
     type: String,
     required: true,
     text: true
   },
-  email: {
+  userBeingFollowedId: {
     type: String,
     required: true,
     text: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  date: {
-    type: Date,
-    default: Date.now
   }
 });
 
@@ -55,9 +47,9 @@ const UserShema = new Schema({
 // !EXPORT
 //==============================================================================
 
-UserShema.index({
+FollowerShema.index({
   index: "text",
-  name: "text",
-  email: "text"
+  userFollowingId: "text",
+  userBeingFollowedId: "text"
 });
-module.exports = User = mongoose.model("User", UserShema);
+module.exports = Follower = mongoose.model("Follower", FollowerShema);

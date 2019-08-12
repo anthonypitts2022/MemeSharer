@@ -49,7 +49,8 @@ const userQuery = async (root, { email }) => {
   try {
     return user;
   } catch (e) {
-    logger.error(`${e}`);
+    logger.error(e.message);
+
   }
 };
 
@@ -88,4 +89,33 @@ const checkLoginQuery = async (root, { input }) => {
   }
 };
 
-module.exports = { userQuery, getAllUsersQuery, checkLoginQuery };
+
+// @access : Private(Root, Admin, Staff)
+// @desc   : get list of ids of all users that the current user is following
+const userFollowingQuery = async (root, { args }, {user}) => {
+  try {
+    const usersBeingFollowed = await Follower.find({
+      userFollowingId: user.id
+    });
+
+    var usersBeingFollowedIds = [];
+    for (var index in usersBeingFollowed){
+      if(usersBeingFollowed.hasOwnProperty(index)){
+        usersBeingFollowedIds.push(usersBeingFollowed[index].userBeingFollowedId);
+      }
+    }
+
+    return usersBeingFollowedIds;
+
+  } catch (e) {
+    logger.error(e.message);
+    return handleErrors("001", { follower: "failed to get followers' ids" });
+  }
+};
+
+module.exports = {
+  userQuery,
+  getAllUsersQuery,
+  checkLoginQuery,
+  userFollowingQuery
+};

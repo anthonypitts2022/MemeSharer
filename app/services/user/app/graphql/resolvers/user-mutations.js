@@ -34,20 +34,21 @@ const axios = require("axios");
 // Models
 //---------------------------------
 const User = require("../../models/User-model.js");
+const Follower = require("../../models/Follower-model.js");
 
 //---------------------------------
 // Validation
 //---------------------------------
 const validateUserInput = require("../../validation/validateUserInput.js");
+const validateFollowerInput = require("../../validation/validateFollowerInput.js");
 
 //==============================================================================
-// BODY
+// Create User
 //==============================================================================
 
 // @access : Root
 // @desc   : Create a single user
 const createUserMutation = async (parent, { input }) => {
-  // TODO: Add perms
   // Validate the user input and return errors if any
   const { msg, isValid } = validateUserInput(input);
   if (!isValid) {
@@ -92,6 +93,52 @@ const createUserMutation = async (parent, { input }) => {
 
 
 //==============================================================================
+// Create Follower
+//==============================================================================
+
+// @access : Root
+// @desc   : Create a follower
+const createFollowerMutation = async (parent, { input }, {user} ) => {
+  // Validate the user input and return errors if any
+  const { msg, isValid } = validateFollowerInput(input);
+  if (!isValid) {
+    return handleErrors("001", msg);
+  }
+
+  try {
+
+    // Initiate the models by finding if the fields below exist
+    var followObjectCount = await Follower.countDocuments({
+      userFollowingId: user.id,
+      userBeingFollowedId: input.userBeingFollowedId
+    });
+    //if user is already follwing this user
+    if (followObjectCount!=0) return handleErrors("001",{follower: "Already Following"} );
+
+    //checks that user is not following more than 5,000 users
+    if(5000< (await Follower.countDocuments({userFollowingId:user.id})) ){
+      return handleErrors("001",{follower: "Attempting to surpass max following count"} );
+    }
+
+    // Create a user object based on the input
+    const newFollower = new Follower({
+      userFollowingId: user.id,
+      userBeingFollowedId: input.userBeingFollowedId
+    });
+
+    // Save the follower to the database
+    return newFollower.save();
+  } catch (err) {
+    logger.error(e.message);
+    // Database response after user has been created
+    if (user) {
+      return handleErrors("001", { follower: "failed to create follower" });
+    }
+  }
+};
+
+
+//==============================================================================
 // Delete All Users
 //==============================================================================
 
@@ -109,4 +156,8 @@ const deleteAllUsersMutation = async (parent, { isActual }, {user}) => {
 };
 
 
-module.exports = { createUserMutation, deleteAllUsersMutation };
+module.exports = {
+  createUserMutation,
+  deleteAllUsersMutation,
+  createFollowerMutation
+};
