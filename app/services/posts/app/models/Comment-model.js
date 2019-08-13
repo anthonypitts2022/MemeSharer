@@ -51,6 +51,10 @@ const CommentSchema = new Schema({
       type: String,
       required: true,
       description: "The text of the comment"
+    },
+    date: {
+      type: Date,
+      default: Date.now
     }
 });
 
@@ -64,7 +68,8 @@ CommentSchema.index({
   index: "text",
   userId: "text",
   postId: "text",
-  text: "text"
+  text: "text",
+  date: "text"
 });
 
 

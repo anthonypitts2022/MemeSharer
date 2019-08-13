@@ -40,6 +40,10 @@ const PostSchema = new Schema({
     caption: {
       type: String,
       description: "The post's caption"
+    },
+    date: {
+      type: Date,
+      default: Date.now
     }
 });
 
@@ -51,7 +55,8 @@ const PostSchema = new Schema({
 
 PostSchema.index({
   index: "text",
-  userId: "text"
+  userId: "text",
+  date: "text"
 });
 
 
