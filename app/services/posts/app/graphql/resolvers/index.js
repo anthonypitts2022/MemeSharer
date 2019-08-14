@@ -30,7 +30,9 @@ const {
   getAllPostsQuery,
   postLikeCountQuery,
   postDislikeCountQuery,
-  userPostsQuery
+  userPostsQuery,
+  getAPostQuery,
+  feedPostsQuery
 } = require("./posts-queries.js");
 
 
@@ -40,7 +42,8 @@ const {
   createPostMutation,
   createLikeMutation,
   createCommentMutation,
-  deleteAllCommentsMutation
+  deleteAllCommentsMutation,
+  deleteAllPostsMutation
 } = require("./posts-mutations.js");
 
 //==============================================================================
@@ -55,7 +58,9 @@ const Query = {
   getAllPosts: getAllPostsQuery,
   postLikeCount: postLikeCountQuery,
   postDislikeCount: postDislikeCountQuery,
-  userPosts: userPostsQuery
+  userPosts: userPostsQuery,
+  getAPost: getAPostQuery,
+  feedPosts: feedPostsQuery
 };
 
 //---------------------------------
@@ -66,7 +71,8 @@ const Mutation = {
   createPost: createPostMutation,
   createLike: createLikeMutation,
   createComment: createCommentMutation,
-  deleteAllComments: deleteAllCommentsMutation
+  deleteAllComments: deleteAllCommentsMutation,
+  deleteAllPosts: deleteAllPostsMutation
 };
 
 

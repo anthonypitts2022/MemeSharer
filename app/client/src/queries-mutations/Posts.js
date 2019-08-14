@@ -9,17 +9,14 @@ const Posts = () => (
     query={gql`
       {
         getAllPosts{
-          caption
-          id
           userId
+          id
+          caption
           likeCount
           dislikeCount
           comments{
             text
             userId
-            postId
-            id
-            userName
           }
         }
       }

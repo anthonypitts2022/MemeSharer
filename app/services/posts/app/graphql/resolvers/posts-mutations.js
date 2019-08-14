@@ -61,8 +61,6 @@ const validateLikeInput = require("../../validation/validateLikeInput.js");
 // @access : Private, User
 // @desc   : Create a Post Object
 const createPostMutation = async (parent, { input }, {user}) => {
-  //takes the userId from the jwt to reference post to user
-  input.userId = user.id;
   // Validate the Post input and return errors if any
   const { msg, isValid } = validatePostInput(input);
   if (!isValid) {
@@ -72,7 +70,7 @@ const createPostMutation = async (parent, { input }, {user}) => {
   try {
     // Create a Post object based on the input
     var newPost = new Post({
-      userId: input.userId,
+      userId: user.id,
       //picture: ,
       caption: input.caption
     });
@@ -226,9 +224,28 @@ const deleteAllCommentsMutation = async (parent, { isActual }, {user}) => {
 };
 
 
+//==============================================================================
+// Delete All Posts
+//==============================================================================
+
+// @access : Private, User
+// @desc   : Delete all Post Objects
+const deleteAllPostsMutation = async (parent, { isActual }, {user}) => {
+  try{
+    await Post.deleteMany();
+    return true;
+  } catch (err) {
+    // Database response after post has been created
+    console.log(err);
+    return false;
+  }
+};
+
+
 module.exports = {
   createPostMutation,
   createLikeMutation,
   createCommentMutation,
-  deleteAllCommentsMutation
+  deleteAllCommentsMutation,
+  deleteAllPostsMutation
 };

@@ -3,6 +3,8 @@ type Query {
   postLikeCount(postId: String!): String
   postDislikeCount(postId: String!): String
   userPosts: [Post]
+  getAPost(id: String!): Post
+  feedPosts(input: feedPostsInput): [Post]
 }
 
 type Mutation {
@@ -10,6 +12,7 @@ type Mutation {
   createLike(input: createLikeInput): Like
   createComment(input: createCommentInput): Comment
   deleteAllComments(isActual: Boolean!): Boolean
+  deleteAllPosts(isActual: Boolean!): Boolean
 }
 
 
@@ -56,6 +59,10 @@ type Comment {
 
 input createPostInput{
   caption: String
+}
+
+input feedPostsInput{
+  followerIds: [String]!
 }
 
 input createLikeInput{

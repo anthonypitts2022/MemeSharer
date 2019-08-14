@@ -82,6 +82,19 @@ const createUserMutation = async (parent, { input }) => {
 
     // Save the user to the database
     return newUser.save();
+
+
+
+    //make it so the user is following themself (so they can see their own posts)
+    const newFollower = new Follower({
+      userFollowingId: newUser.id,
+      userBeingFollowedId: newUser.id
+    });
+
+    // Save the follower to the database
+    return newFollower.save();
+
+
   } catch (err) {
     logger.info(`${err}`);
     // Database response after user has been created
@@ -120,7 +133,7 @@ const createFollowerMutation = async (parent, { input }, {user} ) => {
       return handleErrors("001",{follower: "Attempting to surpass max following count"} );
     }
 
-    // Create a user object based on the input
+    // Create a follower object based on the input
     const newFollower = new Follower({
       userFollowingId: user.id,
       userBeingFollowedId: input.userBeingFollowedId
