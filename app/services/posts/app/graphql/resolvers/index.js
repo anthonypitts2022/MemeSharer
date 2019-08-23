@@ -43,7 +43,8 @@ const {
   createLikeMutation,
   createCommentMutation,
   deleteAllCommentsMutation,
-  deleteAllPostsMutation
+  deleteAllPostsMutation,
+  uploadImageToServerMutation
 } = require("./posts-mutations.js");
 
 //==============================================================================
@@ -72,7 +73,8 @@ const Mutation = {
   createLike: createLikeMutation,
   createComment: createCommentMutation,
   deleteAllComments: deleteAllCommentsMutation,
-  deleteAllPosts: deleteAllPostsMutation
+  deleteAllPosts: deleteAllPostsMutation,
+  uploadImageToServer: uploadImageToServerMutation
 };
 
 

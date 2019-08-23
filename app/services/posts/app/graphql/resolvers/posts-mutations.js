@@ -26,12 +26,14 @@ const { handleErrors } = require("../../utils/handle-errors.js");
 const isMongodbid = require("../../utils/is-mongodbid");
 const config = require("../../../config/config.js");
 const { logger } = require("app-root-path").require("/config/logger.js");
-//gridfs to store files
-var Grid = require('gridfs-stream');
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
 var fs = require('fs');
-var testImgPath = "~/github/socialMediaFeedGeneric/testImg.jpg"
 const path = require("path");
 const axios = require("axios");
+const os = require('os');
+const shortid = require("shortid");
 
 //---------------------------------
 // Models
@@ -68,10 +70,13 @@ const createPostMutation = async (parent, { input }, {user}) => {
   }
 
   try {
+
+
     // Create a Post object based on the input
     var newPost = new Post({
       userId: user.id,
-      //picture: ,
+      fileId: input.fileId,
+      fileType: input.fileType,
       caption: input.caption
     });
     newPost.save();
@@ -224,6 +229,27 @@ const deleteAllCommentsMutation = async (parent, { isActual }, {user}) => {
 };
 
 
+
+//==============================================================================
+// Insert Image On Server
+//==============================================================================
+
+// @access : Public, User
+// @desc   : Insert the image file into the upload/images folder
+const uploadImageToServerMutation = async (parent, { input }, {user}) => {
+  try{
+    var fileWriter = new Writer();
+
+    input.image
+
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
+
 //==============================================================================
 // Delete All Posts
 //==============================================================================
@@ -247,5 +273,6 @@ module.exports = {
   createLikeMutation,
   createCommentMutation,
   deleteAllCommentsMutation,
-  deleteAllPostsMutation
+  deleteAllPostsMutation,
+  uploadImageToServerMutation
 };

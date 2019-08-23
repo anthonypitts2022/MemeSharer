@@ -9,6 +9,7 @@ const postsClient = new ApolloClient({
   uri: "http://localhost:3301/posts"
 });
 
+/*
 const getFollowerIds = () => ({
   idk: "idk"
 });
@@ -21,7 +22,7 @@ const getFeed = () => (
     </ApolloProvider>
   </li>
 );
-
+*/
 
 const Feed = () => (
   <li key="feed">

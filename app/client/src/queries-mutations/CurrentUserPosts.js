@@ -11,6 +11,7 @@ const Posts = () => (
         userPosts{
           id
           caption
+          imgPath
           userId
           likeCount
           dislikeCount

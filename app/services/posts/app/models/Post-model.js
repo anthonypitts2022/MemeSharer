@@ -44,6 +44,16 @@ const PostSchema = new Schema({
     date: {
       type: Date,
       default: Date.now
+    },
+    fileId: {
+      type: String,
+      required: true,
+      description: "The id of the post file content"
+    },
+    fileType: {
+      type: String,
+      required: true,
+      description: "The type (extension) of the post file content"
     }
 });
 
@@ -56,7 +66,9 @@ const PostSchema = new Schema({
 PostSchema.index({
   index: "text",
   userId: "text",
-  date: "text"
+  date: "text",
+  fileId: "text",
+  fileType: "text",
 });
 
 

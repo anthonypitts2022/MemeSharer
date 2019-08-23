@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
-import gql from 'graphql-tag';
 import AddLike from '../queries-mutations/AddLike.js';
 import AddComment from '../queries-mutations/AddComment.js';
+import axios from 'axios';
+
 
 
 
@@ -12,6 +13,8 @@ class PostBox extends Component {
     super(props);
 
     this.state = {
+      fileId: (typeof props.postInfo.fileId === 'undefined') ? "" : props.postInfo.fileId,
+      fileType: (typeof props.postInfo.fileType === 'undefined') ? "" : props.postInfo.fileType,
       likeCount: (typeof props.postInfo.likeCount === 'undefined') ? 0: props.postInfo.likeCount,
       dislikeCount: (typeof props.postInfo.dislikeCount === 'undefined') ? 0: props.postInfo.dislikeCount,
       caption: (typeof props.postInfo.caption === 'undefined') ? "" : props.postInfo.caption,
@@ -21,6 +24,8 @@ class PostBox extends Component {
     };
 
     this.handleAddCommentChange = this.handleAddCommentChange.bind(this);
+
+    console.log(this.state.fileType)
   }
 
   handleAddCommentChange(event) {
@@ -32,7 +37,7 @@ class PostBox extends Component {
       <div className="row">
         <div className="col-md-6 offset-md-3">
           <div className="card">
-            <img className="card-img-top" src="https://tinyurl.com/yxl6uy3s" width="200" height="200"></img>
+            <img className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
             <div className="card-body">
               <Mutation mutation={AddLike} variables={{"input": { "isLike":true, "postId": this.state.postId } }}>
                 {addLike => <button onClick={addLike} className="badge badge-pill badge-primary">Like</button>}
@@ -50,8 +55,8 @@ class PostBox extends Component {
               <div>
                 {this.state.comments.map(comment => (
                   <div key={comment.id}>
-                    <p className="card-text">{comment.userName + ": "}{comment.text}</p>
-                    <p></p>
+                    <p key={comment.id+"user"} className="card-text">{comment.userName + ": "}{comment.text}</p>
+                    <p key={comment.id+ "space"}></p>
                   </div>
                 ))}
               </div>

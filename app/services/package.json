@@ -21,8 +21,9 @@
     "concurrently": "^4.1.0"
   },
   "dependencies": {
-    "userservice": "file:user",
     "permsservice": "file:perms",
-    "postsservice": "file:posts"
+    "postsservice": "file:posts",
+    "shortid": "^2.2.14",
+    "userservice": "file:user"
   }
 }

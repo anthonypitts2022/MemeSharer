@@ -1,5 +1,6 @@
 //author: Yosimir Acosta
 
+
 const { addColors, createLogger, format, transports } = require("winston");
 const morgan = require("morgan");
 const fs = require("fs");
@@ -18,7 +19,6 @@ const logPaths = {
   app: path.join(logDir, "app.log"),
   http: path.join(logDir, "http.log")
 };
-
 
 // Set custom level logging
 const myCustomLevels = {

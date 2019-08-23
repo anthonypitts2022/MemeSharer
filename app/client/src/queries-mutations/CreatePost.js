@@ -1,23 +1,23 @@
-import React from 'react';
-import { Query, Mutation } from "react-apollo";
 import gql from "graphql-tag";
 
 
 const CreatePost = gql`
   mutation createPost($input: createPostInput){
     Post: createPost(input: $input){
-        errors{
-          msg
-        }
+      errors{
+        msg
+      }
+      fileId
+      fileType
+      userId
+      id
+      caption
+      likeCount
+      dislikeCount
+      comments{
+        text
         userId
-        id
-        caption
-        likeCount
-        dislikeCount
-        comments{
-          text
-          userId
-        }
+      }
     }
   }
 `;

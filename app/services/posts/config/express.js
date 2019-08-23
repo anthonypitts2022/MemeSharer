@@ -13,6 +13,7 @@ module.exports = function() {
   app.use(cookieParser());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
+  app.use(cors());
   createServer(app);
   return app;
 };

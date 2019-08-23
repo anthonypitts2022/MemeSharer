@@ -15,7 +15,7 @@ const CheckLogin = () => (
       if (loading) return <p>Loading...</p>;
       if (error) return <p>Error :(</p>;
       console.log(data.checkLogin);
-      if(data.checkLogin==true){
+      if(data.checkLogin===true){
         return(
           <p key="loginSuccess">Login Successful!</p>
         );

@@ -1,5 +1,5 @@
 require("module-alias/register");
-const { logger } = require("@lib/logger");
+const { logger } = require("../lib/logger");
 const config = require("./config");
 const mongoose = require("mongoose");
 mongoose.set('useFindAndModify', false);

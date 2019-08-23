@@ -13,6 +13,7 @@ type Mutation {
   createComment(input: createCommentInput): Comment
   deleteAllComments(isActual: Boolean!): Boolean
   deleteAllPosts(isActual: Boolean!): Boolean
+  uploadImageToServer(input: uploadImageInput): Boolean
 }
 
 
@@ -27,6 +28,8 @@ type Post {
   likeCount: String
   dislikeCount: String
   comments: [Comment]
+  fileId: String!
+  fileType: String!
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]
@@ -59,6 +62,8 @@ type Comment {
 
 input createPostInput{
   caption: String
+  fileId: String!
+  fileType: String!
 }
 
 input feedPostsInput{
@@ -73,6 +78,10 @@ input createLikeInput{
 input createCommentInput{
   text: String!
   postId: String!
+}
+
+input uploadImageInput{
+  image: String!
 }
 
 #===============================================================================

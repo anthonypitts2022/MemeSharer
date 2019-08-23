@@ -31,11 +31,20 @@ module.exports = function validatePostInput(data) {
 
   // Set the inputs to empty string if empty
   data.caption = !isEmpty(data.caption) ? data.caption : "";
+  data.fileId = !isEmpty(data.fileId) ? data.fileId : "";
+  data.fileType = !isEmpty(data.fileType) ? data.fileType : "";
 
 
   if (!Validator.isLength(data.caption, { max: 10000 })) {
     errors.caption = "Caption length must less than 10,000 characters";
   }
+  if (Validator.isEmpty(data.fileId)){
+    errors.fileId = "fileId is required"
+  }
+  if (Validator.isEmpty(data.fileType)){
+    errors.fileType = "fileType is required"
+  }
+
 
   return {
     msg: errors,

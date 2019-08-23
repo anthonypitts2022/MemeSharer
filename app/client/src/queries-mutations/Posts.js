@@ -9,6 +9,11 @@ const Posts = () => (
     query={gql`
       {
         getAllPosts{
+          errors{
+            msg
+          }
+          fileId
+          fileType
           userId
           id
           caption

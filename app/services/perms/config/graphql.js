@@ -1,5 +1,5 @@
 require("module-alias/register");
-const { logger } = require("@lib/logger");
+const { logger } = require("../lib/logger");
 const fs = require("fs");
 const config = require("./config");
 const bodyParser = require("body-parser");
