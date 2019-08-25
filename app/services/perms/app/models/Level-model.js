@@ -34,7 +34,6 @@ const LevelSchema = new Schema({
     },
     name: {
       type: String,
-      required: true,
       description: "The name of the level."
     }
 });

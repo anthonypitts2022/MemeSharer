@@ -38,7 +38,6 @@ const LevelAccessSchema = new Schema({
     },
     functionality: {
       type: String,
-      required: true,
       description: "A functionality that a user has access to"
     }
 });

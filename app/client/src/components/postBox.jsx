@@ -25,7 +25,6 @@ class PostBox extends Component {
 
     this.handleAddCommentChange = this.handleAddCommentChange.bind(this);
 
-    console.log(this.state.fileType)
   }
 
   handleAddCommentChange(event) {

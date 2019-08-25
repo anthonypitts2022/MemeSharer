@@ -33,17 +33,14 @@ const UserShema = new Schema({
   },
   name: {
     type: String,
-    required: true,
     text: true
   },
   email: {
     type: String,
-    required: true,
     text: true
   },
   password: {
     type: String,
-    required: true
   },
   date: {
     type: Date,

@@ -29,7 +29,6 @@ module.exports = function validateCommentInput(data) {
   let errors = {};
 
   // Set the inputs to empty string if empty
-  data.userId = !isEmpty(data.userId) ? data.userId : "";
   data.postId = !isEmpty(data.postId) ? data.postId : "";
   data.text = !isEmpty(data.text) ? data.text : "";
 
@@ -42,9 +41,6 @@ module.exports = function validateCommentInput(data) {
   }
 
 
-  if (!Validator.isLength(data.userId, { max: 20 })) {
-    errors.userId = "length must less than 20 characters";
-  }
   if (!Validator.isLength(data.postId, { max: 20 })) {
     errors.postId = "length must less than 20 characters";
   }

@@ -16,9 +16,9 @@ type Mutation {
 #===============================================================================
 
 type LevelAccess {
-  id: ID!
-  levelId: String!
-  functionality: String!
+  id: ID
+  levelId: String
+  functionality: String
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]
@@ -29,8 +29,8 @@ type LevelAccess {
 #===============================================================================
 
 type Level {
-  id: ID!
-  name: String!
+  id: ID
+  name: String
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]
@@ -42,10 +42,10 @@ type Level {
 #===============================================================================
 
 type AccessTo {
-  id: ID!
-  uni: String!
-  functionality: String!
-  levelId: String!
+  id: ID
+  uni: String
+  functionality: String
+  levelId: String
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]

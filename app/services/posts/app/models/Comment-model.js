@@ -34,22 +34,18 @@ const CommentSchema = new Schema({
     },
     userId: {
       type: String,
-      required: true,
       description: "The id of the user connected to that post."
     },
     userName: {
       type: String,
-      required: true,
       description: "The name of the user connected to that post."
     },
     postId: {
       type: String,
-      required: true,
       description: "The id of the post connected to that post."
     },
     text: {
       type: String,
-      required: true,
       description: "The text of the comment"
     },
     date: {

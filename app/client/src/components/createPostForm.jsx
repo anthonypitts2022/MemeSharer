@@ -42,6 +42,12 @@ class CreatePostForm extends Component {
   }
 
   handleSubmit(event) {
+    //resizes image file
+    console.log(this.state.selectedFile);
+    var reader = new FileReader();
+
+
+
     //uploads file to server
     var fileData = new FormData();
     fileData.append('file', this.state.selectedFile);

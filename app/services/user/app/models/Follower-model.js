@@ -33,12 +33,10 @@ const FollowerShema = new Schema({
   },
   userFollowingId: {
     type: String,
-    required: true,
     text: true
   },
   userBeingFollowedId: {
     type: String,
-    required: true,
     text: true
   }
 });

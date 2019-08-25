@@ -34,7 +34,6 @@ const PostSchema = new Schema({
     },
     userId: {
       type: String,
-      required: true,
       description: "The id of the user connected to that post."
     },
     caption: {
@@ -47,12 +46,10 @@ const PostSchema = new Schema({
     },
     fileId: {
       type: String,
-      required: true,
       description: "The id of the post file content"
     },
     fileType: {
       type: String,
-      required: true,
       description: "The type (extension) of the post file content"
     }
 });

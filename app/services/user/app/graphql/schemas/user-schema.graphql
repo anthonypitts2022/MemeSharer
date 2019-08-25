@@ -16,10 +16,10 @@ type Mutation {
 #===============================================================================
 
 type User {
-  id: ID!
-  name: String!
+  id: ID
+  name: String
   email: String
-  password: String!
+  password: String
   errors: Error
   success: Success
   active: Boolean
@@ -31,9 +31,9 @@ type User {
 #===============================================================================
 
 type Follower {
-  id: ID!
-  userFollowingId: String!
-  userBeingFollowedId: String!
+  id: ID
+  userFollowingId: String
+  userBeingFollowedId: String
   errors: Error
   success: Success
   active: Boolean

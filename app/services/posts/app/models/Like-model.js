@@ -34,17 +34,14 @@ const LikeSchema = new Schema({
     },
     userId: {
       type: String,
-      required: true,
       description: "The id of the user connected to that post."
     },
     postId: {
       type: String,
-      required: true,
       description: "The id of the post connected to that post."
     },
     isLike: {
       type: Boolean,
-      required: true,
       description: "If true, like. If False, dislike"
     }
 });

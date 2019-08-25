@@ -22,35 +22,35 @@ type Mutation {
 #===============================================================================
 
 type Post {
-  id: ID!
-  userId: String!
+  id: ID
+  userId: String
   caption: String
   likeCount: String
   dislikeCount: String
   comments: [Comment]
-  fileId: String!
-  fileType: String!
+  fileId: String
+  fileType: String
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]
 }
 
 type Like {
-  id: ID!
-  userId: String!
-  postId: String!
-  isLike: Boolean!
+  id: ID
+  userId: String
+  postId: String
+  isLike: Boolean
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]
 }
 
 type Comment {
-  id: ID!
-  userId: String!
-  userName: String!
-  postId: String!
-  text: String!
+  id: ID
+  userId: String
+  userName: String
+  postId: String
+  text: String
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]

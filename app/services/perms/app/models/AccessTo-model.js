@@ -34,17 +34,14 @@ const AccessToSchema = new Schema({
     },
     uni: {
       type: String,
-      required: true,
       description: "The User's uni"
     },
     functionality: {
       type: String,
-      required: true,
       description: "A functionality that a user has access to"
     },
     levelId: {
       type: String,
-      required: true,
       description: "LevelId of corresponding level that has access to this functionality."
     }
 
