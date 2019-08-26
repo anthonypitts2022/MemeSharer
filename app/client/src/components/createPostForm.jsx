@@ -20,7 +20,8 @@ class CreatePostForm extends Component {
     super(props);
 
     this.state = {
-      selectedFile: null
+      selectedFile: null,
+      errors: [],
     };
 
     //bindings
@@ -40,6 +41,8 @@ class CreatePostForm extends Component {
   }
 
   handleSubmit(event) {
+    //bindings
+    createPost = createPost.bind(this);
 
     //uploads file to server
     var fileData = new FormData();
@@ -57,8 +60,9 @@ class CreatePostForm extends Component {
         if(newPost.errors==null){
           window.location.href = "/";
         }
+        //if errors were returned, then store them in errors field in the state
         else{
-          console.log(newPost);
+          this.setState({errors: newPost.errors.split("; ") });
         }
       }
       catch(err) {
@@ -66,6 +70,7 @@ class CreatePostForm extends Component {
       }
     }
   }
+
 
   render(){
     return(
@@ -93,6 +98,14 @@ class CreatePostForm extends Component {
                   </form>
                 </div>
                 <a type="submit" onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Submit</a>
+                <div>
+                  {this.state.errors.map(error => (
+                    <div key={error+"splitErrors"} >
+                      <p key={error+"break"} ></p>
+                      <div key={error} className="alert alert-danger" >{error}</div>
+                    </div>
+                  ))}
+                </div>
              </div>
           </div>
        </div>
