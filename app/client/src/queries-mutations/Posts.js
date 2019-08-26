@@ -22,6 +22,8 @@ const Posts = () => (
           comments{
             text
             userId
+            id
+            userName
           }
         }
       }
