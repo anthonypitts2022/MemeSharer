@@ -17,7 +17,6 @@ const port = process.env.PORT || 3301;
 
 //============  Uploading images with posts   ====================//
 
-
 app.route('/upload').post(function(req, res) {
 
   //generates the image file id
@@ -28,25 +27,39 @@ app.route('/upload').post(function(req, res) {
         cb(null, "uploads")
       },
       filename: function (req, file, cb) {
-        cb(null, fileId + path.extname(file.originalname) )
+        //console.log(file);
+        //if no file was provided
+        //if(file==undefined){
+        //  cb(null, null);
+        //}
+        //else{
+          cb(null, fileId + path.extname(file.originalname) );
+        //}
       }
   });
 
   var upload = multer({ storage: storage }).single('file');
 
-
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
-       return res.status(500).json(err)
+       res.status(500).send({errors: err});
     } else if (err) {
        console.log(err)
-       return res.status(500).json(err)
+       res.status(500).send({errors: err});
     }
+    //if no file was provided/uploaded
+    if(req.file==undefined){
+      return res.status(200).send({errors: "Post must include a file. No file was provided."})
+    }
+
+    //if no errors on uploading file, proceed to create post
+
     //calls create post database mutation
-    const fetch = createApolloFetch({
+    var fetch = createApolloFetch({
       uri: "http://localhost:3301/posts"
     });
-
+    //binds the res of upload to fetch to return the fetch data
+    fetch = fetch.bind(res)
     fetch({
       query:
       `
@@ -76,16 +89,12 @@ app.route('/upload').post(function(req, res) {
            fileType : path.extname(req.file.originalname)
          }
       }
-    })
-    .then(res => {
-      //res.data holds the data returned from the createPost mutation
-      //console.log(res.data);
-    })
-
-    //return a good 200 status with the file
-    return res.status(200).send(req.file)
   })
-
+  .then(result => {
+    //result.data holds the data returned from the createPost mutation
+    return res.status(200).send(result.data.Post);
+  })
+  })
 });
 
 //=========================================================================//

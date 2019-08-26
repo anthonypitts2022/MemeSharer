@@ -7,9 +7,7 @@ import CreatePost from '../queries-mutations/CreatePost.js';
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import axios from 'axios';
-var multer = require('multer');
 const { createApolloFetch } = require('apollo-fetch');
-const shortid = require("shortid");
 
 
 const postsClient = new ApolloClient({
@@ -42,19 +40,31 @@ class CreatePostForm extends Component {
   }
 
   handleSubmit(event) {
-    //resizes image file
-    console.log(this.state.selectedFile);
-    var reader = new FileReader();
-
-
 
     //uploads file to server
     var fileData = new FormData();
     fileData.append('file', this.state.selectedFile);
     fileData.append('caption', this.state.caption);
+    createPost(fileData);
+    async function createPost( fileData ) {
+      try{
+        var response = await axios.post("http://localhost:3301/upload", fileData);
 
-    axios.post("http://localhost:3301/upload", fileData);
-    window.location.href = "/";
+        //newPost holds the data of the newly created post
+        var newPost = response.data;
+
+        //if no errors when creating post
+        if(newPost.errors==null){
+          window.location.href = "/";
+        }
+        else{
+          console.log(newPost);
+        }
+      }
+      catch(err) {
+        console.log(err);
+      }
+    }
   }
 
   render(){
