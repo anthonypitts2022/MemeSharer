@@ -99,6 +99,93 @@ app.route('/upload').post(function(req, res) {
 
 //=========================================================================//
 
+//============  create like mutation call   ====================//
+
+app.route('/createlike').post(function(req, res) {
+
+  //calls create like database mutation
+  var fetch = createApolloFetch({
+    uri: "http://localhost:3301/posts"
+  });
+  //binds the res of upload to fetch to return the fetch data
+  fetch = fetch.bind(res)
+  fetch({
+    query:
+    `
+      mutation createLike($input: createLikeInput){
+        Like: createLike(input: $input){
+          errors{
+            msg
+          }
+          id
+          userId
+          postId
+          isLike
+        }
+      }
+    `,
+    variables: {
+      input: {
+        isLike: req.body.input.isLike,
+        postId: req.body.input.postId
+      }
+    }
+  })
+  .then(result => {
+    //result.data holds the data returned from the createLike mutation
+    return res.status(200).send(result.data.Like);
+  })
+});
+
+//=========================================================================//
+
+//============  get Post mutation call   ====================//
+
+app.route('/querypost').post(function(req, res) {
+
+
+  //calls create like database mutation
+  var fetch = createApolloFetch({
+    uri: "http://localhost:3301/posts"
+  });
+  //binds the res of upload to fetch to return the fetch data
+  fetch = fetch.bind(res)
+  fetch({
+    query:
+    `
+    query getAPost($input: getPostInput!){
+      Post: getAPost(input: $input){
+        errors{
+          msg
+        }
+        fileId
+        fileType
+        userId
+        id
+        caption
+        likeCount
+        dislikeCount
+        comments{
+          text
+          userId
+        }
+      }
+    }
+    `,
+    variables: {
+      input: {
+        postId: req.body.input.postId
+      }
+    }
+  })
+  .then(result => {
+    //result.data.Post holds the data returned from the getAPost mutation
+    return res.status(200).send(result.data.Post);
+  })
+});
+
+//=========================================================================//
+
 //============  Serving files of posts   ====================//
 
 

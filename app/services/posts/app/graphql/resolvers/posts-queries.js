@@ -97,9 +97,9 @@ const userPostsQuery = async (root, { args }, {user}) => {
 };
 
 
-const getAPostQuery = async (root, { id } ) => {
+const getAPostQuery = async (root, { input } ) => {
   try{
-    var post = await Post.findById(id);
+    var post = await Post.findById(input.postId);
 
      //check if post does not exist
      if(!post){
@@ -170,6 +170,7 @@ const feedPostsQuery = async (root, { input }, {user} ) => {
 
 
 module.exports = {
+  getAPostQuery,
   getAllPostsQuery,
   postLikeCountQuery,
   postDislikeCountQuery,
