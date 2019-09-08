@@ -1,4 +1,19 @@
-To create a new database and user for that database:
+-------   Installing mongoDB ----------
+
+1.  sudo apt-get install -y mongodb
+2.  mongo
+          >use admin
+          >db.createUser(
+          >{
+          >user: "myUserAdmin",
+          >pwd: "abc123",
+          >roles: [ { role: "userAdminAnyDatabase", db: "admin" }, "readWriteAnyDatabase" ]
+          >}
+          >)
+
+
+
+To create social media database and user for that database:
 
 mongo admin -u myUserAdmin -p abc123
 
