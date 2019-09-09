@@ -2,4 +2,5 @@
 /node_modules
 /config/env/
 /log/
-uploads/
+uploads/*
+!uploads/sampleImage_id.jpg
