@@ -1,14 +1,12 @@
 type Query {
-  user(email: String!): User
+  user(username: String!): User
+  searchIfUserExist(username: String!): User
   users: [User]
-  checkLogin(input: LoginInput): Boolean
-  userFollowing: [String]
+  googleLogin(googleEmail: String!): User
 }
 
 type Mutation {
   createUser(input: CreateUserInput): User
-  deleteAllUsers(isActual: Boolean!): Boolean
-  createFollower(input: CreateFollowerInput): Follower
 }
 
 #===============================================================================
@@ -16,48 +14,42 @@ type Mutation {
 #===============================================================================
 
 type User {
-  id: ID
-  name: String
+  id: ID!
+  username: String!
+  firstName: String
+  lastName: String
   email: String
-  password: String
+  phoneNumber: String
+  address: String
+  address2: String
+  userType: String
+  userRole: String
   errors: Error
   success: Success
+  checkinOption: Boolean
   active: Boolean
   bulkAddReport: [BulkAddReport]
-}
-
-#===============================================================================
-# Follower
-#===============================================================================
-
-type Follower {
-  id: ID
-  userFollowingId: String
-  userBeingFollowedId: String
-  errors: Error
-  success: Success
-  active: Boolean
-  bulkAddReport: [BulkAddReport]
+  loginExp: String
 }
 
 #--------------------------------------
 # Inputs
 #--------------------------------------
-
 input CreateUserInput {
-  name: String!
-  email: String!
-  password: String!
-  password2: String!
-}
-
-input LoginInput {
-  email: String!
-  password: String!
-}
-
-input CreateFollowerInput {
-  userBeingFollowedId: String!
+  username: String!
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  department: String
+  address: String
+  address2: String
+  userType: String
+  userRole: String
+  notifyUser: Boolean
+  password: String
+  password2: String
+  checkinOption: Boolean
 }
 
 #===============================================================================

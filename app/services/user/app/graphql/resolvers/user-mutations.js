@@ -8,8 +8,9 @@
 //==============================================================================
 /*
 !Title : user-Mutation
-!Auth  : aep2195
+!Auth  : ya2369
 !Vers  : 1.0
+!Date  : 6/24;/19 *Last Mod
 !Desc  : Contains All mutations for Users
 */
 
@@ -29,44 +30,57 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const axios = require("axios");
 
-
 //---------------------------------
 // Models
 //---------------------------------
-const User = require("../../models/User-model.js");
-const Follower = require("../../models/Follower-model.js");
+const Users = require("../../models/User-model.js");
 
 //---------------------------------
 // Validation
 //---------------------------------
 const validateUserInput = require("../../validation/validateUserInput.js");
-const validateFollowerInput = require("../../validation/validateFollowerInput.js");
 
 //==============================================================================
-// Create User
+// BODY
 //==============================================================================
 
 // @access : Root
 // @desc   : Create a single user
 const createUserMutation = async (parent, { input }) => {
+  // TODO: Add perms
   // Validate the user input and return errors if any
   const { msg, isValid } = validateUserInput(input);
   if (!isValid) {
+    msg.showNoUser = true;
     return handleErrors("001", msg);
   }
 
   // Initiate the models by finding if the fields below exist
-  var userCount = await User.countDocuments({ email: input.email });
-
+  let user = await Users.findOne({
+    username: input.username
+  });
+  let userEmail = await Users.findOne({
+    email: input.email
+  });
   try {
-
-    if (userCount!=0) return handleErrors("001",{email: "User already exists!"} );
+    // Throw errors if the conditions are met
+    if (user) throw "User already exists!";
+    if (userEmail) throw "User with same email already exists!";
 
     // Create a user object based on the input
-    const newUser = new User({
+    const newUser = new Users({
+      username: input.username,
+      firstName: input.firstName,
+      lastName: input.lastName,
       email: input.email,
-      name: input.name,
-      password: input.password
+      phoneNumber: input.phoneNumber,
+      address: input.address,
+      address2: input.address2,
+      userType: input.userType,
+      userRole: input.userRole,
+      checkinOption: input.checkinOption,
+      // If no password was inserted, then create a password
+      password: input.password ? input.password : generatePassword(8)
     });
 
     // Encrypt the user password
@@ -78,99 +92,37 @@ const createUserMutation = async (parent, { input }) => {
         resolve(hash);
       });
     });
-    newUser.password = hashedPassword;
+
+    // Notify new user email creation if notify user is enables
+    // create the send email functionality
+
+    if (newUser.checkinOption) {
+      const sendEmail = async emailVars => {
+        let send = await axios.post(
+          config.emailHost + "/user/account-creation",
+          emailVars
+        );
+      };
+      // Set the variabales being sent to the email service
+      const emailInfo = { firstName: newUser.firstName, email: newUser.email };
+      // Send the email along with the vars
+      sendEmail(emailInfo);
+    }
+    // TODO: Log  user creation and the current logged in user that created the user
 
     // Save the user to the database
     return newUser.save();
-
-
-
-    //make it so the user is following themself (so they can see their own posts)
-    const newFollower = new Follower({
-      userFollowingId: newUser.id,
-      userBeingFollowedId: newUser.id
-    });
-
-    // Save the follower to the database
-    return newFollower.save();
-
-
   } catch (err) {
     logger.info(`${err}`);
     // Database response after user has been created
     if (user) {
-      return handleErrors("001", { email: "User already exists!" });
+      return handleErrors("001", { username: err, showNoUser: true });
+    }
+    if (userEmail) {
+      return handleErrors("001", { email: err, showNoUser: true });
     }
   }
 };
-
-
-//==============================================================================
-// Create Follower
-//==============================================================================
-
-// @access : Root
-// @desc   : Create a follower
-const createFollowerMutation = async (parent, { input }, {user} ) => {
-  // Validate the user input and return errors if any
-  const { msg, isValid } = validateFollowerInput(input);
-  if (!isValid) {
-    return handleErrors("001", msg);
-  }
-
-  try {
-
-    // Initiate the models by finding if the fields below exist
-    var followObjectCount = await Follower.countDocuments({
-      userFollowingId: user.id,
-      userBeingFollowedId: input.userBeingFollowedId
-    });
-    //if user is already follwing this user
-    if (followObjectCount!=0) return handleErrors("001",{follower: "Already Following"} );
-
-    //checks that user is not following more than 5,000 users
-    if(5000< (await Follower.countDocuments({userFollowingId:user.id})) ){
-      return handleErrors("001",{follower: "Attempting to surpass max following count"} );
-    }
-
-    // Create a follower object based on the input
-    const newFollower = new Follower({
-      userFollowingId: user.id,
-      userBeingFollowedId: input.userBeingFollowedId
-    });
-
-    // Save the follower to the database
-    return newFollower.save();
-  } catch (err) {
-    logger.error(e.message);
-    // Database response after user has been created
-    if (user) {
-      return handleErrors("001", { follower: "failed to create follower" });
-    }
-  }
-};
-
-
-//==============================================================================
-// Delete All Users
-//==============================================================================
-
-// @access : Private, User
-// @desc   : Delete all Users Objects
-const deleteAllUsersMutation = async (parent, { isActual }, {user}) => {
-  try{
-    await User.deleteMany();
-    return true;
-  } catch (err) {
-    // Database response after post has been created
-    console.log(err);
-    return false;
-  }
-};
-
-
 module.exports = {
-  createUserMutation,
-  deleteAllUsersMutation,
-  createFollowerMutation
+  createUserMutation
 };

@@ -8,8 +8,9 @@
 //==============================================================================
 /*
 !Title : User-model
-!Auth  : Anthony Pitts
+!Auth  : mambanerd
 !Vers  : 1.0
+!Date  : 6/20/19 *Last Mod
 !Desc  : Sets up the user schema
 */
 
@@ -17,44 +18,79 @@
 // HEAD
 //==============================================================================
 
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const shortid = require("shortid");
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 //==============================================================================
 // BODY
 //==============================================================================
 
 const UserShema = new Schema({
-  _id: {
+  //Required
+  username: {
     type: String,
-    default: shortid.generate,
-    description: "The User's id"
+    required: true,
+    text: true
   },
-  name: {
+  firstName: {
     type: String,
+    required: true,
+    text: true
+  },
+  lastName: {
+    type: String,
+    required: true,
     text: true
   },
   email: {
     type: String,
-    text: true
+    required: true
   },
+  phoneNumber: {
+    type: Number,
+    required: true
+  },
+  address: {
+    type: String
+  },
+  address2: {
+    type: String
+  },
+  userType: {
+    type: String,
+    required: true
+  },
+  userType: {
+    type: String,
+    required: true
+  },
+  userRole: {
+    type: String,
+    required: true
+  },
+
   password: {
     type: String,
+    required: true
+  },
+  checkinOption: {
+    type: Boolean,
+    required: true
   },
   date: {
     type: Date,
     default: Date.now
   }
-});
+})
 
 //==============================================================================
 // !EXPORT
 //==============================================================================
 
 UserShema.index({
-  index: "text",
-  name: "text",
-  email: "text"
-});
-module.exports = User = mongoose.model("User", UserShema);
+  index: 'text',
+  firstName: 'text',
+  lastName: 'text',
+  email: 'text'
+})
+module.exports = user = mongoose.model('User', UserShema)

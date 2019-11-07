@@ -75,13 +75,7 @@ const createServer = async app => {
 
       // Set the user information based on the token
       // we will decrypt the jwt token and get the contents
-      var user = getUser(token);
-      if(user==null){
-        user = {
-          id: "123",
-          name: "Anthony Pitts"
-        };
-      }
+      const user = getUser(token);
 
       return {
         req,

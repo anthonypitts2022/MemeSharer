@@ -8,8 +8,9 @@
 //==============================================================================
 /*
 Title: Index resolver
-Auth: Anthony Pitts
+Auth: ya2369
 Vers: 1.1
+date: 7/28/19 *Last ModBODY
 desc: Main resolvers component
 note: Remember to export the query types resolver!
 */
@@ -19,37 +20,26 @@ note: Remember to export the query types resolver!
 //==============================================================================
 
 //---------------------------------
+// Models
+//---------------------------------
+const Users = require("../../models/User-model.js");
+//---------------------------------
 // Query library import
-/*
-  @Description:
-  Imports all Query libraries
-  This only handles queries!
-*/
 //---------------------------------
 
 // User Queries Library
 const {
   userQuery,
-  getAllUsersQuery,
-  checkLoginQuery,
-  userFollowingQuery
+  usersQuery,
+  googleLoginQuery
 } = require("./user-queries.js");
 
 //---------------------------------
 // Mutations libraies import
-/*
-  @Description:
-  Imports all Mutation libraries
-  This only handles Mutations!
-*/
 //---------------------------------
 
 // User Mutation Library
-const {
-  createUserMutation,
-  deleteAllUsersMutation,
-  createFollowerMutation
-} = require("./user-mutations.js");
+const { createUserMutation } = require("./user-mutations.js");
 
 //==============================================================================
 // BODY
@@ -61,9 +51,8 @@ const {
 
 const Query = {
   user: userQuery,
-  users: getAllUsersQuery,
-  checkLogin: checkLoginQuery,
-  userFollowing: userFollowingQuery
+  users: usersQuery,
+  googleLogin: googleLoginQuery
 };
 
 //---------------------------------
@@ -71,9 +60,7 @@ const Query = {
 //---------------------------------
 
 const Mutation = {
-  createUser: createUserMutation,
-  deleteAllUsers: deleteAllUsersMutation,
-  createFollower: createFollowerMutation
+  createUser: createUserMutation
 };
 
 //==============================================================================
