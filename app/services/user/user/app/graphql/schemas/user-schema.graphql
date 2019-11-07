@@ -1,0 +1,70 @@
+type Query {
+  user(username: String!): User
+  searchIfUserExist(username: String!): User
+  users: [User]
+  googleLogin(googleEmail: String!): User
+}
+
+type Mutation {
+  createUser(input: CreateUserInput): User
+}
+
+#===============================================================================
+# Users
+#===============================================================================
+
+type User {
+  id: ID!
+  username: String!
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  address: String
+  address2: String
+  userType: String
+  userRole: String
+  errors: Error
+  success: Success
+  checkinOption: Boolean
+  active: Boolean
+  bulkAddReport: [BulkAddReport]
+  loginExp: String
+}
+
+#--------------------------------------
+# Inputs
+#--------------------------------------
+input CreateUserInput {
+  username: String!
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  department: String
+  address: String
+  address2: String
+  userType: String
+  userRole: String
+  notifyUser: Boolean
+  password: String
+  password2: String
+  checkinOption: Boolean
+}
+
+#===============================================================================
+# Messages
+#===============================================================================
+
+type Error {
+  msg: String
+}
+
+type Success {
+  msg: String
+}
+
+type BulkAddReport {
+  msg: String
+  val: String
+}
