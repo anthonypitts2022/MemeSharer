@@ -5,48 +5,58 @@ import gql from 'graphql-tag';
 import CheckLogin from '../queries-mutations/CheckLogin.js'
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import GoogleLogin from "react-google-login";
 
 const userClient = new ApolloClient({
   uri: "http://localhost:3302/user"
 });
+
 
 class LoginForm extends Component {
 
   constructor(props){
     super(props);
 
-    this.state = {
-
-    };
+    this.state = {};
 
     //bindings
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onSignIn = this.onSignIn.bind(this);
+
 
   }
 
-  handleSubmit(event){
-    var submitPage = (
-      <div>
-        <p>Hey</p>
-        <ApolloProvider client={userClient}>
-          <CheckLogin variables={{"input": { "email": this.state.email, "password": this.state.password } }}/>
-        </ApolloProvider>
-      </div>
-    );
-    ReactDOM.render(submitPage, document.getElementById('root'));
+  componentDidMount() {
+    gapi.signin2.render('g-signin2', {
+      'scope': 'https://www.googleapis.com/auth/plus.login',
+      'width': 200,
+      'height': 50,
+      'longtitle': true,
+      'theme': 'dark',
+      'onsuccess': this.onSignIn
+    });
   }
-  handleEmailChange(event) {
-    this.setState({email: event.target.value});
+
+  onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    this.setState({email: profile.getEmail()});
   }
-  handlePasswordChange(event) {
-    this.setState({password: event.target.value});
-  }
+
+
 
   render(){
     return(
       <div>
+       <a>
+         <meta name="google-signin-scope" content="profile email"></meta>
+         <meta name="google-signin-client_id" content="476731474183-4tm8h88lu6tnba05q3e81ommb9g1t1oc.apps.googleusercontent.com"></meta>
+         <script src="https://apis.google.com/js/platform.js" async defer></script>
+       </a>
        <div className="container">
           <div className="col-md-6 mx-auto text-center">
              <div className="jumbotron">
@@ -54,43 +64,25 @@ class LoginForm extends Component {
                    Create, Share, Explore Memes
                 </h1>
                 <p className="wv-heading--subtitle">
-                   Sign in today.
+                   Sign in with Google today.
                 </p>
              </div>
           </div>
           <div className="row">
              <div className="col-md-4 mx-auto">
-                <div className="myform form ">
-                   <form name="signup">
-                      <div className="form-group">
-                         <input onChange={this.handleEmailChange} type="email" name="email"  className="form-control my-input" id="email" placeholder="Email" />
-                      </div>
-                      <div className="form-group">
-                         <input onChange={this.handlePasswordChange} type="password" name="password"  className="form-control" id="password" placeholder="Password" />
-                      </div>
-                  </form>
-                </div>
-                <button onClick={this.handleSubmit} type="submit" className="btn btn-lg btn-primary btn-block ">Sign In</button>
+                <div className="g-signin2" data-onsuccess="onSignIn"></div>
                 <div className="col-md-12 ">
                    <div className="login-or">
                       <hr className="hr-or" />
-                      <span className="span-or">or</span>
                    </div>
                 </div>
-                <div className="form-group">
-                   <input type="image" src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"/>
-                </div>
-                <p className="small mt-3">By signing up, you are indicating that you have read and agree to the <a href="" className="ps-hero__content__link">Terms of Use</a> and <a href="#">Privacy Policy</a>.
-                </p>
-             </div>
+               <p className="small mt-3">By signing in, you are indicating that you have read and agree to the <a href="" className="ps-hero__content__link">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
           </div>
        </div>
     </div>
+    </div>
     );
   }
-
-
-
 }
 
 export default LoginForm;
