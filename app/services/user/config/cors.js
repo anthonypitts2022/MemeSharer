@@ -1,7 +1,8 @@
 const allowedOrigins = [
   'http://localhost',
   'http://localhost:2500',
-  'http://localhost:2501'
+  'http://localhost:2501',
+  'http://localhost:3000',
 ]
 
 const corsConfig = {

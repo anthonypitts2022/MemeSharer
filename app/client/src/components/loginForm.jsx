@@ -12,7 +12,7 @@ import axios from 'axios';
 
 
 const userClient = new ApolloClient({
-  uri: "http://localhost:3302/user"
+  uri: "http://localhost:3002/user"
 });
 
 
@@ -37,8 +37,8 @@ class LoginForm extends Component {
         var variables={"input": { "googleEmail": response.profileObj.email } };
 
         //call add like mutation
-        var loginUserResponse = await axios.post("http://localhost:3302/login", variables);
-
+        var loginUserResponse = await axios.post("http://localhost:3002/login", variables);
+        console.log(loginUserResponse);
         //newLike holds the data of the newly created like
         var newUser = loginUserResponse.data;
         console.log(newUser);

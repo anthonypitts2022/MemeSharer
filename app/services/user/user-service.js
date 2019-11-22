@@ -17,7 +17,7 @@ app.route('/login').post(function(req, res) {
 
   //calls database mutation
   var fetch = createApolloFetch({
-    uri: "http://localhost:3302/user"
+    uri: "http://localhost:3002/user"
   });
   //binds the res of upload to fetch to return the fetch data
   fetch = fetch.bind(res)
@@ -34,9 +34,7 @@ app.route('/login').post(function(req, res) {
     }
     `,
     variables: {
-      input: {
-        isLike: req.body.input.googleEmail,
-      }
+      googleEmail: req.body.input.googleEmail,
     }
   })
   .then(result => {
