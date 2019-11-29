@@ -3,7 +3,8 @@ import { Query, Mutation } from 'react-apollo';
 import AddLike from '../queries-mutations/AddLike.js';
 import AddComment from '../queries-mutations/AddComment.js';
 import axios from 'axios';
-
+import { UserConsumer } from '../contexts/UserContext.js';
+import UserContext from '../contexts/UserContext.js';
 
 
 
@@ -114,7 +115,6 @@ class PostBox extends Component {
               <button onClick={this.handleDislikeClick} className="badge badge-pill badge-danger">Dislike</button>
               <span className="badge badge-success">{this.state.dislikeCount}</span>
 
-
               <h5 className="card-title">{this.state.caption}</h5>
 
               <div>
@@ -143,9 +143,8 @@ class PostBox extends Component {
       </div>
     );
   }
-
-
-
 }
+
+PostBox.contextType = UserContext;
 
 export default PostBox;

@@ -14,11 +14,11 @@ type Mutation {
 #===============================================================================
 
 type User {
-  id: ID!
-  username: String!
+  id: ID
+  username: String
   firstName: String
   lastName: String
-  email: String
+  email: String!
   phoneNumber: String
   address: String
   address2: String

@@ -9,6 +9,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import GoogleLogin from "react-google-login";
 import axios from 'axios';
+import UserContext from '../contexts/UserContext.js';
 
 
 const userClient = new ApolloClient({
@@ -21,27 +22,32 @@ class LoginForm extends Component {
   constructor(props){
     super(props);
 
-    this.state = {};
 
     //bindings
     this.responseGoogle = this.responseGoogle.bind(this);
 
   }
 
+
   responseGoogle(response) {
     signIn = signIn.bind(this);
     signIn(response);
     async function signIn(response) {
       try{
-        console.log(response);
         var variables={"input": { "googleEmail": response.profileObj.email } };
 
         //call add like mutation
         var loginUserResponse = await axios.post("http://localhost:3002/login", variables);
-        console.log(loginUserResponse);
-        //newLike holds the data of the newly created like
-        var newUser = loginUserResponse.data;
-        console.log(newUser);
+        console.log(response.profileObj)
+
+        let newUser = {
+          "name": response.profileObj.name,
+          "email": response.profileObj.email,
+          "imageUrl": response.profileObj.imageUrl
+        };
+
+        localStorage.setItem('user', JSON.stringify(newUser)); //JSON.parse(dict) to undo
+
         window.location = "/";
 
       }
@@ -77,13 +83,12 @@ class LoginForm extends Component {
                      <GoogleLogin
                        clientId="476731474183-u57mkkmp59abldh9ko2vvrk65f2md5i4.apps.googleusercontent.com"
                        render={renderProps => (
-                         <button
-                           className="btn btn-primary btn-block mt-0"
+                         <input
+                           type="image"
+                           src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
                            onClick={renderProps.onClick}
                            disabled={renderProps.disabled}
-                         >
-                           Google Login
-                         </button>
+                         />
                        )}
                        buttonText="Login"
                        onSuccess={this.responseGoogle}
@@ -105,5 +110,7 @@ class LoginForm extends Component {
     );
   }
 }
+
+LoginForm.contextType = UserContext;
 
 export default LoginForm;

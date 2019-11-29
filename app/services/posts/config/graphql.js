@@ -79,7 +79,7 @@ const createServer = async app => {
       if(user==null){
         user = {
           id: "123",
-          name: "Anthony Pitts"
+          name: "Anonymous"
         };
       }
 

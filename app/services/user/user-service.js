@@ -14,7 +14,6 @@ const port = process.env.PORT || 3002
 //============  login user mutation call   ====================//
 
 app.route('/login').post(function(req, res) {
-
   //calls database mutation
   var fetch = createApolloFetch({
     uri: "http://localhost:3002/user"
@@ -26,7 +25,7 @@ app.route('/login').post(function(req, res) {
     `
     query googleLogin($googleEmail: String!){
       user: googleLogin(googleEmail: $googleEmail){
-      id
+      email
       errors{
         msg
       }
