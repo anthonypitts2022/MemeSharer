@@ -22,12 +22,12 @@ class Feed extends Component {
   }
 
   navBarType() {
-    return (this==undefined || this.context==undefined || this.context.user_name==undefined)
+    return (this===undefined || this.context===undefined || this.context.user_name===undefined)
               ? "navBarWithSignIn" : "navBarWithoutSignIn";
   }
 
   render(){
-    if(this.navBarType()=="navBarWithSignIn")
+    if(this.navBarType()==="navBarWithSignIn")
     {
       return(
       <li key="feed">

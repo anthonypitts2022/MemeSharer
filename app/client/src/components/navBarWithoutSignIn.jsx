@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import UserContext from '../contexts/UserContext.js';
+import { Image } from 'react-native';
+
 
 
 class NavBarWithoutSignIn extends Component {
@@ -17,8 +19,11 @@ class NavBarWithoutSignIn extends Component {
           <ul className="nav navbar-nav navbar-right">
             <font color="006699"><span className="glyphicon glyphicon-user"></span>Welcome back,</font>
             <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.context.user_name}</font>
+            <Image
+              source={{uri: this.context.user_imageUrl}}
+              style={{width: 60, height: 60, borderRadius: 60/ 2}}
+            />
           </ul>
-          <img src={this.context.user_imageUrl}/>
         </div>
       </nav>
     );

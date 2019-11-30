@@ -17,9 +17,9 @@ class RoutingPage extends Component {
   constructor(props){
     super(props);
     this.state = {
-      user_name: JSON.parse(localStorage.getItem('user')).name.split(" ")[0] || undefined,
-      user_email: JSON.parse(localStorage.getItem('user')).email || undefined,
-      user_imageUrl: JSON.parse(localStorage.getItem('user')).imageUrl || undefined,
+      user_name: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).name.split(" ")[0],
+      user_email: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).email,
+      user_imageUrl: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).imageUrl,
     };
   }
 
