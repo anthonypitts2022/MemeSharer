@@ -32,9 +32,9 @@ const LikeSchema = new Schema({
       default: shortid.generate,
       description: "The id of the Like"
     },
-    userId: {
+    userEmail: {
       type: String,
-      description: "The id of the user connected to that post."
+      description: "The email of the user connected to that post."
     },
     postId: {
       type: String,

@@ -32,9 +32,9 @@ const CommentSchema = new Schema({
       default: shortid.generate,
       description: "The id of the Comment"
     },
-    userId: {
+    userEmail: {
       type: String,
-      description: "The id of the user connected to that post."
+      description: "The email of the user connected to that post."
     },
     userName: {
       type: String,

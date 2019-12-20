@@ -30,7 +30,7 @@ class Feed extends Component {
     if(this.navBarType()==="navBarWithSignIn")
     {
       return(
-      <li key="feed">
+      <li key="feed" style={{backgroundColor: '#fafafa'}}>
         <NavBarWithSignIn key="navBarWithSignIn" />
         <ApolloProvider client={postsClient}>
           <Posts key={"posts"} />
@@ -40,7 +40,7 @@ class Feed extends Component {
     }
     else{
       return(
-      <li key="feed">
+      <li key="feed" style={{backgroundColor: '#fafafa'}}>
         <NavBarWithoutSignIn key="navBarWithoutSignIn" />
         <ApolloProvider client={postsClient}>
           <Posts key={"posts"} />

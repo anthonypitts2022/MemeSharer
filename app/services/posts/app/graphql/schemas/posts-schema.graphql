@@ -37,7 +37,7 @@ type Post {
 
 type Like {
   id: ID
-  userId: String
+  userEmail: String
   postId: String
   isLike: Boolean
   errors: Error
@@ -47,7 +47,7 @@ type Like {
 
 type Comment {
   id: ID
-  userId: String
+  userEmail: String
   userName: String
   postId: String
   text: String
@@ -73,6 +73,7 @@ input feedPostsInput{
 input createLikeInput{
   isLike: Boolean!
   postId: String!
+  userEmail: String!
 }
 
 input getPostInput{
@@ -82,6 +83,8 @@ input getPostInput{
 input createCommentInput{
   text: String!
   postId: String!
+  userEmail: String!
+  userName: String!
 }
 
 input uploadImageInput{

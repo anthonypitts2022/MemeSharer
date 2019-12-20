@@ -1,7 +1,7 @@
 import React from 'react';
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
-import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
+import NavBarForSignInPage from '../components/navBarForSignInPage.jsx';
 import LoginForm from '../components/loginForm.jsx';
 
 const userClient = new ApolloClient({
@@ -10,7 +10,7 @@ const userClient = new ApolloClient({
 
 const SignUpPage = () => (
   <li key="signUpPage">
-    <NavBarWithoutSignIn key={"nav"} />
+    <NavBarForSignInPage key={"nav"} />
     <ApolloProvider client={userClient}>
       <LoginForm key={"loginForm"} />
     </ApolloProvider>

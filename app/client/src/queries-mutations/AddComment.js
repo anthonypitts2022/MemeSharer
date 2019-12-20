@@ -10,8 +10,8 @@ const AddComment = gql`
         msg
       }
       id
-      userId
       userName
+      userEmail
       postId
       text
     }

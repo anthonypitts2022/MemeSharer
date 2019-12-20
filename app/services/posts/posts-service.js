@@ -77,7 +77,7 @@ app.route('/upload').post(function(req, res) {
             dislikeCount
             comments{
               text
-              userId
+              userEmail
             }
           }
         }
@@ -118,7 +118,7 @@ app.route('/createlike').post(function(req, res) {
             msg
           }
           id
-          userId
+          userEmail
           postId
           isLike
         }
@@ -127,7 +127,8 @@ app.route('/createlike').post(function(req, res) {
     variables: {
       input: {
         isLike: req.body.input.isLike,
-        postId: req.body.input.postId
+        postId: req.body.input.postId,
+        userEmail: req.body.input.userEmail
       }
     }
   })
@@ -167,7 +168,7 @@ app.route('/querypost').post(function(req, res) {
         dislikeCount
         comments{
           text
-          userId
+          userEmail
         }
       }
     }

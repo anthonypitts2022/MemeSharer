@@ -21,7 +21,7 @@ const Posts = () => (
           dislikeCount
           comments{
             text
-            userId
+            userEmail
             id
             userName
           }

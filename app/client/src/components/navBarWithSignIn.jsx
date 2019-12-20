@@ -1,20 +1,34 @@
 import React, { Component } from 'react';
-
+import UserContext from '../contexts/UserContext.js';
 class NavBarWithSignIn extends Component {
+
+  constructor(props){
+    super(props);
+    this.sendToCreatePost = this.sendToCreatePost.bind(this);
+  }
+
+  sendToCreatePost() {
+    if(this == undefined || this.context==undefined || this.context.user_name==undefined){
+      window.location = "/login";
+    }
+    else{
+      window.location = "/createpost";
+    }
+  }
+
 
   render(){
     return(
       <nav className="navbar navbar-inverse" data-spy="affix" data-offset-top="200">
         <div className="container-fluid">
           <ul className="nav navbar-nav">
-            <a href="/createpost" className="glyphicon glyphicon-user">Create Post</a>
+            <button onClick={this.sendToCreatePost()} type="button" className="btn btn-info">Create Post</button>
           </ul>
           <div className="navbar-header navbar-center">
             <a className="navbar-brand" href="/">MemeShare</a>
           </div>
           <ul className="nav navbar-nav navbar-right">
-            <a href="/signup"><span className="glyphicon glyphicon-user"></span> Sign Up</a>
-            <a href="/login"><span className="glyphicon glyphicon-log-in"></span> Login</a>
+            <button href="/login"><span className="btn btn-success"></span> Sign Up / Login</button>
           </ul>
         </div>
       </nav>
@@ -23,5 +37,7 @@ class NavBarWithSignIn extends Component {
 
 
 }
+
+NavBarWithSignIn.contextType = UserContext;
 
 export default NavBarWithSignIn;

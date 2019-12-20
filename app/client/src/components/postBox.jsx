@@ -41,7 +41,12 @@ class PostBox extends Component {
     addLike();
     async function addLike() {
       try{
-        var createLikeVariables={"input": { "isLike":true, "postId": this.state.postId } };
+
+        if(this.context===undefined || this.context.user_email===undefined){
+          window.location = "/login";
+        }
+
+        var createLikeVariables={"input": { "isLike":true, "postId": this.state.postId, "userEmail": this.context.user_email } };
 
         //call add like mutation
         var createLikeResponse = await axios.post("http://localhost:3301/createlike", createLikeVariables);
@@ -75,7 +80,7 @@ class PostBox extends Component {
     addDislike();
     async function addDislike() {
       try{
-        var createLikeVariables={"input": { "isLike":false, "postId": this.state.postId } };
+        var createLikeVariables={"input": { "isLike":false, "postId": this.state.postId, "userEmail": this.context.user_email  } };
 
         //call add like mutation
         var createLikeResponse = await axios.post("http://localhost:3301/createlike", createLikeVariables);
@@ -131,8 +136,15 @@ class PostBox extends Component {
                   <label htmlFor="InputComment"></label>
                   <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id="commentInput" aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
                 </div>
-                <Mutation mutation={AddComment} variables={{"input": { "text":this.state.addCommentText, "postId": this.state.postId } }}>
-                  {addComment => <button type="submit" onClick={addComment} className="badge badge-pill badge-primary">Add Comment</button>}
+                <Mutation mutation={AddComment} variables={
+                  {
+                    "input": {
+                      "text":this.state.addCommentText,
+                      "postId": this.state.postId,
+                      "userEmail": this.context.user_email,
+                      "userName": this.context.user_name
+                    }}}>
+                  {addComment => <button type="submit" onClick={this.context.user_email!=undefined ? addComment: false} className="badge badge-pill badge-primary">Add Comment</button>}
                 </Mutation>
               </form>
 
