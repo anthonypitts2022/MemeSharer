@@ -8,7 +8,9 @@ import RoutingPage from './RoutingPage.jsx';
 
 
 const routing = (
-    <RoutingPage/>
+    <body style={{backgroundColor: '#e0e0eb'}}>
+      <RoutingPage/>
+    </body>
 );
 
 

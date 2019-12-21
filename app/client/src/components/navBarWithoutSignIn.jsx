@@ -29,7 +29,7 @@ class NavBarWithoutSignIn extends Component {
             <button type="button" onClick={this.createpost.bind(this)} className="btn btn-info">Create Post</button>
           </ul>
           <div className="navbar-header navbar-center">
-            <a className="navbar-brand" href="/">MemeShare</a>
+            <a className="navbar-brand" href="/">MemeSharer</a>
           </div>
           <ul className="nav navbar-nav navbar-right">
             <font color="006699"><span className="glyphicon glyphicon-user"></span>Welcome back,</font>

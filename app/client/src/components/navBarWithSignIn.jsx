@@ -25,7 +25,7 @@ class NavBarWithSignIn extends Component {
             <button onClick={this.sendToCreatePost()} type="button" className="btn btn-info">Create Post</button>
           </ul>
           <div className="navbar-header navbar-center">
-            <a className="navbar-brand" href="/">MemeShare</a>
+            <a className="navbar-brand" href="/">MemeSharer</a>
           </div>
           <ul className="nav navbar-nav navbar-right">
             <button href="/login"><span className="btn btn-success"></span> Sign Up / Login</button>
