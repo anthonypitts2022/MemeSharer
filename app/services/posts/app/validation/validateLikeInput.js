@@ -29,7 +29,7 @@ module.exports = function validateLikeInput(data) {
   let errors = {};
 
   // Set the inputs to empty string if empty
-  data.userId = !isEmpty(data.userId) ? data.userId : "";
+  data.userEmail = !isEmpty(data.userEmail) ? data.userEmail : "";
   data.postId = !isEmpty(data.postId) ? data.postId : "";
   data.isLike = !isEmpty(data.isLike) ? data.isLike : null;
 
@@ -41,10 +41,10 @@ module.exports = function validateLikeInput(data) {
     errors.isLike = "isLike is required"
   }
 
-  if (!Validator.isLength(data.userId, { max: 20 })) {
-    errors.userId = "length must less than 20 characters";
+  if (!Validator.isLength(data.userEmail, { max: 30 })) {
+    errors.userEmail = "length must less than 20 characters";
   }
-  if (!Validator.isLength(data.postId, { max: 20 })) {
+  if (!Validator.isLength(data.postId, { max: 30 })) {
     errors.postId = "length must less than 20 characters";
   }
 

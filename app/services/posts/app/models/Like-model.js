@@ -54,7 +54,7 @@ const LikeSchema = new Schema({
 
 LikeSchema.index({
   index: "text",
-  userId: "text",
+  userEmail: "text",
   postId: "text",
   isLike: "text"
 });

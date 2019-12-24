@@ -62,7 +62,8 @@ const CommentSchema = new Schema({
 
 CommentSchema.index({
   index: "text",
-  userId: "text",
+  userEmail: "text",
+  userName: "text",
   postId: "text",
   text: "text",
   date: "text"
