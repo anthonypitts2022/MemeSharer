@@ -6,6 +6,8 @@ import { useMutation } from 'react-apollo-hooks';
 import CreatePost from '../queries-mutations/CreatePost.js';
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
+import { UserConsumer } from '../contexts/UserContext.js';
+import UserContext from '../contexts/UserContext.js';
 import axios from 'axios';
 const { createApolloFetch } = require('apollo-fetch');
 
@@ -48,6 +50,7 @@ class CreatePostForm extends Component {
     var fileData = new FormData();
     fileData.append('file', this.state.selectedFile);
     fileData.append('caption', this.state.caption);
+    fileData.append('userEmail', this.context.user_email);
     createPost(fileData);
     async function createPost( fileData ) {
       try{
@@ -97,7 +100,7 @@ class CreatePostForm extends Component {
                       </div>
                   </form>
                 </div>
-                <a type="submit" onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Submit</a>
+                <a type="submit" onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Post Meme</a>
                 <div>
                   {this.state.errors.map(error => (
                     <div key={error+"splitErrors"} >
@@ -116,5 +119,7 @@ class CreatePostForm extends Component {
 
 
 }
+
+CreatePostForm.contextType = UserContext;
 
 export default CreatePostForm;

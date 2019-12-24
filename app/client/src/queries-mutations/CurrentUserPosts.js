@@ -12,7 +12,7 @@ const Posts = () => (
           id
           caption
           imgPath
-          userId
+          userEmail
           likeCount
           dislikeCount
           comments{

@@ -30,17 +30,17 @@ class Feed extends Component {
     if(this.navBarType()==="navBarWithSignIn")
     {
       return(
-      <li key="feed">
+      <div key="feed">
         <NavBarWithSignIn key="navBarWithSignIn" />
         <ApolloProvider client={postsClient}>
           <Posts key={"posts"} />
         </ApolloProvider>
-      </li>
+      </div>
       );
     }
     else{
       return(
-      <li key="feed">
+      <div key="feed">
         <NavBarWithoutSignIn key="navBarWithoutSignIn" />
         <ApolloProvider client={postsClient}>
           <Posts key={"posts"} />
@@ -55,7 +55,7 @@ class Feed extends Component {
             <span>© 2019 MemeSharer, inc. All rights reserved.</span>
           </div>
         </div>
-      </li>
+      </div>
       );
     }
   }

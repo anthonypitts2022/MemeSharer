@@ -32,9 +32,9 @@ const PostSchema = new Schema({
       default: shortid.generate,
       description: "The id of the Post"
     },
-    userId: {
+    userEmail: {
       type: String,
-      description: "The id of the user connected to that post."
+      description: "The email of the user connected to that post."
     },
     caption: {
       type: String,
@@ -62,7 +62,7 @@ const PostSchema = new Schema({
 
 PostSchema.index({
   index: "text",
-  userId: "text",
+  userEmail: "text",
   date: "text",
   fileId: "text",
   fileType: "text",

@@ -70,7 +70,7 @@ app.route('/upload').post(function(req, res) {
             }
             fileId
             fileType
-            userId
+            userEmail
             id
             caption
             likeCount
@@ -85,6 +85,7 @@ app.route('/upload').post(function(req, res) {
       variables: {
         input: {
            caption : req.body.caption,
+           userEmail : req.body.userEmail,
            fileId : fileId,
            fileType : path.extname(req.file.originalname)
          }
@@ -140,6 +141,35 @@ app.route('/createlike').post(function(req, res) {
 
 //=========================================================================//
 
+//============  delete post mutation call   ====================//
+
+app.route('/deletepost').post(function(req, res) {
+
+  //calls delete post database mutation
+  var fetch = createApolloFetch({
+    uri: "http://localhost:3301/posts"
+  });
+  //binds the res of upload to fetch to return the fetch data
+  fetch = fetch.bind(res)
+  fetch({
+    query:
+    `
+    mutation deletePost($id: String!){
+      deletePost(id: $id)
+    }
+    `,
+    variables: {
+      id: req.body.id
+    }
+  })
+  .then(result => {
+    //result.data holds the data returned from the createLike mutation
+    return res.status(200).send(result.data);
+  })
+});
+
+//=========================================================================//
+
 //============  get Post mutation call   ====================//
 
 app.route('/querypost').post(function(req, res) {
@@ -161,7 +191,7 @@ app.route('/querypost').post(function(req, res) {
         }
         fileId
         fileType
-        userId
+        userEmail
         id
         caption
         likeCount

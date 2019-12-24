@@ -3,8 +3,8 @@ import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
 import CreatePostForm from '../components/createPostForm.jsx';
 
 
-const Feed = () => (
-  <li key="feed" >
+const CreatePostPage = () => (
+  <div key="createPostPage" >
     <NavBarWithoutSignIn key={"navBarWithSignIn"} />
     <CreatePostForm key={"CreatePost"} />
     <div style={{color:"#9b9b9b", lineHeight: "1.3em", padding: "4em 0", textAlign: "center", fontSize: ".75rem"}}>
@@ -17,7 +17,7 @@ const Feed = () => (
         <span>© 2019 MemeSharer, inc. All rights reserved.</span>
       </div>
     </div>
-  </li>
+  </div>
 );
 
-export default Feed;
+export default CreatePostPage;

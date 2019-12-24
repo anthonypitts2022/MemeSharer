@@ -84,7 +84,7 @@ const userPostsQuery = async (root, { args }, {user}) => {
       return handleErrors("001", {user: "user not signed in"});
     }
     //gets 200 post from user
-    const posts = await Post.find({userId: user.id});
+    const posts = await Post.find({userEmail: input.userEmail});
 
     //if no posts were found
     if(!posts){
@@ -121,18 +121,18 @@ const feedPostsQuery = async (root, { input }, {user} ) => {
   try{
     var posts = [];
     //loop through the inputted array of current user's following list
-    for(var index in input.followerIds){
-      if(input.followerIds.hasOwnProperty(index)){
+    for(var index in input.followerEmails){
+      if(input.followerEmails.hasOwnProperty(index)){
          try{
            //find out if number of user's posts is less than 10
            var lessThanTen = false;
-           var numUserPosts = await Post.countDocuments({ userId: input.followerIds[index] });
+           var numUserPosts = await Post.countDocuments({ userEmail: input.followerEmails[index] });
            if(10 > numUserPosts){
              lessThanTen = true;
            }
 
            //get the user's posts
-           var userPostsSorted = PostsDateSort(await Post.find({ userId: input.followerIds[index] }));
+           var userPostsSorted = PostsDateSort(await Post.find({ userEmail: input.followerEmails[index] }));
 
            //push the ten most recent posts from a users page to the posts list
            if(lessThanTen==false){

@@ -50,6 +50,7 @@ const Like = require("../../models/Like-model.js");
 const validatePostInput = require("../../validation/validatePostInput.js");
 const validateCommentInput = require("../../validation/validateCommentInput.js");
 const validateLikeInput = require("../../validation/validateLikeInput.js");
+const validateID = require("../../validation/validateID.js");
 
 //==============================================================================
 // Body
@@ -74,7 +75,7 @@ const createPostMutation = async (parent, { input }, {user}) => {
 
     // Create a Post object based on the input
     var newPost = new Post({
-      userId: user.id,
+      userEmail: input.userEmail,
       fileId: input.fileId,
       fileType: input.fileType,
       caption: input.caption
@@ -267,11 +268,64 @@ const deleteAllPostsMutation = async (parent, { isActual }, {user}) => {
 };
 
 
+//==============================================================================
+// Delete A Post
+//==============================================================================
+
+// @access : Private, User
+// @desc   : Delete a Post Object
+const deletePostMutation = async (parent, { id }) => {
+  // Validate the user input and return errors if any
+  try {
+    const { msg, isValid } = validateID(id);
+    if (!isValid) {
+      console.log(JSON.stringify(msg));
+      return false;
+    }
+  } catch (err) {
+    throw err;
+  }
+
+  // Initiate the models by finding if the fields below exist
+  let post = await Post.findById(id);
+
+  try {
+    // Throw errors if the conditions are met
+    if (!post) {
+      console.log(
+        JSON.stringify({
+          post: `Post with id: ${id} doesn't exist`
+        })
+      );
+      return false;
+    }
+
+    // Delete one record
+    let deletedRecord = await post.remove();
+
+    // return record;
+    if(deletedRecord==null){
+      return false;
+    }
+    else{
+      return true;
+    }
+
+  } catch (err) {
+    console.log(
+      `deleteStudentMutation: Failed to delete Student. ${err}.`
+    );
+    throw err;
+  }
+};
+
+
 module.exports = {
   createPostMutation,
   createLikeMutation,
   createCommentMutation,
   deleteAllCommentsMutation,
   deleteAllPostsMutation,
+  deletePostMutation,
   uploadImageToServerMutation
 };
