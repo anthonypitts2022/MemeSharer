@@ -97,9 +97,10 @@ const userPostsQuery = async (root, { args }, {user}) => {
 };
 
 
-const getAPostQuery = async (root, { input } ) => {
+const getAPostQuery = async (root, { id } ) => {
   try{
-    var post = await Post.findById(input.postId);
+
+    var post = await Post.findById(id);
 
      //check if post does not exist
      if(!post){

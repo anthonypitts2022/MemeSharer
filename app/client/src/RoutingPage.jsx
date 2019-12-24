@@ -5,6 +5,7 @@ import SignUpPage from './pages/SignUpPage';
 import Page404 from './pages/Page404';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
+import PostPage from './pages/PostPage';
 import CreatePostPage from './pages/CreatePostPage';
 import * as serviceWorker from './config/serviceWorker';
 import "bootstrap/dist/css/bootstrap.css";
@@ -34,6 +35,7 @@ class RoutingPage extends Component {
             <Route path="/login" component={LoginPage} />
             <Route path="/profile" component={ProfilePage} />
             <Route path="/createpost" component={CreatePostPage} />
+            <Route path="/post/:postId" component={PostPage} />
             <Route component={Page404} />
           </Switch>
         </UserProvider>

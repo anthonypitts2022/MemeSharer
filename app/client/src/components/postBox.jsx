@@ -32,6 +32,7 @@ class PostBox extends Component {
     this.handleLikeClick = this.handleLikeClick.bind(this);
     this.handleDislikeClick = this.handleDislikeClick.bind(this);
     this.handleDeletePost = this.handleDeletePost.bind(this);
+    this.handleCopyLink = this.handleCopyLink.bind(this);
 
   }
 
@@ -143,6 +144,35 @@ class PostBox extends Component {
     }
   }
 
+
+  handleCopyLink(event) {
+    //bind this to the copyLink function
+    copyLink = copyLink.bind(this);
+
+    copyLink();
+    async function copyLink() {
+      try{
+        let link = ""
+        //if in local host dev
+        if(window.location.hostname==="localhost"){
+          link = window.location.hostname + ":" +
+                  window.location.port + "/post/" + this.state.postId;
+        }
+        //if in production
+        else{
+          link = "www." + window.location.hostname + ".com/post/" + this.state.postId;
+        }
+
+        //copy post link to clipboard
+        navigator.clipboard.writeText(link);
+
+      }
+      catch(err) {
+        console.log(err);
+      }
+    }
+  }
+
   render(){
     //if this is the signed in user's post (so they can delete it etc.)
     if(this.context.user_email === this.state.userEmail)
@@ -157,6 +187,7 @@ class PostBox extends Component {
                   <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <button onClick={this.handleDeletePost} className="dropdown-item">Delete Post</button>
+                    <button onClick={this.handleCopyLink} className="dropdown-item">Copy Link</button>
                   </div>
                 </div>
               </div>
@@ -213,6 +244,7 @@ class PostBox extends Component {
                 <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
                   <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <button onClick={this.handleCopyLink} className="dropdown-item">Copy Link</button>
                   </div>
                 </div>
               </div>

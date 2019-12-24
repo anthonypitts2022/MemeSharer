@@ -1,5 +1,5 @@
 type Query {
-  getAPost(input: getPostInput): Post
+  getAPost(id: String!): Post
   getAllPosts: [Post]
   postLikeCount(postId: String!): String
   postDislikeCount(postId: String!): String
