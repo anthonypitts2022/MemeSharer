@@ -6,6 +6,7 @@ import axios from 'axios';
 import { UserConsumer } from '../contexts/UserContext.js';
 import UserContext from '../contexts/UserContext.js';
 import styled from 'styled-components';
+import InfiniteScroll from 'react-infinite-scroller';
 
 
 
@@ -26,6 +27,7 @@ class PostBox extends Component {
       userEmail: (typeof props.postInfo.userEmail === 'undefined') ? "" : props.postInfo.userEmail,
       comments: (typeof props.postInfo.comments === 'undefined') ? [] : props.postInfo.comments,
       addCommentText: '',
+      visibleComments: 3
     };
 
     this.handleAddCommentChange = this.handleAddCommentChange.bind(this);
@@ -33,6 +35,7 @@ class PostBox extends Component {
     this.handleDislikeClick = this.handleDislikeClick.bind(this);
     this.handleDeletePost = this.handleDeletePost.bind(this);
     this.handleCopyLink = this.handleCopyLink.bind(this);
+    this.loadMore = this.loadMore.bind(this);
 
   }
 
@@ -173,7 +176,17 @@ class PostBox extends Component {
     }
   }
 
+  loadMore(event) {
+    this.setState({visibleComments: this.state.visibleComments + 3});
+  }
+
   render(){
+
+    let loadMoreButton;
+    if(this.state.comments.length > this.state.visibleComments){
+      loadMoreButton = <button onClick={this.loadMore} type="button" className="btn btn-sm btn-success">View More Comments</button>;
+    }
+
     //if this is the signed in user's post (so they can delete it etc.)
     if(this.context.user_email === this.state.userEmail)
     {
@@ -201,12 +214,15 @@ class PostBox extends Component {
                 <h5 className="card-title">{this.state.caption}</h5>
 
                 <div>
-                  {this.state.comments.map(comment => (
+                  {this.state.comments.slice(0,this.state.visibleComments).map(comment => (
                     <div key={comment.id}>
                       <p key={comment.id+"user"} className="card-text">{comment.userName + ": "}{comment.text}</p>
                       <p key={comment.id+ "space"}></p>
                     </div>
                   ))}
+                </div>
+                <div>
+                  {loadMoreButton}
                 </div>
 
                 <form>
@@ -265,6 +281,7 @@ class PostBox extends Component {
                     </div>
                   ))}
                 </div>
+                <button onClick={this.loadMore} type="button" className="btn btn-sm btn-success">View More Comments</button>
 
                 <form>
                   <div className="form-group">
