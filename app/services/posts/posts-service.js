@@ -184,8 +184,8 @@ app.route('/querypost').post(function(req, res) {
   fetch({
     query:
     `
-    query getAPost($input: getPostInput!){
-      Post: getAPost(input: $input){
+    query getAPost($id: String!){
+      Post: getAPost(id: $id){
         errors{
           msg
         }
@@ -199,14 +199,14 @@ app.route('/querypost').post(function(req, res) {
         comments{
           text
           userEmail
+          id
+          userName
         }
       }
     }
     `,
     variables: {
-      input: {
-        postId: req.body.input.postId
-      }
+      id: req.body.input.postId
     }
   })
   .then(result => {
