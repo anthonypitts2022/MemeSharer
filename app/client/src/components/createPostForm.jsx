@@ -45,12 +45,11 @@ class CreatePostForm extends Component {
   handleSubmit(event) {
     //bindings
     createPost = createPost.bind(this);
-
     //uploads file to server
     var fileData = new FormData();
     fileData.append('file', this.state.selectedFile);
     fileData.append('caption', this.state.caption);
-    fileData.append('userEmail', this.context.user_email);
+    fileData.append('userId', this.context.user_id);
     createPost(fileData);
     async function createPost( fileData ) {
       try{

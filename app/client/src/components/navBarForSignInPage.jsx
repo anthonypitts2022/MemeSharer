@@ -4,7 +4,7 @@ import { Image } from 'react-native';
 
 
 
-class NavBarForSignInPage extends Component {
+class NavBarWithoutSignIn extends Component {
 
   constructor(props){
     super(props);
@@ -14,9 +14,13 @@ class NavBarForSignInPage extends Component {
     return(
       <nav className="navbar navbar-inverse" data-spy="affix" data-offset-top="200">
         <div className="container-fluid">
+          <ul className="nav navbar-nav">
+          </ul>
           <div className="navbar-header navbar-center">
             <a className="navbar-brand" href="/">MemeSharer</a>
           </div>
+          <ul className="nav navbar-nav navbar-right">
+          </ul>
         </div>
       </nav>
     );
@@ -25,7 +29,7 @@ class NavBarForSignInPage extends Component {
 
 }
 
-NavBarForSignInPage.contextType = UserContext;
+NavBarWithoutSignIn.contextType = UserContext;
 
 
-export default NavBarForSignInPage;
+export default NavBarWithoutSignIn;

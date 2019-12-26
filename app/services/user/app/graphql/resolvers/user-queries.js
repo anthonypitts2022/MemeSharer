@@ -34,16 +34,15 @@ const config = require("../../../config/config.js");
 // Models
 //---------------------------------
 
-const Users = require("../../models/User-model.js");
+const User = require("../../models/User-model.js");
 //==============================================================================
 // Body
 //==============================================================================
 
 // @access : Private(Root, Admin, Staff)
-// @desc   : Existing users
-const userQuery = async (root, { uni }) => {
-  // TODO: Add perms
-  const user = await Users.findOne({ uni: uni });
+// @desc   : Get a user
+const userQuery = async (root, { id }) => {
+  const user = await User.findOne({ id: id });
   try {
     return user;
   } catch (e) {
@@ -55,7 +54,7 @@ const userQuery = async (root, { uni }) => {
 // @desc   : Existing users
 const usersQuery = async (root, { args }, { user }) => {
   // TODO: Add perms
-  const users = await Users.find()
+  const users = await User.find()
     .skip(0)
     .limit(200);
   try {

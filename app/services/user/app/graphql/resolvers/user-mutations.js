@@ -33,7 +33,7 @@ const axios = require("axios");
 //---------------------------------
 // Models
 //---------------------------------
-const Users = require("../../models/User-model.js");
+const User = require("../../models/User-model.js");
 
 //---------------------------------
 // Validation
@@ -45,84 +45,55 @@ const validateUserInput = require("../../validation/validateUserInput.js");
 //==============================================================================
 
 // @access : Root
-// @desc   : Create a single user
-const createUserMutation = async (parent, { input }) => {
-  // TODO: Add perms
+// @desc   : Create Or Updates a single user
+const createOrUpdateUserMutation = async (parent, { input }) => {
   // Validate the user input and return errors if any
   const { msg, isValid } = validateUserInput(input);
   if (!isValid) {
-    msg.showNoUser = true;
     return handleErrors("001", msg);
   }
+  //check if user already exists
+  let user = await User.findOne({id: input.id});
 
-  // Initiate the models by finding if the fields below exist
-  let user = await Users.findOne({
-    username: input.username
-  });
-  let userEmail = await Users.findOne({
-    email: input.email
-  });
   try {
-    // Throw errors if the conditions are met
-    if (user) throw "User already exists!";
-    if (userEmail) throw "User with same email already exists!";
 
-    // Create a user object based on the input
-    const newUser = new Users({
-      username: input.username,
-      firstName: input.firstName,
-      lastName: input.lastName,
-      email: input.email,
-      phoneNumber: input.phoneNumber,
-      address: input.address,
-      address2: input.address2,
-      userType: input.userType,
-      userRole: input.userRole,
-      checkinOption: input.checkinOption,
-      // If no password was inserted, then create a password
-      password: input.password ? input.password : generatePassword(8)
-    });
+    //update user info
+    if (user)
+    {
+      //collect fields to be updated
+      let updateRecord = {};
+      for (let field in input){
+        if(input.hasOwnProperty(field) && field!="id"){
+          updateRecord[field] = input[field];
+        }
+      }
 
-    // Encrypt the user password
-    // Once it has been encrypted, create the new password
-    const saltRounds = 10;
-    const hashedPassword = await new Promise((resolve, reject) => {
-      bcrypt.hash(newUser.password, saltRounds, function(err, hash) {
-        if (err) reject(err);
-        resolve(hash);
+      //update database
+      let update = await User.updateOne({ id: input.id }, updateRecord, {
+        new: true
       });
-    });
 
-    // Notify new user email creation if notify user is enables
-    // create the send email functionality
-
-    if (newUser.checkinOption) {
-      const sendEmail = async emailVars => {
-        let send = await axios.post(
-          config.emailHost + "/user/account-creation",
-          emailVars
-        );
-      };
-      // Set the variabales being sent to the email service
-      const emailInfo = { firstName: newUser.firstName, email: newUser.email };
-      // Send the email along with the vars
-      sendEmail(emailInfo);
+      // Database response after record has been created
+      return await User.findOne({id: input.id});
     }
-    // TODO: Log  user creation and the current logged in user that created the user
+    //create new user
+    else{
+      // Create a user object based on the input
+      const newUser = new User({
+        id: input.id,
+        name: input.name,
+        profileUrl: input.profileUrl,
+        email: input.email
+      });
+      // Save the user to the database and return
+      return newUser.save();
+    }
 
-    // Save the user to the database
-    return newUser.save();
   } catch (err) {
     logger.info(`${err}`);
-    // Database response after user has been created
-    if (user) {
-      return handleErrors("001", { username: err, showNoUser: true });
-    }
-    if (userEmail) {
-      return handleErrors("001", { email: err, showNoUser: true });
-    }
+    return handleErrors("001", { user: err});
   }
 };
 module.exports = {
-  createUserMutation
+  createOrUpdateUserMutation
 };

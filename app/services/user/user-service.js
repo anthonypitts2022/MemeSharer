@@ -43,6 +43,46 @@ app.route('/login').post(function(req, res) {
 });
 
 
+//============  create or update user mutation call   ====================//
+
+app.route('/createupdateuser').post(function(req, res) {
+  //calls database mutation
+  var fetch = createApolloFetch({
+    uri: "http://localhost:3002/user"
+  });
+  //binds the res of upload to fetch to return the fetch data
+  fetch = fetch.bind(res)
+  fetch({
+    query:
+    `
+    mutation createOrUpdateUser($input: CreateUserInput){
+      User: createOrUpdateUser(input: $input){
+        errors{
+          msg
+        }
+        id
+        name
+        email
+        profileUrl
+      }
+    }
+    `,
+    variables: {
+      input: {
+        id: req.body.input.id,
+        email: req.body.input.email,
+        name: req.body.input.name,
+        profileUrl: req.body.input.profileUrl
+      }
+    }
+  })
+  .then(result => {
+    //result.data holds the data returned from the mutation
+    return res.status(200).send(result.data);
+  })
+});
+
+
 
 
 

@@ -14,7 +14,13 @@ const Posts = () => (
           }
           fileId
           fileType
-          userEmail
+          userId
+          user{
+            id
+            name
+            email
+            profileUrl
+          }
           id
           caption
           likeCount

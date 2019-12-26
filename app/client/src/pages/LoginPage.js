@@ -9,7 +9,7 @@ const userClient = new ApolloClient({
 });
 
 const SignUpPage = () => (
-  <li key="signUpPage">
+  <div key="signUpPage">
     <NavBarForSignInPage key={"nav"} />
     <ApolloProvider client={userClient}>
       <LoginForm key={"loginForm"} />
@@ -24,7 +24,7 @@ const SignUpPage = () => (
         <span>© 2019 MemeSharer, inc. All rights reserved.</span>
       </div>
     </div>
-  </li>
+  </div>
 );
 
 export default SignUpPage;

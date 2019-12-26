@@ -1,12 +1,12 @@
 type Query {
-  user(username: String!): User
+  user(id: String!): User
   searchIfUserExist(username: String!): User
   users: [User]
   googleLogin(googleEmail: String!): User
 }
 
 type Mutation {
-  createUser(input: CreateUserInput): User
+  createOrUpdateUser(input: CreateUserInput): User
 }
 
 #===============================================================================
@@ -14,42 +14,23 @@ type Mutation {
 #===============================================================================
 
 type User {
-  id: ID
-  username: String
-  firstName: String
-  lastName: String
-  email: String!
-  phoneNumber: String
-  address: String
-  address2: String
-  userType: String
-  userRole: String
+  id: String
+  name: String
+  email: String
+  profileUrl: String
   errors: Error
   success: Success
-  checkinOption: Boolean
-  active: Boolean
   bulkAddReport: [BulkAddReport]
-  loginExp: String
 }
 
 #--------------------------------------
 # Inputs
 #--------------------------------------
 input CreateUserInput {
-  username: String!
-  firstName: String
-  lastName: String
-  email: String
-  phoneNumber: String
-  department: String
-  address: String
-  address2: String
-  userType: String
-  userRole: String
-  notifyUser: Boolean
-  password: String
-  password2: String
-  checkinOption: Boolean
+  id: String!
+  name: String!
+  email: String!
+  profileUrl: String!
 }
 
 #===============================================================================

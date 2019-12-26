@@ -37,7 +37,7 @@ class NavBarWithoutSignIn extends Component {
             <div className="row">
               <div className="column">
                 <Image
-                  source={{uri: this.context.user_imageUrl}}
+                  source={{uri: this.context.user_profileUrl}}
                   style={{width: 60, height: 60, borderRadius: 60/ 2}}
                 />
               </div>

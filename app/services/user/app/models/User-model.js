@@ -26,60 +26,25 @@ const Schema = mongoose.Schema
 //==============================================================================
 
 const UserShema = new Schema({
-  //Required
-  username: {
+  id: {
     type: String,
     required: true,
     text: true
   },
-  firstName: {
-    type: String,
-    required: true,
-    text: true
-  },
-  lastName: {
+  name: {
     type: String,
     required: true,
     text: true
   },
   email: {
     type: String,
-    required: true
+    required: true,
+    text: true
   },
-  phoneNumber: {
-    type: Number,
-    required: true
-  },
-  address: {
-    type: String
-  },
-  address2: {
-    type: String
-  },
-  userType: {
+  profileUrl: {
     type: String,
-    required: true
-  },
-  userType: {
-    type: String,
-    required: true
-  },
-  userRole: {
-    type: String,
-    required: true
-  },
-
-  password: {
-    type: String,
-    required: true
-  },
-  checkinOption: {
-    type: Boolean,
-    required: true
-  },
-  date: {
-    type: Date,
-    default: Date.now
+    required:true,
+    text: true
   }
 })
 
@@ -88,9 +53,10 @@ const UserShema = new Schema({
 //==============================================================================
 
 UserShema.index({
+  id: 'text',
   index: 'text',
-  firstName: 'text',
-  lastName: 'text',
-  email: 'text'
+  name: 'text',
+  email: 'text',
+  profileUrl: 'text'
 })
 module.exports = user = mongoose.model('User', UserShema)

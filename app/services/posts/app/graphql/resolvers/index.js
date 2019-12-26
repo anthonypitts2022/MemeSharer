@@ -19,9 +19,11 @@ note: Remember to export the query types resolver!
 // HEAD
 //==============================================================================
 const { handleErrors } = require("../../utils/handle-errors.js");
+const { createApolloFetch } = require('apollo-fetch');
+
 
 //bring in models
-//const Post = require("../../models/Post-model.js");
+//const Posts = require("../../models/Post-model.js");
 const Comment = require("../../models/Comment-model.js");
 const Like = require("../../models/Like-model.js");
 
@@ -107,6 +109,41 @@ const Post = {
       return handleErrors("001", {postId: "failed to get comments"})
     }
   },
+  user: async (post) => {
+    try{
+      //calls database mutation
+      var fetch = createApolloFetch({
+        uri: "http://localhost:3002/user"
+      });
+
+      //fetch and return the user data corresponding to this user id
+      return await fetch({
+        query:
+        `
+        query user($id: String!){
+          User: user(id: $id){
+            errors{
+              msg
+            }
+            id
+            name
+            email
+            profileUrl
+          }
+        }
+        `,
+        variables: {
+          id: post.userId,
+        }
+      })
+      .then(result => {
+        //result.data holds the data returned from the mutation
+        return result.data.User;
+      })
+    } catch(err){
+      return handleErrors("001", {postId: "failed to get post's user"})
+    }
+  }
 }
 
 //==============================================================================

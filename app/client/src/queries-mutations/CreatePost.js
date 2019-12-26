@@ -9,7 +9,7 @@ const CreatePost = gql`
       }
       fileId
       fileType
-      userEmail
+      userId
       id
       caption
       likeCount

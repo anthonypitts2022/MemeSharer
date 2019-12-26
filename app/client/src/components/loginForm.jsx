@@ -34,19 +34,19 @@ class LoginForm extends Component {
     signIn(response);
     async function signIn(response) {
       try{
-        var variables={"input": { "googleEmail": response.profileObj.email } };
 
-        //call add like mutation
-        var loginUserResponse = await axios.post("http://localhost:3002/login", variables);
-        console.log(response.profileObj)
-
+        //put user in local storage
         let newUser = {
           "name": response.profileObj.name,
           "email": response.profileObj.email,
-          "imageUrl": response.profileObj.imageUrl
+          "profileUrl": response.profileObj.imageUrl,
+          "id": response.profileObj.googleId
         };
-
         localStorage.setItem('user', JSON.stringify(newUser)); //JSON.parse(dict) to undo
+
+        //create new user in database or update user if logged in before
+        var variables = { "input": newUser };
+        var createUpdateUserResponse = await axios.post("http://localhost:3002/createupdateuser", variables);
 
         window.location = "/";
 

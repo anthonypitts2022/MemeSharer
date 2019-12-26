@@ -7,8 +7,7 @@ import { UserConsumer } from '../contexts/UserContext.js';
 import UserContext from '../contexts/UserContext.js';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroller';
-
-
+import { Image } from 'react-native';
 
 
 
@@ -24,7 +23,10 @@ class PostBox extends Component {
       dislikeCount: (typeof props.postInfo.dislikeCount === 'undefined') ? 0: props.postInfo.dislikeCount,
       caption: (typeof props.postInfo.caption === 'undefined') ? "" : props.postInfo.caption,
       postId: (typeof props.postInfo.id === 'undefined') ? "" : props.postInfo.id,
-      userEmail: (typeof props.postInfo.userEmail === 'undefined') ? "" : props.postInfo.userEmail,
+      userEmail: (typeof props.postInfo.user.email === 'undefined') ? "" : props.postInfo.user.email,
+      profileUrl: (typeof props.postInfo.user.profileUrl === 'undefined') ? "" : props.postInfo.user.profileUrl,
+      username: (typeof props.postInfo.user.name === 'undefined') ? "" : props.postInfo.user.name,
+      userId: (typeof props.postInfo.user.id === 'undefined') ? "" : props.postInfo.user.id,
       comments: (typeof props.postInfo.comments === 'undefined') ? [] : props.postInfo.comments,
       addCommentText: '',
       visibleComments: 3
@@ -194,6 +196,22 @@ class PostBox extends Component {
         <div className="row">
           <div className="col-md-6 offset-md-3">
             <div className="card">
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-1.5">
+                    <Image
+                      source={{uri: this.state.profileUrl}}
+                      style={{width: 60, height: 60, borderRadius: 60/ 2}}
+                    />
+                  </div>
+                  <div className="col">
+                    <p></p>
+                    <div className="col-8">
+                      <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.state.username}</font>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div style={{position:"asbolute", zIndex:"1"}}>
                 <img style={{position:"relative", zIndex:"2"}} className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
                 <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>

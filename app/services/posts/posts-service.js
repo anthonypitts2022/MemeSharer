@@ -27,14 +27,7 @@ app.route('/upload').post(function(req, res) {
         cb(null, "uploads")
       },
       filename: function (req, file, cb) {
-        //console.log(file);
-        //if no file was provided
-        //if(file==undefined){
-        //  cb(null, null);
-        //}
-        //else{
-          cb(null, fileId + path.extname(file.originalname) );
-        //}
+        cb(null, fileId + path.extname(file.originalname) );
       }
   });
 
@@ -53,7 +46,7 @@ app.route('/upload').post(function(req, res) {
     }
 
     //if no errors on uploading file, proceed to create post
-
+    console.log(req.body)
     //calls create post database mutation
     var fetch = createApolloFetch({
       uri: "http://localhost:3301/posts"
@@ -70,7 +63,13 @@ app.route('/upload').post(function(req, res) {
             }
             fileId
             fileType
-            userEmail
+            userId
+            user{
+              id
+              name
+              email
+              profileUrl
+            }
             id
             caption
             likeCount
@@ -85,7 +84,7 @@ app.route('/upload').post(function(req, res) {
       variables: {
         input: {
            caption : req.body.caption,
-           userEmail : req.body.userEmail,
+           userId : req.body.userId,
            fileId : fileId,
            fileType : path.extname(req.file.originalname)
          }

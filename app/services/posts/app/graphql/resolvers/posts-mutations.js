@@ -75,7 +75,7 @@ const createPostMutation = async (parent, { input }, {user}) => {
 
     // Create a Post object based on the input
     var newPost = new Post({
-      userEmail: input.userEmail,
+      userId: input.userId,
       fileId: input.fileId,
       fileType: input.fileType,
       caption: input.caption

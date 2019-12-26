@@ -24,13 +24,14 @@ type Mutation {
 
 type Post {
   id: ID
-  userEmail: String
+  userId: String
   caption: String
   likeCount: String
   dislikeCount: String
   comments: [Comment]
   fileId: String
   fileType: String
+  user: User
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]
@@ -57,12 +58,20 @@ type Comment {
   bulkAddReport: [BulkAddReport]
 }
 
+type User {
+  id: String
+  name: String
+  email: String
+  profileUrl: String
+}
+
+
 #===============================================================================
 # Inputs
 #===============================================================================
 
 input createPostInput{
-  userEmail: String
+  userId: String
   caption: String
   fileId: String!
   fileType: String!

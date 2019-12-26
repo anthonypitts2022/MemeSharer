@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Feed from './pages/Feed';
-import SignUpPage from './pages/SignUpPage';
 import Page404 from './pages/Page404';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
@@ -20,7 +19,8 @@ class RoutingPage extends Component {
     this.state = {
       user_name: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).name.split(" ")[0],
       user_email: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).email,
-      user_imageUrl: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).imageUrl,
+      user_profileUrl: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).profileUrl,
+      user_id: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).id,
     };
   }
 
@@ -31,7 +31,6 @@ class RoutingPage extends Component {
         <UserProvider value={this.state}>
           <Switch>
             <Route exact path="/" component={Feed} />
-            <Route path="/signup" component={SignUpPage} />
             <Route path="/login" component={LoginPage} />
             <Route path="/profile" component={ProfilePage} />
             <Route path="/createpost" component={CreatePostPage} />

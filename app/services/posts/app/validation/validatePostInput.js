@@ -33,7 +33,7 @@ module.exports = function validatePostInput(data) {
   data.caption = !isEmpty(data.caption) ? data.caption : "";
   data.fileId = !isEmpty(data.fileId) ? data.fileId : "";
   data.fileType = !isEmpty(data.fileType) ? data.fileType : "";
-  data.userEmail = !isEmpty(data.userEmail) ? data.userEmail : "";
+  data.userId = !isEmpty(data.userId) ? data.userId : "";
 
 
   if (!Validator.isLength(data.caption, { max: 10000 })) {
@@ -45,11 +45,8 @@ module.exports = function validatePostInput(data) {
   if (Validator.isEmpty(data.fileType)){
     errors.fileType = "fileType is required"
   }
-  if (Validator.isEmpty(data.userEmail)){
-    errors.userEmail = "userEmail is required"
-  }
-  if (!Validator.isLength(data.userEmail, { max: 500 })) {
-    errors.userEmail = "length must less than 500 characters";
+  if (Validator.isEmpty(data.userId)){
+    errors.userId = "userId is required"
   }
 
 

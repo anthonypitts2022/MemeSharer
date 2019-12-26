@@ -39,7 +39,7 @@ const {
 //---------------------------------
 
 // User Mutation Library
-const { createUserMutation } = require("./user-mutations.js");
+const { createOrUpdateUserMutation } = require("./user-mutations.js");
 
 //==============================================================================
 // BODY
@@ -60,7 +60,7 @@ const Query = {
 //---------------------------------
 
 const Mutation = {
-  createUser: createUserMutation
+  createOrUpdateUser: createOrUpdateUserMutation
 };
 
 //==============================================================================

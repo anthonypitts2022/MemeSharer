@@ -32,25 +32,29 @@ const PostSchema = new Schema({
       default: shortid.generate,
       description: "The id of the Post"
     },
-    userEmail: {
+    userId: {
       type: String,
-      description: "The email of the user connected to that post."
+      description: "The ID of the user connected to that post.",
+      text: true
     },
     caption: {
       type: String,
-      description: "The post's caption"
+      description: "The post's caption",
     },
     date: {
       type: Date,
-      default: Date.now
+      default: Date.now,
+      text: true
     },
     fileId: {
       type: String,
-      description: "The id of the post file content"
+      description: "The id of the post file content",
+      text: true
     },
     fileType: {
       type: String,
-      description: "The type (extension) of the post file content"
+      description: "The type (extension) of the post file content",
+      text: true
     }
 });
 
@@ -62,7 +66,7 @@ const PostSchema = new Schema({
 
 PostSchema.index({
   index: "text",
-  userEmail: "text",
+  userId: "text",
   date: "text",
   fileId: "text",
   fileType: "text",
