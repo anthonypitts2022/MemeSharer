@@ -46,16 +46,27 @@ class PostPage extends Component {
                 }
                 fileId
                 fileType
-                userEmail
+                userId
+                user{
+                  id
+                  name
+                  email
+                  profileUrl
+                }
                 id
                 caption
                 likeCount
                 dislikeCount
                 comments{
                   text
-                  userEmail
+                  userId
+                  user{
+                    id
+                    name
+                    email
+                    profileUrl
+                  }
                   id
-                  userName
                 }
               }
             }
@@ -105,16 +116,27 @@ class PostPage extends Component {
                 }
                 fileId
                 fileType
-                userEmail
+                userId
+                user{
+                  id
+                  name
+                  email
+                  profileUrl
+                }
                 id
                 caption
                 likeCount
                 dislikeCount
                 comments{
                   text
-                  userEmail
+                  userId
+                  user{
+                    id
+                    name
+                    email
+                    profileUrl
+                  }
                   id
-                  userName
                 }
               }
             }

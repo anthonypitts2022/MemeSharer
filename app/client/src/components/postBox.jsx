@@ -125,7 +125,7 @@ class PostBox extends Component {
     deletePost();
     async function deletePost() {
       try{
-        if(this.context.user_email != this.state.Memeail)
+        if(this.context.user_email != this.state.userEmail)
         {
           return null;
         }

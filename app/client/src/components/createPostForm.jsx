@@ -23,6 +23,7 @@ class CreatePostForm extends Component {
 
     this.state = {
       selectedFile: null,
+      temporaryFileUrl: null,
       errors: [],
     };
 
@@ -40,6 +41,7 @@ class CreatePostForm extends Component {
 
   handleFileChange(event) {
     this.setState({selectedFile: event.target.files[0]});
+    this.setState({temporaryFileUrl: URL.createObjectURL(event.target.files[0])})
   }
 
   handleSubmit(event) {
@@ -75,44 +77,92 @@ class CreatePostForm extends Component {
 
 
   render(){
-    return(
-      <div>
-       <div className="container">
-          <div className="col-md-6 mx-auto text-center">
-             <div className="jumbotron">
-                <h1 className="wv-heading--title">
-                   Share A Spicy Meme
-                </h1>
-             </div>
-          </div>
-          <div className="row">
-             <div className="col-md-4 mx-auto">
-                <div className="myform form ">
-                   <form name="postUpload">
-                      <div className="form-group">
-                        <div className="custom-file mb-3">
-                          <input type="file" name="file" id="file" onChange={this.handleFileChange} className="custom-file-input"/>
-                          <label htmlFor="file" className="custom-file-label">Choose File</label>
+    //if a file has not yet been uploaded
+    if(this.state.temporaryFileUrl===null)
+    {
+      return(
+        <div>
+         <div className="container">
+            <div className="col-md-6 mx-auto text-center">
+               <div className="jumbotron">
+                  <h1 className="wv-heading--title">
+                     Share A Spicy Meme
+                  </h1>
+               </div>
+            </div>
+            <div className="row">
+               <div className="col-md-4 mx-auto">
+                  <div className="myform form ">
+                     <form name="postUpload">
+                        <div className="form-group">
+                          <div className="custom-file mb-3">
+                            <input type="file" name="file" id="file" onChange={this.handleFileChange} className="custom-file-input"/>
+                            <label htmlFor="file" className="custom-file-label">Choose File</label>
+                          </div>
+                          <p></p>
+                           <input onChange={this.handleCaptionChange} type="caption" name="caption"  className="form-control my-input" id="caption" placeholder="Caption" />
                         </div>
-                        <p></p>
-                         <input onChange={this.handleCaptionChange} type="caption" name="caption"  className="form-control my-input" id="caption" placeholder="Caption" />
+                    </form>
+                  </div>
+                  <a type="submit" onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Post Meme</a>
+                  <div>
+                    {this.state.errors.map(error => (
+                      <div key={error+"splitErrors"} >
+                        <p key={error+"break"} ></p>
+                        <div key={error} className="alert alert-danger" >{error}</div>
                       </div>
-                  </form>
-                </div>
-                <a type="submit" onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Post Meme</a>
-                <div>
-                  {this.state.errors.map(error => (
-                    <div key={error+"splitErrors"} >
-                      <p key={error+"break"} ></p>
-                      <div key={error} className="alert alert-danger" >{error}</div>
-                    </div>
-                  ))}
-                </div>
-             </div>
-          </div>
-       </div>
-    </div>
-    );
+                    ))}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      );
+    }
+
+    //if a file has been uploaded
+    else{
+      return(
+        <div>
+         <div className="container">
+            <div className="col-md-6 mx-auto text-center">
+               <div className="jumbotron">
+                  <h1 className="wv-heading--title">
+                     Share A Spicy Meme
+                  </h1>
+               </div>
+            </div>
+            <div className="row">
+               <div className="col-md-4 mx-auto">
+                  <div className="myform form ">
+                     <form name="postUpload">
+                        <div className="form-group">
+                          <div className="custom-file mb-3">
+                            <input type="file" name="file" id="file" onChange={this.handleFileChange} className="custom-file-input"/>
+                            <label htmlFor="file" className="custom-file-label">Choose File</label>
+                          </div>
+                          <p></p>
+                            <img src={this.state.temporaryFileUrl} style={{maxWidth:"100%", maxHeight:"auto", width:"200px", height:"200px"}}/>
+                          <p></p>
+                           <input onChange={this.handleCaptionChange} type="caption" name="caption"  className="form-control my-input" id="caption" placeholder="Caption" />
+                        </div>
+                    </form>
+                  </div>
+                  <a type="submit" onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Post Meme</a>
+                  <div>
+                    {this.state.errors.map(error => (
+                      <div key={error+"splitErrors"} >
+                        <p key={error+"break"} ></p>
+                        <div key={error} className="alert alert-danger" >{error}</div>
+                      </div>
+                    ))}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      );
+    }
   }
 
 
