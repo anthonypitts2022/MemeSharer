@@ -3,9 +3,11 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import NavBarWithSignIn from '../components/navBarWithSignIn.jsx';
 import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
-import Posts from '../queries-mutations/Posts.js';
 import FollowingIds from '../queries-mutations/FollowingIds.js';
 import UserContext from '../contexts/UserContext.js';
+import { Query } from "react-apollo";
+import gql from "graphql-tag";
+import PostBox from '../components/postBox.jsx';
 
 
 const postsClient = new ApolloClient({
@@ -33,7 +35,57 @@ class Feed extends Component {
       <div key="feed">
         <NavBarWithSignIn key="navBarWithSignIn" />
         <ApolloProvider client={postsClient}>
-          <Posts key={"posts"} />
+          <Query
+            query={gql`
+              query userPosts($userId: String!){
+                Post: userPosts(userId: $userId){
+                  errors{
+                    msg
+                  }
+                  fileId
+                  fileType
+                  userId
+                  user{
+                    id
+                    name
+                    email
+                    profileUrl
+                  }
+                  id
+                  caption
+                  likeCount
+                  dislikeCount
+                  comments{
+                    text
+                    userId
+                    user{
+                      id
+                      name
+                      email
+                      profileUrl
+                    }
+                    id
+                  }
+                }
+              }
+            `}
+            variables={{userId: this.props.match.params.userId}}
+          >
+            {({ loading, error, data }) => {
+              if (loading) return <p>Loading...</p>;
+              if (error) return <p>Error :(</p>;
+              return(
+                <div>
+                  {data.Post.map(postInfo => (
+                    <div key={postInfo.id}>
+                      <PostBox postInfo={postInfo}/>
+                      <p></p>
+                    </div>
+                  ))}
+                </div>
+              );
+            }}
+          </Query>
         </ApolloProvider>
         <div style={{color:"#9b9b9b", lineHeight: "1.3em", padding: "4em 0", textAlign: "center", fontSize: ".75rem"}}>
           <div style={{padding:"0 1.5em",  width:"100%", maxWidth:"940px", margin:"0 auto", boxSizing: "border-box", color:"#9b9b9b", lineHeight: "1.3em", textAlign: "center", fontSize: ".75rem"}}>
@@ -53,7 +105,57 @@ class Feed extends Component {
       <div key="feed">
         <NavBarWithoutSignIn key="navBarWithoutSignIn" />
         <ApolloProvider client={postsClient}>
-          <Posts key={"posts"} />
+          <Query
+            query={gql`
+              query userPosts($userId: String!){
+                Post: userPosts(userId: $userId){
+                  errors{
+                    msg
+                  }
+                  fileId
+                  fileType
+                  userId
+                  user{
+                    id
+                    name
+                    email
+                    profileUrl
+                  }
+                  id
+                  caption
+                  likeCount
+                  dislikeCount
+                  comments{
+                    text
+                    userId
+                    user{
+                      id
+                      name
+                      email
+                      profileUrl
+                    }
+                    id
+                  }
+                }
+              }
+            `}
+            variables={{userId: this.props.match.params.userId}}
+          >
+            {({ loading, error, data }) => {
+              if (loading) return <p>Loading...</p>;
+              if (error) return <p>Error :(</p>;
+              return(
+                <div>
+                  {data.Post.map(postInfo => (
+                    <div key={postInfo.id}>
+                      <PostBox postInfo={postInfo}/>
+                      <p></p>
+                    </div>
+                  ))}
+                </div>
+              );
+            }}
+          </Query>
         </ApolloProvider>
         <div style={{color:"#9b9b9b", lineHeight: "1.3em", padding: "4em 0", textAlign: "center", fontSize: ".75rem"}}>
           <div style={{padding:"0 1.5em",  width:"100%", maxWidth:"940px", margin:"0 auto", boxSizing: "border-box", color:"#9b9b9b", lineHeight: "1.3em", textAlign: "center", fontSize: ".75rem"}}>

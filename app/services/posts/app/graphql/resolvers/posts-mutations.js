@@ -98,7 +98,7 @@ const createPostMutation = async (parent, { input }) => {
 // @access : Private, User
 // @desc   : Create a Comment Object
 const createCommentMutation = async (parent, { input }) => {
-  console.log(input)
+
   // Validate the Post input and return errors if any
   const { msg, isValid } = validateCommentInput(input);
   if (!isValid) {

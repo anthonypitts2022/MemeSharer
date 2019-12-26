@@ -32,7 +32,7 @@ class RoutingPage extends Component {
           <Switch>
             <Route exact path="/" component={Feed} />
             <Route path="/login" component={LoginPage} />
-            <Route path="/profile" component={ProfilePage} />
+            <Route path="/profile/:userId" component={ProfilePage} />
             <Route path="/createpost" component={CreatePostPage} />
             <Route path="/post/:postId" component={PostPage} />
             <Route component={Page404} />

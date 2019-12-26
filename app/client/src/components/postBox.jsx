@@ -194,7 +194,7 @@ class PostBox extends Component {
         <div className="row">
           <div className="col-md-6 offset-md-3">
             <div className="card">
-              <div className="card-body">
+              <a className="card-body" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
                 <div className="row">
                   <div className="col-1.5">
                     <Image
@@ -209,7 +209,7 @@ class PostBox extends Component {
                     </div>
                   </div>
                 </div>
-              </div>
+              </a>
               <div style={{position:"asbolute", zIndex:"1"}}>
                 <img style={{position:"relative", zIndex:"2"}} className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
                 <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>

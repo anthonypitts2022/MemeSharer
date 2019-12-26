@@ -77,14 +77,14 @@ const postDislikeCountQuery = async (root, { postId }) => {
   }
 };
 
-const userPostsQuery = async (root, { args }, {user}) => {
+const userPostsQuery = async (root, { userId }) => {
   try {
     //checks if user is signed in
-    if(!user){
-      return handleErrors("001", {user: "user not signed in"});
+    if(!userId){
+      return handleErrors("001", {user: "Did not recieve userid"});
     }
     //gets 200 post from user
-    const posts = await Post.find({userEmail: input.userEmail});
+    const posts = await Post.find({userId: userId});
 
     //if no posts were found
     if(!posts){

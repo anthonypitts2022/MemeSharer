@@ -3,7 +3,7 @@ type Query {
   getAllPosts: [Post]
   postLikeCount(postId: String!): String
   postDislikeCount(postId: String!): String
-  userPosts: [Post]
+  userPosts(userId: String!): [Post]
   feedPosts(input: feedPostsInput): [Post]
 }
 
