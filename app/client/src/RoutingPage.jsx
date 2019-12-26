@@ -6,10 +6,14 @@ import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import PostPage from './pages/PostPage';
 import CreatePostPage from './pages/CreatePostPage';
+import ContentPolicyPage from './pages/ContentPolicyPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import UserAgreementPage from './pages/UserAgreementPage';
 import * as serviceWorker from './config/serviceWorker';
 import "bootstrap/dist/css/bootstrap.css";
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { UserProvider } from './contexts/UserContext.js';
+
 
 
 class RoutingPage extends Component {
@@ -35,6 +39,9 @@ class RoutingPage extends Component {
             <Route path="/profile/:userId" component={ProfilePage} />
             <Route path="/createpost" component={CreatePostPage} />
             <Route path="/post/:postId" component={PostPage} />
+            <Route path="/privacypolicy" component={PrivacyPolicyPage} />
+            <Route path="/contentpolicy" component={ContentPolicyPage} />
+            <Route path="/useragreement" component={UserAgreementPage} />
             <Route component={Page404} />
           </Switch>
         </UserProvider>
