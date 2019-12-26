@@ -224,7 +224,6 @@ app.route('/querypost').post(function(req, res) {
             profileUrl
           }
           id
-          userName
         }
       }
     }
