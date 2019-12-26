@@ -32,13 +32,9 @@ const CommentSchema = new Schema({
       default: shortid.generate,
       description: "The id of the Comment"
     },
-    userEmail: {
+    userId: {
       type: String,
-      description: "The email of the user connected to that post."
-    },
-    userName: {
-      type: String,
-      description: "The name of the user connected to that post."
+      description: "The id of the user connected to that post."
     },
     postId: {
       type: String,
@@ -62,8 +58,7 @@ const CommentSchema = new Schema({
 
 CommentSchema.index({
   index: "text",
-  userEmail: "text",
-  userName: "text",
+  userId: "text",
   postId: "text",
   text: "text",
   date: "text"

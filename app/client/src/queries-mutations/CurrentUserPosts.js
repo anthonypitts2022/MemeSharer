@@ -18,9 +18,14 @@ const Posts = () => (
           comments{
             text
             userId
+            user{
+              id
+              name
+              email
+              profileUrl
+            }
             postId
             id
-            userName
           }
         }
       }

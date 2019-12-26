@@ -23,9 +23,9 @@ const { createApolloFetch } = require('apollo-fetch');
 
 
 //bring in models
-//const Posts = require("../../models/Post-model.js");
-const Comment = require("../../models/Comment-model.js");
-const Like = require("../../models/Like-model.js");
+const Posts = require("../../models/Post-model.js");
+const Comments = require("../../models/Comment-model.js");
+const Likes = require("../../models/Like-model.js");
 
 // posts Queries Library
 const {
@@ -90,21 +90,21 @@ const Mutation = {
 const Post = {
   likeCount: async (post) => {
     try{
-      return await Like.countDocuments({postId: post.id, isLike: true});
+      return await Likes.countDocuments({postId: post.id, isLike: true});
     } catch(err){
       return handleErrors("001", {postId: "post does not exist."})
     }
   },
   dislikeCount: async (post) => {
     try{
-      return await Like.countDocuments({postId: post.id, isLike: false});
+      return await Likes.countDocuments({postId: post.id, isLike: false});
     } catch(err){
       return handleErrors("001", {postId: "post does not exist."})
     }
   },
   comments: async (post) => {
     try{
-      return await Comment.find({postId: post.id}).limit(20);
+      return await Comments.find({postId: post.id}).limit(20);
     } catch(err){
       return handleErrors("001", {postId: "failed to get comments"})
     }
@@ -146,9 +146,87 @@ const Post = {
   }
 }
 
+
+const Like = {
+  user: async (like) => {
+    try{
+      //calls database mutation
+      var fetch = createApolloFetch({
+        uri: "http://localhost:3002/user"
+      });
+
+      //fetch and return the user data corresponding to this user id
+      return await fetch({
+        query:
+        `
+        query user($id: String!){
+          User: user(id: $id){
+            errors{
+              msg
+            }
+            id
+            name
+            email
+            profileUrl
+          }
+        }
+        `,
+        variables: {
+          id: like.userId,
+        }
+      })
+      .then(result => {
+        //result.data holds the data returned from the mutation
+        return result.data.User;
+      })
+    } catch(err){
+      return handleErrors("001", {postId: "failed to get like's user"})
+    }
+  }
+}
+
+
+const Comment = {
+  user: async (comment) => {
+    try{
+      //calls database mutation
+      var fetch = createApolloFetch({
+        uri: "http://localhost:3002/user"
+      });
+
+      //fetch and return the user data corresponding to this user id
+      return await fetch({
+        query:
+        `
+        query user($id: String!){
+          User: user(id: $id){
+            errors{
+              msg
+            }
+            id
+            name
+            email
+            profileUrl
+          }
+        }
+        `,
+        variables: {
+          id: comment.userId,
+        }
+      })
+      .then(result => {
+        //result.data holds the data returned from the mutation
+        return result.data.User;
+      })
+    } catch(err){
+      return handleErrors("001", {postId: "failed to get comments's user"})
+    }
+  }
+}
+
 //==============================================================================
 // !EXPORTS
 //==============================================================================
 
 //module.exports = { Query, Mutation };
-module.exports = { Query, Mutation, Post };
+module.exports = { Query, Mutation, Post, Like, Comment };

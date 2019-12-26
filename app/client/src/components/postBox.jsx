@@ -5,8 +5,6 @@ import AddComment from '../queries-mutations/AddComment.js';
 import axios from 'axios';
 import { UserConsumer } from '../contexts/UserContext.js';
 import UserContext from '../contexts/UserContext.js';
-import styled from 'styled-components';
-import InfiniteScroll from 'react-infinite-scroller';
 import { Image } from 'react-native';
 
 
@@ -58,7 +56,7 @@ class PostBox extends Component {
           window.location = "/login";
         }
 
-        var createLikeVariables={"input": { "isLike":true, "postId": this.state.postId, "userEmail": this.context.user_email } };
+        var createLikeVariables={"input": { "isLike":true, "postId": this.state.postId, "userId": this.context.user_id } };
 
         //call add like mutation
         var createLikeResponse = await axios.post("http://localhost:3301/createlike", createLikeVariables);
@@ -92,7 +90,7 @@ class PostBox extends Component {
     addDislike();
     async function addDislike() {
       try{
-        var createLikeVariables={"input": { "isLike":false, "postId": this.state.postId, "userEmail": this.context.user_email  } };
+        var createLikeVariables={"input": { "isLike":false, "postId": this.state.postId, "userId": this.context.user_id  } };
 
         //call add like mutation
         var createLikeResponse = await axios.post("http://localhost:3301/createlike", createLikeVariables);
@@ -127,7 +125,7 @@ class PostBox extends Component {
     deletePost();
     async function deletePost() {
       try{
-        if(this.context.user_email != this.state.userEmail)
+        if(this.context.user_email != this.state.Memeail)
         {
           return null;
         }
@@ -234,7 +232,7 @@ class PostBox extends Component {
                 <div>
                   {this.state.comments.slice(0,this.state.visibleComments).map(comment => (
                     <div key={comment.id}>
-                      <p key={comment.id+"user"} className="card-text">{comment.userName + ": "}{comment.text}</p>
+                      <p key={comment.id+"user"} className="card-text">{comment.user.name + ": "}{comment.text}</p>
                       <p key={comment.id+ "space"}></p>
                     </div>
                   ))}
@@ -253,8 +251,7 @@ class PostBox extends Component {
                       "input": {
                         "text":this.state.addCommentText,
                         "postId": this.state.postId,
-                        "userEmail": this.context.user_email,
-                        "userName": this.context.user_name
+                        "userId": this.context.user_id
                       }}}>
                     {addComment => <button type="submit" onClick={this.context.user_email!=undefined ? addComment: false} className="badge badge-pill badge-primary">Add Comment</button>}
                   </Mutation>

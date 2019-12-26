@@ -16,8 +16,13 @@ const CreatePost = gql`
       dislikeCount
       comments{
         text
-        userEmail
-        userName
+        userId
+        user{
+          id
+          name
+          email
+          profileUrl
+        }
       }
     }
   }

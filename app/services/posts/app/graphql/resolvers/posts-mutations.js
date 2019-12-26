@@ -63,7 +63,7 @@ const validateID = require("../../validation/validateID.js");
 
 // @access : Private, User
 // @desc   : Create a Post Object
-const createPostMutation = async (parent, { input }, {user}) => {
+const createPostMutation = async (parent, { input }) => {
   // Validate the Post input and return errors if any
   const { msg, isValid } = validatePostInput(input);
   if (!isValid) {
@@ -98,6 +98,7 @@ const createPostMutation = async (parent, { input }, {user}) => {
 // @access : Private, User
 // @desc   : Create a Comment Object
 const createCommentMutation = async (parent, { input }) => {
+  console.log(input)
   // Validate the Post input and return errors if any
   const { msg, isValid } = validateCommentInput(input);
   if (!isValid) {
@@ -112,10 +113,9 @@ const createCommentMutation = async (parent, { input }) => {
 
     // Create a Comment object based on the input
     var newComment = new Comment({
-      userEmail: input.userEmail,
+      userId: input.userId,
       postId: input.postId,
-      text: input.text,
-      userName: input.userName
+      text: input.text
     });
     newComment.save();
 
@@ -145,8 +145,9 @@ const createLikeMutation = async (parent, { input }) => {
   try {
 
     //--------check if already liked or disliked--------//
-    var priorLike = await Like.findOne({userEmail: input.userEmail, postId: input.postId});
+    var priorLike = await Like.findOne({userId: input.userId, postId: input.postId});
     if(priorLike){
+
       //if trying to like something already liked
       if(priorLike.isLike==true && input.isLike==true){
         return handleErrors("001", {isLike: "already liked"})
@@ -162,13 +163,13 @@ const createLikeMutation = async (parent, { input }) => {
         //change the dislike to like
         await Like.updateOne({
           postId: input.postId,
-          userEmail: input.userEmail
+          userId: input.userId
           },
           { $set: {isLike:true} }
         );
         var newLike = await Like.findOne({
           postId: input.postId,
-          userEmail: input.userEmail});
+          userId: input.userId});
         return newLike;
       }
 
@@ -177,13 +178,13 @@ const createLikeMutation = async (parent, { input }) => {
         //change the dislike to like
         await Like.updateOne({
           postId: input.postId,
-          userEmail: input.userEmail
+          userId: input.userId
           },
           { $set: {isLike:false} }
         );
         var newLike = await Like.findOne({
           postId: input.postId,
-          userEmail: input.userEmail});
+          userId: input.userId});
         return newLike;
       }
     }
@@ -197,7 +198,7 @@ const createLikeMutation = async (parent, { input }) => {
 
     // Create a Like object based on the input
     var newLike = new Like({
-      userEmail: input.userEmail,
+      userId: input.userId,
       postId: input.postId,
       isLike: input.isLike
     });
@@ -217,7 +218,7 @@ const createLikeMutation = async (parent, { input }) => {
 
 // @access : Private, User
 // @desc   : Delete all Comments Objects
-const deleteAllCommentsMutation = async (parent, { isActual }, {user}) => {
+const deleteAllCommentsMutation = async (parent, { isActual }) => {
   try{
     await Comment.deleteMany();
     return true;
@@ -236,7 +237,7 @@ const deleteAllCommentsMutation = async (parent, { isActual }, {user}) => {
 
 // @access : Public, User
 // @desc   : Insert the image file into the upload/images folder
-const uploadImageToServerMutation = async (parent, { input }, {user}) => {
+const uploadImageToServerMutation = async (parent, { input }) => {
   try{
     var fileWriter = new Writer();
 

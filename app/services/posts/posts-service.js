@@ -76,7 +76,13 @@ app.route('/upload').post(function(req, res) {
             dislikeCount
             comments{
               text
-              userEmail
+              userId
+              user{
+                id
+                name
+                email
+                profileUrl
+              }
             }
           }
         }
@@ -109,6 +115,7 @@ app.route('/createlike').post(function(req, res) {
   });
   //binds the res of upload to fetch to return the fetch data
   fetch = fetch.bind(res)
+
   fetch({
     query:
     `
@@ -118,7 +125,13 @@ app.route('/createlike').post(function(req, res) {
             msg
           }
           id
-          userEmail
+          userId
+          user{
+            id
+            name
+            email
+            profileUrl
+          }
           postId
           isLike
         }
@@ -128,7 +141,7 @@ app.route('/createlike').post(function(req, res) {
       input: {
         isLike: req.body.input.isLike,
         postId: req.body.input.postId,
-        userEmail: req.body.input.userEmail
+        userId: req.body.input.userId
       }
     }
   })
@@ -190,14 +203,26 @@ app.route('/querypost').post(function(req, res) {
         }
         fileId
         fileType
-        userEmail
+        userId
+        user{
+          id
+          name
+          email
+          profileUrl
+        }
         id
         caption
         likeCount
         dislikeCount
         comments{
           text
-          userEmail
+          userId
+          user {
+            id
+            name
+            email
+            profileUrl
+          }
           id
           userName
         }

@@ -10,8 +10,13 @@ const AddComment = gql`
         msg
       }
       id
-      userName
-      userEmail
+      userId
+      user{
+        id
+        name
+        email
+        profileUrl
+      }
       postId
       text
     }

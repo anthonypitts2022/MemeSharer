@@ -27,9 +27,14 @@ const Post = () => (
           dislikeCount
           comments{
             text
-            userEmail
+            userId
+            user{
+              id
+              name
+              email
+              profileUrl
+            }
             id
-            userName
           }
         }
       }
