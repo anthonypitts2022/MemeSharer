@@ -98,12 +98,12 @@ const createPostMutation = async (parent, { input }) => {
 // @access : Private, User
 // @desc   : Create a Comment Object
 const createCommentMutation = async (parent, { input }) => {
-
   // Validate the Post input and return errors if any
   const { msg, isValid } = validateCommentInput(input);
   if (!isValid) {
     return handleErrors("001", msg);
   }
+
 
   try {
     //checks if the post does not exist
@@ -118,7 +118,6 @@ const createCommentMutation = async (parent, { input }) => {
       text: input.text
     });
     newComment.save();
-
     return newComment;
     // Initiate sending the new post to the database
   } catch (err) {

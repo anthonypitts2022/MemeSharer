@@ -6,6 +6,8 @@ import axios from 'axios';
 import { UserConsumer } from '../contexts/UserContext.js';
 import UserContext from '../contexts/UserContext.js';
 import { Image } from 'react-native';
+const { createApolloFetch } = require('apollo-fetch');
+
 
 
 
@@ -31,6 +33,7 @@ class PostBox extends Component {
     };
 
     this.handleAddCommentChange = this.handleAddCommentChange.bind(this);
+    this.handleAddComment = this.handleAddComment.bind(this);
     this.handleLikeClick = this.handleLikeClick.bind(this);
     this.handleDislikeClick = this.handleDislikeClick.bind(this);
     this.handleDeletePost = this.handleDeletePost.bind(this);
@@ -42,6 +45,83 @@ class PostBox extends Component {
 
   handleAddCommentChange(event) {
     this.setState({addCommentText: event.target.value});
+  }
+
+  commentText = <div></div>;
+  handleAddComment(event) {
+
+    //bind this to the addLike function
+    addComment = addComment.bind(this);
+
+    addComment();
+    async function addComment() {
+      try{
+
+        if(this.context===undefined || this.context.user_email===undefined){
+          window.location = "/login";
+        }
+
+        var createCommentVariables={
+          "input": {
+            "text": this.state.addCommentText,
+            "postId": this.state.postId,
+            "userId": this.context.user_id
+          }
+        };
+
+
+        //calls create like database mutation
+        var fetch = createApolloFetch({
+          uri: "http://localhost:3301/posts"
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(createCommentVariables)
+
+        let createCommentResponse = await fetch({
+          query:
+          `
+          mutation createComment($input: createCommentInput){
+            Comment: createComment(input: $input){
+              errors{
+                msg
+              }
+              id
+              userId
+              user{
+                id
+                name
+                email
+                profileUrl
+              }
+              postId
+              text
+            }
+          }
+          `,
+          variables: createCommentVariables
+        })
+
+
+       //if invalid comment
+       if(createCommentResponse.data.Comment.errors != null)
+         return;
+
+        //add the new comment to the comment array
+        let comments = this.state.comments;
+        comments[comments.length] = createCommentResponse.data.Comment;
+
+        this.setState({comments: comments});
+        this.setState({addCommentText: ''});
+
+        //clear input to add comment
+        document.getElementById("commentInput"+this.state.postId).value = '';
+
+      } catch(err) {
+        console.log(err);
+      }
+
+      }
   }
 
   handleLikeClick(event) {
@@ -192,8 +272,8 @@ class PostBox extends Component {
     {
       return(
         <div className="row">
-          <div className="col-md-6 offset-md-3">
-            <div className="card">
+          <div className="col-md-6 offset-md-4">
+            <div className="card" style={{width:"40rem"}}>
               <a className="card-body" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
                 <div className="row">
                   <div className="col-1.5">
@@ -241,21 +321,11 @@ class PostBox extends Component {
                   {loadMoreButton}
                 </div>
 
-                <form>
-                  <div className="form-group">
-                    <label htmlFor="InputComment"></label>
-                    <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id="commentInput" aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
-                  </div>
-                  <Mutation mutation={AddComment} variables={
-                    {
-                      "input": {
-                        "text":this.state.addCommentText,
-                        "postId": this.state.postId,
-                        "userId": this.context.user_id
-                      }}}>
-                    {addComment => <button type="submit" onClick={this.context.user_email!=undefined ? addComment: false} className="badge badge-pill badge-primary">Add Comment</button>}
-                  </Mutation>
-                </form>
+                <div className="form-group">
+                  <label htmlFor="InputComment"></label>
+                  <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id={"commentInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
+                </div>
+                <button type="submit" onClick={this.context.user_id!=undefined ? this.handleAddComment : false} className="badge badge-pill badge-primary">Add Comment</button>
               </div>
             </div>
           </div>
@@ -268,8 +338,24 @@ class PostBox extends Component {
     else{
       return(
         <div className="row">
-          <div className="col-md-6 offset-md-3">
-            <div className="card">
+          <div className="col-md-6 offset-md-4">
+            <div className="card" style={{width:"40rem"}}>
+              <a className="card-body" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
+                <div className="row">
+                  <div className="col-1.5">
+                    <Image
+                      source={{uri: this.state.profileUrl}}
+                      style={{width: 60, height: 60, borderRadius: 60/ 2}}
+                    />
+                  </div>
+                  <div className="col">
+                    <p></p>
+                    <div className="col-8">
+                      <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.state.username}</font>
+                    </div>
+                  </div>
+                </div>
+              </a>
               <div style={{position:"asbolute", zIndex:"1"}}>
                 <img style={{position:"relative", zIndex:"2"}} className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
                 <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
@@ -289,31 +375,22 @@ class PostBox extends Component {
                 <h5 className="card-title">{this.state.caption}</h5>
 
                 <div>
-                  {this.state.comments.map(comment => (
+                  {this.state.comments.slice(0,this.state.visibleComments).map(comment => (
                     <div key={comment.id}>
-                      <p key={comment.id+"user"} className="card-text">{comment.userName + ": "}{comment.text}</p>
+                      <p key={comment.id+"user"} className="card-text">{comment.user.name + ": "}{comment.text}</p>
                       <p key={comment.id+ "space"}></p>
                     </div>
                   ))}
                 </div>
-                <button onClick={this.loadMore} type="button" className="btn btn-sm btn-success">View More Comments</button>
+                <div>
+                  {loadMoreButton}
+                </div>
 
-                <form>
-                  <div className="form-group">
-                    <label htmlFor="InputComment"></label>
-                    <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id="commentInput" aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
-                  </div>
-                  <Mutation mutation={AddComment} variables={
-                    {
-                      "input": {
-                        "text":this.state.addCommentText,
-                        "postId": this.state.postId,
-                        "userEmail": this.context.user_email,
-                        "userName": this.context.user_name
-                      }}}>
-                    {addComment => <button type="submit" onClick={this.context.user_email!=undefined ? addComment: false} className="badge badge-pill badge-primary">Add Comment</button>}
-                  </Mutation>
-                </form>
+                <div className="form-group">
+                  <label htmlFor="InputComment"></label>
+                  <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id={"commentInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
+                </div>
+                <button type="submit" onClick={this.context.user_id!=undefined ? this.handleAddComment : false} className="badge badge-pill badge-primary">Add Comment</button>
               </div>
             </div>
           </div>
