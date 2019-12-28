@@ -29,7 +29,8 @@ class PostBox extends Component {
       userId: (typeof props.postInfo.user.id === 'undefined') ? "" : props.postInfo.user.id,
       comments: (typeof props.postInfo.comments === 'undefined') ? [] : props.postInfo.comments,
       addCommentText: '',
-      visibleComments: 3
+      visibleComments: 3,
+      deleted: false
     };
 
     this.handleAddCommentChange = this.handleAddCommentChange.bind(this);
@@ -47,7 +48,6 @@ class PostBox extends Component {
     this.setState({addCommentText: event.target.value});
   }
 
-  commentText = <div></div>;
   handleAddComment(event) {
 
     //bind this to the addLike function
@@ -70,7 +70,7 @@ class PostBox extends Component {
         };
 
 
-        //calls create like database mutation
+        //calls create comment database mutation
         var fetch = createApolloFetch({
           uri: "http://localhost:3301/posts"
         });
@@ -138,19 +138,91 @@ class PostBox extends Component {
 
         var createLikeVariables={"input": { "isLike":true, "postId": this.state.postId, "userId": this.context.user_id } };
 
-        //call add like mutation
-        var createLikeResponse = await axios.post("http://localhost:3301/createlike", createLikeVariables);
+        //calls create like database mutation
+        var fetch = createApolloFetch({
+          uri: "http://localhost:3301/posts"
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(createLikeVariables)
+
+        let createLikeResponse = await fetch({
+          query:
+          `
+          mutation createLike($input: createLikeInput){
+            Like: createLike(input: $input){
+              errors{
+                msg
+              }
+              id
+              userId
+              user{
+                id
+                name
+                email
+                profileUrl
+              }
+              postId
+              isLike
+            }
+          }
+          `,
+          variables: createLikeVariables
+        })
 
         //newLike holds the data of the newly created like
-        var newLike = createLikeResponse.data;
+        var newLike = createLikeResponse.data.Like;
+        if(newLike.errors != null)
+          return;
 
-        var queryPostVariables={"input": { "postId": this.state.postId } };
+        // ------    retrieve new like count ------//
+        var queryPostVariables={"id": this.state.postId };
 
-        //query post to get like count
-        var post = await axios.post("http://localhost:3301/querypost", queryPostVariables);
+        fetch = fetch.bind(queryPostVariables);
 
-        var newLikeCount = post.data.likeCount;
-        var newDislikeCount = post.data.dislikeCount;
+        let queryPostResponse = await fetch({
+          query:
+          `
+          query getAPost($id: String!){
+            Post: getAPost(id: $id){
+              errors{
+                msg
+              }
+              fileId
+              fileType
+              userId
+              user{
+                id
+                name
+                email
+                profileUrl
+              }
+              id
+              caption
+              likeCount
+              dislikeCount
+              comments{
+                text
+                userId
+                user {
+                  id
+                  name
+                  email
+                  profileUrl
+                }
+                id
+              }
+            }
+          }
+          `,
+          variables: queryPostVariables
+        })
+
+        if(queryPostResponse.data.Post.errors != null)
+          return;
+
+        var newLikeCount = queryPostResponse.data.Post.likeCount;
+        var newDislikeCount = queryPostResponse.data.Post.dislikeCount;
 
         //reset the new like / dislike counts from most recent query
         this.setState({likeCount: newLikeCount});
@@ -165,26 +237,103 @@ class PostBox extends Component {
 
   handleDislikeClick(event) {
     //bind this to the addLike function
-    addDislike = addDislike.bind(this);
+    addLike = addLike.bind(this);
 
-    addDislike();
-    async function addDislike() {
+    addLike();
+    async function addLike() {
       try{
-        var createLikeVariables={"input": { "isLike":false, "postId": this.state.postId, "userId": this.context.user_id  } };
 
-        //call add like mutation
-        var createLikeResponse = await axios.post("http://localhost:3301/createlike", createLikeVariables);
+        if(this.context===undefined || this.context.user_email===undefined){
+          window.location = "/login";
+        }
+
+        var createLikeVariables={"input": { "isLike":false, "postId": this.state.postId, "userId": this.context.user_id } };
+
+        //calls create like database mutation
+        var fetch = createApolloFetch({
+          uri: "http://localhost:3301/posts"
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(createLikeVariables)
+
+        let createLikeResponse = await fetch({
+          query:
+          `
+          mutation createLike($input: createLikeInput){
+            Like: createLike(input: $input){
+              errors{
+                msg
+              }
+              id
+              userId
+              user{
+                id
+                name
+                email
+                profileUrl
+              }
+              postId
+              isLike
+            }
+          }
+          `,
+          variables: createLikeVariables
+        })
 
         //newLike holds the data of the newly created like
-        var newLike = createLikeResponse.data;
+        var newLike = createLikeResponse.data.Like;
+        if(newLike.errors != null)
+          return;
 
-        var queryPostVariables={"input": { "postId": this.state.postId } };
+        // ------    retrieve new like count ------//
+        var queryPostVariables={"id": this.state.postId };
 
-        //query post to get like count
-        var post = await axios.post("http://localhost:3301/querypost", queryPostVariables);
+        fetch = fetch.bind(queryPostVariables);
 
-        var newLikeCount = post.data.likeCount;
-        var newDislikeCount = post.data.dislikeCount;
+        let queryPostResponse = await fetch({
+          query:
+          `
+          query getAPost($id: String!){
+            Post: getAPost(id: $id){
+              errors{
+                msg
+              }
+              fileId
+              fileType
+              userId
+              user{
+                id
+                name
+                email
+                profileUrl
+              }
+              id
+              caption
+              likeCount
+              dislikeCount
+              comments{
+                text
+                userId
+                user {
+                  id
+                  name
+                  email
+                  profileUrl
+                }
+                id
+              }
+            }
+          }
+          `,
+          variables: queryPostVariables
+        })
+
+        if(queryPostResponse.data.Post.errors != null)
+          return;
+
+        var newLikeCount = queryPostResponse.data.Post.likeCount;
+        var newDislikeCount = queryPostResponse.data.Post.dislikeCount;
 
         //reset the new like / dislike counts from most recent query
         this.setState({likeCount: newLikeCount});
@@ -205,6 +354,9 @@ class PostBox extends Component {
     deletePost();
     async function deletePost() {
       try{
+        if(this.context===undefined || this.context.user_email===undefined){
+          window.location = "/login";
+        }
         if(this.context.user_email != this.state.userEmail)
         {
           return null;
@@ -212,13 +364,25 @@ class PostBox extends Component {
 
         var deletePostVariables={"id": this.state.postId };
 
-        //call delete post mutation
-        var deletePostResponse = await axios.post("http://localhost:3301/deletepost", deletePostVariables);
+        //calls create like database mutation
+        var fetch = createApolloFetch({
+          uri: "http://localhost:3301/posts"
+        });
 
-        //delete post holds the data of the newly created like
-        var newDeletion = deletePostResponse.data;
+        //binds the variables for query to fetch
+        fetch = fetch.bind(deletePostVariables)
 
-         window.location.reload(false);
+        let deletePostResponse = await fetch({
+          query:
+          `
+          mutation deletePost($id: String!){
+            deletePost(id: $id)
+          }
+          `,
+          variables: deletePostVariables
+        })
+
+        this.setState({deleted: true});
 
       }
       catch(err) {
@@ -261,6 +425,18 @@ class PostBox extends Component {
   }
 
   render(){
+    if(this.state.deleted === true)
+    return(
+      <div className="row">
+        <div className="col-md-6 offset-md-4">
+          <div className="card" style={{width:"40rem"}}>
+            <a className="card-body">
+              <p className="text-center font-weight-bold"><font color="#ff1a1a">This Post Has Been Deleted</font></p>
+            </a>
+          </div>
+        </div>
+      </div>
+    )
 
     let loadMoreButton;
     if(this.state.comments.length > this.state.visibleComments){

@@ -46,7 +46,7 @@ app.route('/upload').post(function(req, res) {
     }
 
     //if no errors on uploading file, proceed to create post
-    console.log(req.body)
+
     //calls create post database mutation
     var fetch = createApolloFetch({
       uri: "http://localhost:3301/posts"
@@ -103,83 +103,6 @@ app.route('/upload').post(function(req, res) {
   })
 });
 
-//=========================================================================//
-
-//============  create like mutation call   ====================//
-
-app.route('/createlike').post(function(req, res) {
-
-  //calls create like database mutation
-  var fetch = createApolloFetch({
-    uri: "http://localhost:3301/posts"
-  });
-  //binds the res of upload to fetch to return the fetch data
-  fetch = fetch.bind(res)
-
-  fetch({
-    query:
-    `
-      mutation createLike($input: createLikeInput){
-        Like: createLike(input: $input){
-          errors{
-            msg
-          }
-          id
-          userId
-          user{
-            id
-            name
-            email
-            profileUrl
-          }
-          postId
-          isLike
-        }
-      }
-    `,
-    variables: {
-      input: {
-        isLike: req.body.input.isLike,
-        postId: req.body.input.postId,
-        userId: req.body.input.userId
-      }
-    }
-  })
-  .then(result => {
-    //result.data holds the data returned from the createLike mutation
-    return res.status(200).send(result.data.Like);
-  })
-});
-
-
-//=========================================================================//
-
-//============  delete post mutation call   ====================//
-
-app.route('/deletepost').post(function(req, res) {
-
-  //calls delete post database mutation
-  var fetch = createApolloFetch({
-    uri: "http://localhost:3301/posts"
-  });
-  //binds the res of upload to fetch to return the fetch data
-  fetch = fetch.bind(res)
-  fetch({
-    query:
-    `
-    mutation deletePost($id: String!){
-      deletePost(id: $id)
-    }
-    `,
-    variables: {
-      id: req.body.id
-    }
-  })
-  .then(result => {
-    //result.data holds the data returned from the createLike mutation
-    return res.status(200).send(result.data);
-  })
-});
 
 //=========================================================================//
 
