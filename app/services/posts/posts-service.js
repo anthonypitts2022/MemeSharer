@@ -106,63 +106,6 @@ app.route('/upload').post(function(req, res) {
 
 //=========================================================================//
 
-//============  get Post mutation call   ====================//
-
-app.route('/querypost').post(function(req, res) {
-
-
-  //calls create like database mutation
-  var fetch = createApolloFetch({
-    uri: "http://localhost:3301/posts"
-  });
-  //binds the res of upload to fetch to return the fetch data
-  fetch = fetch.bind(res)
-  fetch({
-    query:
-    `
-    query getAPost($id: String!){
-      Post: getAPost(id: $id){
-        errors{
-          msg
-        }
-        fileId
-        fileType
-        userId
-        user{
-          id
-          name
-          email
-          profileUrl
-        }
-        id
-        caption
-        likeCount
-        dislikeCount
-        comments{
-          text
-          userId
-          user {
-            id
-            name
-            email
-            profileUrl
-          }
-          id
-        }
-      }
-    }
-    `,
-    variables: {
-      id: req.body.input.postId
-    }
-  })
-  .then(result => {
-    //result.data.Post holds the data returned from the getAPost mutation
-    return res.status(200).send(result.data.Post);
-  })
-});
-
-//=========================================================================//
 
 //============  Serving files of posts   ====================//
 
