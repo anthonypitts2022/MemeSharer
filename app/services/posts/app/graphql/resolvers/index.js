@@ -47,7 +47,8 @@ const {
   deleteAllCommentsMutation,
   deleteAllPostsMutation,
   deletePostMutation,
-  uploadImageToServerMutation
+  uploadImageToServerMutation,
+  editCaptionMutation
 } = require("./posts-mutations.js");
 
 //==============================================================================
@@ -79,7 +80,8 @@ const Mutation = {
   deleteAllComments: deleteAllCommentsMutation,
   deleteAllPosts: deleteAllPostsMutation,
   deletePost: deletePostMutation,
-  uploadImageToServer: uploadImageToServerMutation
+  uploadImageToServer: uploadImageToServerMutation,
+  editCaption: editCaptionMutation
 };
 
 

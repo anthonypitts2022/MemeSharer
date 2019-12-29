@@ -49,6 +49,7 @@ const Like = require("../../models/Like-model.js");
 
 const validatePostInput = require("../../validation/validatePostInput.js");
 const validateCommentInput = require("../../validation/validateCommentInput.js");
+const validateCaptionInput = require("../../validation/validateCaptionInput.js");
 const validateLikeInput = require("../../validation/validateLikeInput.js");
 const validateID = require("../../validation/validateID.js");
 
@@ -125,6 +126,45 @@ const createCommentMutation = async (parent, { input }) => {
     console.log(err);
   }
 };
+
+
+//==============================================================================
+// Edit A Caption
+//==============================================================================
+
+// @access : Private, User
+// @desc   : Update a caption on a post object
+const editCaptionMutation = async (parent, { input }) => {
+  // Validate the Post input and return errors if any
+  const { msg, isValid } = validateCaptionInput(input.newCaption);
+  if (!isValid) {
+    return handleErrors("001", msg);
+  }
+
+
+  try {
+    //checks if the post does not exist
+    if(!(await Post.findById(input.postId))){
+      return handleErrors("001", {postId: "post does not exist"});
+    }
+
+
+    let updatedPost = await Post.findOneAndUpdate(
+      {
+        _id: input.postId,
+      },
+      { $set: { caption: input.newCaption } },
+      //new:true will return updated record
+      { new: true}
+    );
+
+    return updatedPost;
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
 
 //==============================================================================
@@ -327,5 +367,6 @@ module.exports = {
   deleteAllCommentsMutation,
   deleteAllPostsMutation,
   deletePostMutation,
-  uploadImageToServerMutation
+  uploadImageToServerMutation,
+  editCaptionMutation
 };

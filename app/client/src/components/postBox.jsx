@@ -29,6 +29,7 @@ class PostBox extends Component {
       userId: (typeof props.postInfo.user.id === 'undefined') ? "" : props.postInfo.user.id,
       comments: (typeof props.postInfo.comments === 'undefined') ? [] : props.postInfo.comments,
       addCommentText: '',
+      newCaption: null,
       visibleComments: 3,
       deleted: false
     };
@@ -38,6 +39,8 @@ class PostBox extends Component {
     this.handleLikeClick = this.handleLikeClick.bind(this);
     this.handleDislikeClick = this.handleDislikeClick.bind(this);
     this.handleDeletePost = this.handleDeletePost.bind(this);
+    this.handleAddCaptionChange = this.handleAddCaptionChange.bind(this);
+    this.handleEditCaption = this.handleEditCaption.bind(this);
     this.handleCopyLink = this.handleCopyLink.bind(this);
     this.loadMore = this.loadMore.bind(this);
 
@@ -46,6 +49,15 @@ class PostBox extends Component {
 
   handleAddCommentChange(event) {
     this.setState({addCommentText: event.target.value});
+  }
+
+  handleAddCaptionChange(event) {
+    if(event.target.value != ""){
+      this.setState({newCaption: event.target.value});
+    }
+    else{
+      this.setState({newCaption: null});
+    }
   }
 
   handleAddComment(event) {
@@ -57,7 +69,7 @@ class PostBox extends Component {
     async function addComment() {
       try{
 
-        if(this.context===undefined || this.context.user_email===undefined){
+        if(this.context===undefined || this.context.user_id===undefined){
           window.location = "/login";
         }
 
@@ -132,7 +144,7 @@ class PostBox extends Component {
     async function addLike() {
       try{
 
-        if(this.context===undefined || this.context.user_email===undefined){
+        if(this.context===undefined || this.context.user_id===undefined){
           window.location = "/login";
         }
 
@@ -243,7 +255,7 @@ class PostBox extends Component {
     async function addLike() {
       try{
 
-        if(this.context===undefined || this.context.user_email===undefined){
+        if(this.context===undefined || this.context.user_id===undefined){
           window.location = "/login";
         }
 
@@ -354,7 +366,7 @@ class PostBox extends Component {
     deletePost();
     async function deletePost() {
       try{
-        if(this.context===undefined || this.context.user_email===undefined){
+        if(this.context===undefined || this.context.user_id===undefined){
           window.location = "/login";
         }
         if(this.context.user_email != this.state.userEmail)
@@ -383,6 +395,67 @@ class PostBox extends Component {
         })
 
         this.setState({deleted: true});
+
+      }
+      catch(err) {
+        console.log(err);
+      }
+    }
+  }
+
+
+  handleEditCaption(event) {
+    //bind this to the deletePost function
+    editCaption = editCaption.bind(this);
+
+    editCaption();
+    async function editCaption() {
+      try{
+
+        if(this.context===undefined || this.context.user_id===undefined){
+          window.location = "/login";
+        }
+        if(this.context.user_email != this.state.userEmail)
+          return;
+        if(this.state.newCaption === null)
+          return;
+
+        var editCaptionVariables={
+          "input": {
+            "postId": this.state.postId,
+            "newCaption": this.state.newCaption
+          }
+        };
+
+        //calls create like database mutation
+        var fetch = createApolloFetch({
+          uri: "http://localhost:3301/posts"
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(editCaptionVariables)
+
+        let editCaptionResponse = await fetch({
+          query:
+          `
+          mutation editCaption($input: editCaptionInput!){
+            Post: editCaption(input: $input){
+              errors{
+                msg
+              }
+              caption
+            }
+          }
+          `,
+          variables: editCaptionVariables
+        })
+
+        if(editCaptionResponse.errors != null)
+          return;
+
+        this.setState({caption: editCaptionResponse.data.Post.caption});
+        this.setState({newCaption: null});
+
 
       }
       catch(err) {
@@ -448,6 +521,33 @@ class PostBox extends Component {
     {
       return(
         <div className="row">
+
+          <div className="modal fade" id="editCaptionModal" tabIndex="-1" role="dialog" aria-labelledby="editCaptionModalLabel" aria-hidden="true">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content" style={{backgroundColor: '#e0e0eb'}} >
+                <div className="modal-header">
+                  <h5 className="modal-title" id="editCaptionModalLabel">Change Caption</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <ul>
+                    <font className="font-weight-bold">Current Caption</font>: {this.state.caption}
+                  </ul>
+                  <ul>
+                    <font className="font-weight-bold">New Caption</font>: <label htmlFor="InputCaption"></label>
+                    <input id={this.state.postId + "newCaptionInput"} type="Comment" className="form-control" onChange={this.handleAddCaptionChange} id={"captionInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter New Caption"></input>
+                  </ul>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" className="btn btn-primary" onClick={this.handleEditCaption} data-dismiss="modal">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="col-md-6 offset-md-4">
             <div className="card" style={{width:"40rem"}}>
               <a className="card-body" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
@@ -471,6 +571,7 @@ class PostBox extends Component {
                 <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
                   <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <button type="button" className="dropdown-item" data-toggle="modal" data-target="#editCaptionModal">Edit Caption</button>
                     <button onClick={this.handleDeletePost} className="dropdown-item">Delete Post</button>
                     <button onClick={this.handleCopyLink} className="dropdown-item">Copy Link</button>
                   </div>

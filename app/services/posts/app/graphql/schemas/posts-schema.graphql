@@ -15,6 +15,7 @@ type Mutation {
   deleteAllPosts(isActual: Boolean!): Boolean
   deletePost(id: String!): Boolean
   uploadImageToServer(input: uploadImageInput): Boolean
+  editCaption(input: editCaptionInput!): Post
 }
 
 
@@ -76,6 +77,11 @@ input createPostInput{
   caption: String
   fileId: String!
   fileType: String!
+}
+
+input editCaptionInput{
+  postId: String!
+  newCaption: String!
 }
 
 input feedPostsInput{
