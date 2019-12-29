@@ -412,6 +412,9 @@ class PostBox extends Component {
     async function editCaption() {
       try{
 
+        // clear add new caption input from modal
+        document.getElementById("captionInput"+this.state.postId).value = ''
+
         if(this.context===undefined || this.context.user_id===undefined){
           window.location = "/login";
         }
@@ -498,6 +501,8 @@ class PostBox extends Component {
   }
 
   render(){
+
+    //if post has been deleted
     if(this.state.deleted === true)
     return(
       <div className="row">
@@ -511,169 +516,121 @@ class PostBox extends Component {
       </div>
     )
 
+    // if there are more comments that can be displayed
     let loadMoreButton;
     if(this.state.comments.length > this.state.visibleComments){
       loadMoreButton = <button onClick={this.loadMore} type="button" className="btn btn-sm btn-success">View More Comments</button>;
     }
 
+
+
+    let postSettingsButtons;
     //if this is the signed in user's post (so they can delete it etc.)
-    if(this.context.user_email === this.state.userEmail)
+    if(this.context.user_id === this.state.userId)
     {
-      return(
-        <div className="row">
-
-          <div className="modal fade" id="editCaptionModal" tabIndex="-1" role="dialog" aria-labelledby="editCaptionModalLabel" aria-hidden="true">
-            <div className="modal-dialog" role="document">
-              <div className="modal-content" style={{backgroundColor: '#e0e0eb'}} >
-                <div className="modal-header">
-                  <h5 className="modal-title" id="editCaptionModalLabel">Change Caption</h5>
-                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div className="modal-body">
-                  <ul>
-                    <font className="font-weight-bold">Current Caption</font>: {this.state.caption}
-                  </ul>
-                  <ul>
-                    <font className="font-weight-bold">New Caption</font>: <label htmlFor="InputCaption"></label>
-                    <input id={this.state.postId + "newCaptionInput"} type="Comment" className="form-control" onChange={this.handleAddCaptionChange} id={"captionInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter New Caption"></input>
-                  </ul>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" className="btn btn-primary" onClick={this.handleEditCaption} data-dismiss="modal">Save changes</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-6 offset-md-4">
-            <div className="card" style={{width:"40rem"}}>
-              <a className="card-body" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
-                <div className="row">
-                  <div className="col-1.5">
-                    <Image
-                      source={{uri: this.state.profileUrl}}
-                      style={{width: 60, height: 60, borderRadius: 60/ 2}}
-                    />
-                  </div>
-                  <div className="col">
-                    <p></p>
-                    <div className="col-8">
-                      <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.state.username}</font>
-                    </div>
-                  </div>
-                </div>
-              </a>
-              <div style={{position:"asbolute", zIndex:"1"}}>
-                <img style={{position:"relative", zIndex:"2"}} className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
-                <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
-                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <button type="button" className="dropdown-item" data-toggle="modal" data-target="#editCaptionModal">Edit Caption</button>
-                    <button onClick={this.handleDeletePost} className="dropdown-item">Delete Post</button>
-                    <button onClick={this.handleCopyLink} className="dropdown-item">Copy Link</button>
-                  </div>
-                </div>
-              </div>
-              <div className="card-body">
-                <button onClick={this.handleLikeClick} className="badge badge-pill badge-primary">Like</button>
-                <span className="badge badge-success">{this.state.likeCount}</span>
-
-                <button onClick={this.handleDislikeClick} className="badge badge-pill badge-danger">Dislike</button>
-                <span className="badge badge-success">{this.state.dislikeCount}</span>
-
-                <h5 className="card-title">{this.state.caption}</h5>
-
-                <div>
-                  {this.state.comments.slice(0,this.state.visibleComments).map(comment => (
-                    <div key={comment.id}>
-                      <p key={comment.id+"user"} className="card-text">{comment.user.name + ": "}{comment.text}</p>
-                      <p key={comment.id+ "space"}></p>
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  {loadMoreButton}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="InputComment"></label>
-                  <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id={"commentInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
-                </div>
-                <button type="submit" onClick={this.context.user_id!=undefined ? this.handleAddComment : false} className="badge badge-pill badge-primary">Add Comment</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
+      postSettingsButtons =
+      <div>
+        <button type="button" className="dropdown-item" data-toggle="modal" data-target="#editCaptionModal">Edit Caption</button>
+        <button onClick={this.handleDeletePost} className="dropdown-item">Delete Post</button>
+        <button onClick={this.handleCopyLink} className="dropdown-item">Copy Link</button>
+      </div>
     }
-
-
-    //this is not the signed-in user's post
+    //if this is not the signed in user's post (so they can't delete it etc.)
     else{
-      return(
-        <div className="row">
-          <div className="col-md-6 offset-md-4">
-            <div className="card" style={{width:"40rem"}}>
-              <a className="card-body" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
-                <div className="row">
-                  <div className="col-1.5">
-                    <Image
-                      source={{uri: this.state.profileUrl}}
-                      style={{width: 60, height: 60, borderRadius: 60/ 2}}
-                    />
-                  </div>
-                  <div className="col">
-                    <p></p>
-                    <div className="col-8">
-                      <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.state.username}</font>
-                    </div>
-                  </div>
-                </div>
-              </a>
-              <div style={{position:"asbolute", zIndex:"1"}}>
-                <img style={{position:"relative", zIndex:"2"}} className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
-                <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
-                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <button onClick={this.handleCopyLink} className="dropdown-item">Copy Link</button>
-                  </div>
-                </div>
+      postSettingsButtons =
+      <div>
+        <button onClick={this.handleCopyLink} className="dropdown-item">Copy Link</button>
+      </div>
+    }
+
+
+    return(
+      <div className="row">
+
+        <div className="modal fade" id="editCaptionModal" tabIndex="-1" role="dialog" aria-labelledby="editCaptionModalLabel" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content" style={{backgroundColor: '#e0e0eb'}} >
+              <div className="modal-header">
+                <h5 className="modal-title" id="editCaptionModalLabel">Change Caption</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
-              <div className="card-body">
-                <button onClick={this.handleLikeClick} className="badge badge-pill badge-primary">Like</button>
-                <span className="badge badge-success">{this.state.likeCount}</span>
-
-                <button onClick={this.handleDislikeClick} className="badge badge-pill badge-danger">Dislike</button>
-                <span className="badge badge-success">{this.state.dislikeCount}</span>
-
-                <h5 className="card-title">{this.state.caption}</h5>
-
-                <div>
-                  {this.state.comments.slice(0,this.state.visibleComments).map(comment => (
-                    <div key={comment.id}>
-                      <p key={comment.id+"user"} className="card-text">{comment.user.name + ": "}{comment.text}</p>
-                      <p key={comment.id+ "space"}></p>
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  {loadMoreButton}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="InputComment"></label>
-                  <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id={"commentInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
-                </div>
-                <button type="submit" onClick={this.context.user_id!=undefined ? this.handleAddComment : false} className="badge badge-pill badge-primary">Add Comment</button>
+              <div className="modal-body">
+                <ul>
+                  <font className="font-weight-bold">Current Caption</font>: {this.state.caption}
+                </ul>
+                <ul>
+                  <font className="font-weight-bold">New Caption</font>: <label htmlFor="InputCaption"></label>
+                  <input id={this.state.postId + "newCaptionInput"} type="Comment" className="form-control" onChange={this.handleAddCaptionChange} id={"captionInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter New Caption"></input>
+                </ul>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" className="btn btn-primary" onClick={this.handleEditCaption} data-dismiss="modal">Save changes</button>
               </div>
             </div>
           </div>
         </div>
-      );
-    }
+
+        <div className="col-md-6 offset-md-4">
+          <div className="card" style={{width:"40rem"}}>
+            <a className="card-body" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
+              <div className="row">
+                <div className="col-1.5">
+                  <Image
+                    source={{uri: this.state.profileUrl}}
+                    style={{width: 60, height: 60, borderRadius: 60/ 2}}
+                  />
+                </div>
+                <div className="col">
+                  <p></p>
+                  <div className="col-8">
+                    <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.state.username}</font>
+                  </div>
+                </div>
+              </div>
+            </a>
+            <div style={{position:"asbolute", zIndex:"1"}}>
+              <img style={{position:"relative", zIndex:"2"}} className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
+              <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
+                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  {postSettingsButtons}
+                </div>
+              </div>
+            </div>
+            <div className="card-body">
+              <button onClick={this.handleLikeClick} className="badge badge-pill badge-primary">Like</button>
+              <span className="badge badge-success">{this.state.likeCount}</span>
+
+              <button onClick={this.handleDislikeClick} className="badge badge-pill badge-danger">Dislike</button>
+              <span className="badge badge-success">{this.state.dislikeCount}</span>
+
+              <h5 className="card-title">{this.state.caption}</h5>
+
+              <div>
+                {this.state.comments.slice(0,this.state.visibleComments).map(comment => (
+                  <div key={comment.id}>
+                    <p key={comment.id+"user"} className="card-text">{comment.user.name + ": "}{comment.text}</p>
+                    <p key={comment.id+ "space"}></p>
+                  </div>
+                ))}
+              </div>
+              <div>
+                {loadMoreButton}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="InputComment"></label>
+                <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id={"commentInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
+              </div>
+              <button type="submit" onClick={this.context.user_id!=undefined ? this.handleAddComment : false} className="badge badge-pill badge-primary">Add Comment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 }
 
