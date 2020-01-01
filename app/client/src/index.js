@@ -12,7 +12,7 @@ import RoutingPage from './RoutingPage.jsx';
 
 
 const routing = (
-    <div style={{backgroundColor: '#e0e0eb', overflowX:"hidden"}}>
+    <div style={{backgroundColor: '#e0e0eb', overflowX:"hidden"}} id="body">
       <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>
       <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
       <RoutingPage/>

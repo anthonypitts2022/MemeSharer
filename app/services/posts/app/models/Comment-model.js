@@ -56,12 +56,22 @@ const CommentSchema = new Schema({
 // !EXPORT
 //==============================================================================
 
+//indexing string in alphabetical order
+CommentSchema.index({
+  userId: 1,
+  postId: 1
+});
+
+//indexing data in most-recent to least-recent order
+CommentSchema.index({
+  date: -1
+});
+
+
 CommentSchema.index({
   index: "text",
   userId: "text",
-  postId: "text",
-  text: "text",
-  date: "text"
+  postId: "text"
 });
 
 

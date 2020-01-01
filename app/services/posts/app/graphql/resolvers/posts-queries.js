@@ -41,13 +41,33 @@ const Like = require("../../models/Like-model.js");
 //==============================================================================
 
 
-const getAllPostsQuery = async (root, { args }) => {
+const getAllPostsQuery = async (root, { index }) => {
   try{
-    const posts = await Post.find()
-      .skip(0)
-      .limit(200);
+    // sort the returned posts in more recent to least recent order
+    // skip() will skip the first "index" number of documents
+    // limit to 5 posts
 
-    return PostsDateSort(posts);
+    if(isNaN(index))
+        return handleErrors("001", {index: "index not a number"});
+    index = parseInt(index);
+
+
+
+    let posts = await Post.find()
+                           .sort({date: -1})
+                           .skip( index )
+                           .limit(5);
+
+
+    //hasNext checks if it could return a 21st post
+    let hasNext = 1 === (await Post.find()
+                                   .sort({date: -1})
+                                   .skip( index + 5 )
+                                   .limit(1)).length
+
+
+
+    return {posts: posts, hasNext: hasNext};
 
   } catch (e) {
     logger.error(e.message);
@@ -77,20 +97,41 @@ const postDislikeCountQuery = async (root, { postId }) => {
   }
 };
 
-const userPostsQuery = async (root, { userId }) => {
+const userPostsQuery = async (root, { input }) => {
   try {
     //checks if user is signed in
-    if(!userId){
+    if(!input.userId){
       return handleErrors("001", {user: "Did not recieve userid"});
     }
-    //gets 200 post from user
-    const posts = await Post.find({userId: userId});
 
-    //if no posts were found
-    if(!posts){
-      return handleErrors("001", {posts: "no post for this user"});
-    }
-    return PostsDateSort(posts);
+
+
+    // sort the returned posts in more recent to least recent order
+    // skip() will skip the first "index" number of documents
+    // limit to 5 posts
+
+    if(isNaN(input.index))
+        return handleErrors("001", {index: "index not a number"});
+    index = parseInt(input.index);
+
+
+
+    let posts = await Post.find({userId: input.userId})
+                           .sort({date: -1})
+                           .skip( index )
+                           .limit(5);
+
+
+    //hasNext checks if it could return a 21st post
+    let hasNext = 1 === (await Post.find({userId: input.userId})
+                                   .sort({date: -1})
+                                   .skip( index + 5 )
+                                   .limit(1)).length
+
+
+
+    return {posts: posts, hasNext: hasNext};
+
   } catch (e) {
     logger.error(e.message);
   }
@@ -116,7 +157,7 @@ const getAPostQuery = async (root, { id } ) => {
 };
 
 
-const feedPostsQuery = async (root, { input }, {user} ) => {
+const feedPostsQuery = async (root, { input } ) => {
   //function to return most recent posts from a users followers (for the main feed)
 
   try{

@@ -1,11 +1,16 @@
 // @flow strict
 
 import objectValues from '../polyfills/objectValues';
-import inspect from '../jsutils/inspect';
+
 import keyMap from '../jsutils/keyMap';
+import inspect from '../jsutils/inspect';
+import invariant from '../jsutils/invariant';
 import isInvalid from '../jsutils/isInvalid';
 import { type ObjMap } from '../jsutils/ObjMap';
+
 import { Kind } from '../language/kinds';
+import { type ValueNode } from '../language/ast';
+
 import {
   type GraphQLInputType,
   isScalarType,
@@ -14,7 +19,6 @@ import {
   isListType,
   isNonNullType,
 } from '../type/definition';
-import { type ValueNode } from '../language/ast';
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
@@ -157,8 +161,7 @@ export function valueFromAST(
   }
 
   // Not reachable. All possible input types have been considered.
-  /* istanbul ignore next */
-  throw new Error(`Unexpected input type: "${inspect((type: empty))}".`);
+  invariant(false, 'Unexpected input type: ' + inspect((type: empty)));
 }
 
 // Returns true if the provided valueNode is a variable which is not defined

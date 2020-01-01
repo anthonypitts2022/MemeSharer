@@ -64,13 +64,28 @@ const PostSchema = new Schema({
 // !EXPORT
 //==============================================================================
 
+
+//indexing string in alphabetical order
+PostSchema.index({
+  userId: 1,
+  fileId: 1,
+  fileType: 1
+});
+
+//indexing data in most-recent to least-recent order
+PostSchema.index({
+  date: -1
+});
+
+//text index on strings to allow for regex / complex string queries
 PostSchema.index({
   index: "text",
   userId: "text",
-  date: "text",
   fileId: "text",
   fileType: "text",
 });
+
+
 
 
 module.exports = Post = mongoose.model("Post", PostSchema);

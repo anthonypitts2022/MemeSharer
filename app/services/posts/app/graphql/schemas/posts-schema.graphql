@@ -1,9 +1,9 @@
 type Query {
   getAPost(id: String!): Post
-  getAllPosts: [Post]
+  getAllPosts(index: String!): PostsAndHasNext
   postLikeCount(postId: String!): String
   postDislikeCount(postId: String!): String
-  userPosts(userId: String!): [Post]
+  userPosts(input: userPostsInput!): PostsAndHasNext
   feedPosts(input: feedPostsInput): [Post]
 }
 
@@ -67,6 +67,11 @@ type User {
   profileUrl: String
 }
 
+type PostsAndHasNext {
+  posts: [Post]
+  hasNext: Boolean
+}
+
 
 #===============================================================================
 # Inputs
@@ -106,6 +111,11 @@ input createCommentInput{
 
 input uploadImageInput{
   image: String!
+}
+
+input userPostsInput{
+  userId: String!
+  index: String!
 }
 
 #===============================================================================

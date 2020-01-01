@@ -52,11 +52,17 @@ const LikeSchema = new Schema({
 // !EXPORT
 //==============================================================================
 
+//indexing string in alphabetical order
+LikeSchema.index({
+  userId: 1,
+  postId: 1
+});
+
+
 LikeSchema.index({
   index: "text",
   userId: "text",
-  postId: "text",
-  isLike: "text"
+  postId: "text"
 });
 
 

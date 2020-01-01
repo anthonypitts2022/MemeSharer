@@ -42,9 +42,12 @@ class PostBox extends Component {
     this.handleAddCaptionChange = this.handleAddCaptionChange.bind(this);
     this.handleEditCaption = this.handleEditCaption.bind(this);
     this.handleCopyLink = this.handleCopyLink.bind(this);
-    this.loadMore = this.loadMore.bind(this);
+    this.loadMoreComments = this.loadMoreComments.bind(this);
 
   }
+
+
+
 
 
   handleAddCommentChange(event) {
@@ -496,7 +499,7 @@ class PostBox extends Component {
     }
   }
 
-  loadMore(event) {
+  loadMoreComments(event) {
     this.setState({visibleComments: this.state.visibleComments + 3});
   }
 
@@ -517,9 +520,9 @@ class PostBox extends Component {
     )
 
     // if there are more comments that can be displayed
-    let loadMoreButton;
+    let loadMoreCommentsButton;
     if(this.state.comments.length > this.state.visibleComments){
-      loadMoreButton = <button onClick={this.loadMore} type="button" className="btn btn-sm btn-success">View More Comments</button>;
+      loadMoreCommentsButton = <button onClick={this.loadMoreComments} type="button" className="btn btn-sm btn-success">View More Comments</button>;
     }
 
 
@@ -594,7 +597,7 @@ class PostBox extends Component {
             <div style={{position:"asbolute", zIndex:"1"}}>
               <img style={{position:"relative", zIndex:"2"}} className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
               <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
-                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                <button className="btn btn-lg btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   {postSettingsButtons}
                 </div>
@@ -618,7 +621,7 @@ class PostBox extends Component {
                 ))}
               </div>
               <div>
-                {loadMoreButton}
+                {loadMoreCommentsButton}
               </div>
 
               <div className="form-group">
