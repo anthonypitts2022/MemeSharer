@@ -16,6 +16,8 @@ type Mutation {
   deletePost(id: String!): Boolean
   uploadImageToServer(input: uploadImageInput): Boolean
   editCaption(input: editCaptionInput!): Post
+  createFollowship(input: followshipInput!): Followship
+  deleteFollowship(input: followshipInput!): Boolean
 }
 
 
@@ -60,6 +62,12 @@ type Comment {
   bulkAddReport: [BulkAddReport]
 }
 
+type Followship {
+  id: ID!
+  followerId: String
+  followeeId: String
+}
+
 type User {
   id: String
   name: String
@@ -91,6 +99,11 @@ input editCaptionInput{
 
 input feedPostsInput{
   followerIds: [String]!
+}
+
+input followshipInput {
+  followerId: String!
+  followeeId: String!
 }
 
 input createLikeInput{

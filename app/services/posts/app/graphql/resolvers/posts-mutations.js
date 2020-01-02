@@ -42,6 +42,7 @@ const shortid = require("shortid");
 const Post = require("../../models/Post-model.js");
 const Comment = require("../../models/Comment-model.js");
 const Like = require("../../models/Like-model.js");
+const Followship = require('../../models/Followship-model.js');
 
 //---------------------------------
 // Validation
@@ -52,6 +53,7 @@ const validateCommentInput = require("../../validation/validateCommentInput.js")
 const validateCaptionInput = require("../../validation/validateCaptionInput.js");
 const validateLikeInput = require("../../validation/validateLikeInput.js");
 const validateID = require("../../validation/validateID.js");
+const validateFollowshipInput = require('../../validation/validateFollowshipInput.js');
 
 //==============================================================================
 // Body
@@ -280,7 +282,6 @@ const uploadImageToServerMutation = async (parent, { input }) => {
   try{
     var fileWriter = new Writer();
 
-    input.image
 
     return true;
   } catch (err) {
@@ -359,6 +360,98 @@ const deletePostMutation = async (parent, { id }) => {
   }
 };
 
+// @access : Private (user)
+// @desc   : Creates a Followship
+const createFollowshipMutation = async (parent, { input }) => {
+  // Validate the user input and return errors if any
+
+  try {
+    const { msg, isValid } = validateFollowshipInput(input);
+    if (!isValid) {
+      throw new Error(JSON.stringify(msg));
+    }
+  } catch (err) {
+    throw err;
+  }
+
+  try {
+
+    let followship = await Followship.find({ followerId: input.followerId, followeeId: input.followeeId });
+    // Throw errors if already exists
+    if (followship) {
+      throw new Error(
+        JSON.stringify({ fieldName: "This modelName already exists" })
+      );
+    }
+
+
+    // Create a user object based on the input
+    const newFollowship = new Followship({
+      followerId: input.followerId,
+      followeeId: input.followeeId,
+    });
+
+    // Initiate sending the new object to the database
+    let savedNewFollowship = await newFollowship.save();
+
+
+    // Database response after object has been created
+    return savedNewFollowship;
+
+  } catch (err) {
+    logger.error(
+      `createFollowshipMutation: Failed to create Followship record. ${err}.`
+    );
+    throw err;
+  }
+};
+
+// @access : super
+// @desc   : Delete a Followship
+const deleteFollowshipMutation = async (parent, { input }) => {
+
+  // Validate the user input and return errors if any
+  try {
+    const { msg, isValid } = validateFollowshipInput(id);
+    if (!isValid) {
+      throw new Error(JSON.stringify(msg));
+    }
+  } catch (err) {
+    throw err;
+  }
+
+  // Initiate the models by finding if the object below exists
+  let followship = await Followship.find({ followerId: input.followerId, followeeId: input.followeeId });
+
+  try {
+    // Throw errors if the conditions are met
+    if (!followship) {
+      throw new Error(
+        JSON.stringify({
+          followship: `Followship doesn't exist`
+        })
+      );
+    }
+
+    // Delete one record
+    let deletedRecord = await followship.remove();
+
+    // return record;
+    if(deletedRecord==null){
+      return false;
+    }
+    else{
+      return true;
+    }
+
+  } catch (err) {
+    logger.error(
+      `deleteFollowshipMutation: Failed to delete Followship. ${err}.`
+    );
+    throw err;
+  }
+};
+
 
 module.exports = {
   createPostMutation,
@@ -368,5 +461,7 @@ module.exports = {
   deleteAllPostsMutation,
   deletePostMutation,
   uploadImageToServerMutation,
-  editCaptionMutation
+  editCaptionMutation,
+  createFollowshipMutation,
+  deleteFollowshipMutation,
 };

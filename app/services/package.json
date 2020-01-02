@@ -6,13 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "user": "npm run user --prefix user",
-    "perms": "npm run perms --prefix perms",
     "posts": "npm run posts --prefix posts",
-    "services": "concurrently \"npm:user\" \"npm:perms\" \"npm:posts\"",
-    "compile": "npm i user --prefix user && npm i perms --prefix perms && npm i posts --prefix posts",
-    "removeNodeModules": "rm -r user/node_modules && rm -r perms/node_modules && rm -r posts/node_modules",
-    "installModuleAlias": "npm i -C user -S module-alias && npm i -C perms -S module-alias && npm i -C posts -S module-alias",
-    "addNodeModulesFolder": "mkdir -p user/node_modules && mkdir -p perms/node_modules && mkdir -p posts/node_modules",
+    "services": "concurrently \"npm:user\" \"npm:posts\"",
+    "compile": "npm i user --prefix user && npm i posts --prefix posts",
+    "removeNodeModules": "rm -r user/node_modules && rm -r posts/node_modules",
+    "installModuleAlias": "npm i -C user -S module-alias && npm i -C posts -S module-alias",
+    "addNodeModulesFolder": "mkdir -p user/node_modules && mkdir -p posts/node_modules",
     "prodCompile": "npm run addNodeModulesFolder && npm run compile && npm run removeNodeModules && npm run compile && npm run installModuleAlias"
   },
   "author": "",
@@ -21,7 +20,6 @@
     "concurrently": "^4.1.0"
   },
   "dependencies": {
-    "permsservice": "file:perms",
     "postsservice": "file:posts",
     "shortid": "^2.2.14",
     "userservice": "file:user"

@@ -7,52 +7,57 @@
 //
 //==============================================================================
 /*
-!Title : LevelAccess-model
-!Auth  : aep2195
+!Title : Followship-model
+!Auth  :
 !Vers  : 1.0
-!Date  : 7/16/19 *Last Mod
-!Desc  : Sets up the LevelAccess schema
+!Date  :
+!Desc  : Creates a schema for Followship
 */
 
 //==============================================================================
 // HEAD
 //==============================================================================
 
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const shortid = require("shortid");
-
+//---------------------------------
+// Modules
+//---------------------------------
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const shortid = require('shortid')
 //==============================================================================
 // BODY
 //==============================================================================
 
-const LevelAccessSchema = new Schema({
-    _id: {
-      type: String,
-      default: shortid.generate,
-      description: "The id of the User Perms Object"
-    },
-    levelId: {
-      type: String,
-      description: "The id of the level object for the user's access level."
-    },
-    functionality: {
-      type: String,
-      description: "A functionality that a user has access to"
-    }
-});
-
-
+const FollowshipSchema = new Schema({
+  //ID required
+  _id: {
+    type: String,
+    default: shortid.generate
+  },
+  followerId: {
+    type: String,
+    required: true,
+    text: true
+  },
+  followeeId: {
+    type: String,
+    required: true,
+    text: true
+  },
+})
 
 //==============================================================================
-// !EXPORT
+// !EXPORTS
 //==============================================================================
+FollowshipSchema.index({
+  followerId: 'text',
+  followeeId: 'text',
+})
 
-LevelAccessSchema.index({
-  index: "text",
-  levelId: "text",
-  functionality: "text"
-});
+//indexing string in alphabetical order
+FollowshipSchema.index({
+  followerId: 1,
+  followeeId: 1,
+})
 
-
-module.exports = LevelAccess = mongoose.model("LevelAccess", LevelAccessSchema);
+module.exports = Followship = mongoose.model('Followship', FollowshipSchema)

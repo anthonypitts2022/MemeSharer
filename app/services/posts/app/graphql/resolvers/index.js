@@ -48,7 +48,9 @@ const {
   deleteAllPostsMutation,
   deletePostMutation,
   uploadImageToServerMutation,
-  editCaptionMutation
+  editCaptionMutation,
+  createFollowshipMutation,
+  deleteFollowshipMutation
 } = require("./posts-mutations.js");
 
 //==============================================================================
@@ -81,7 +83,9 @@ const Mutation = {
   deleteAllPosts: deleteAllPostsMutation,
   deletePost: deletePostMutation,
   uploadImageToServer: uploadImageToServerMutation,
-  editCaption: editCaptionMutation
+  editCaption: editCaptionMutation,
+  createFollowship: createFollowshipMutation,
+  deleteFollowship: deleteFollowshipMutation
 };
 
 
