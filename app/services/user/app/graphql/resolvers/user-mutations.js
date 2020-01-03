@@ -29,6 +29,8 @@ const config = require("../../../config/config.js");
 const bcrypt = require("bcrypt");
 const path = require("path");
 const axios = require("axios");
+const { createApolloFetch } = require('apollo-fetch');
+
 
 //---------------------------------
 // Models
@@ -85,6 +87,38 @@ const createOrUpdateUserMutation = async (parent, { input }) => {
         profileUrl: input.profileUrl,
         email: input.email
       });
+
+      //make new user follow itself
+      var createFollowshipVariables={
+        "input": {
+          "followerId": newUser.id,
+          "followeeId": newUser.id
+        }
+      };
+
+
+      //calls create followship database mutation
+      var fetch = createApolloFetch({
+        uri: "http://localhost:3301/posts"
+      });
+
+      //binds the variables for query to fetch
+      fetch = fetch.bind(createFollowshipVariables)
+
+      let createFollowshipResponse = await fetch({
+        query:
+        `
+        mutation createFollowship($input: followshipInput!){
+          Followship: createFollowship(input: $input){
+            followerId
+            followeeId
+          }
+        }
+        `,
+        variables: createFollowshipVariables
+      })
+
+
       // Save the user to the database and return
       return newUser.save();
     }

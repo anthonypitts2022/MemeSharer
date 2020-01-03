@@ -4,7 +4,7 @@ type Query {
   postLikeCount(postId: String!): String
   postDislikeCount(postId: String!): String
   userPosts(input: userPostsInput!): PostsAndHasNext
-  feedPosts(input: feedPostsInput): [Post]
+  feedPosts(input: feedPostsInput): PostsAndHasNext
 }
 
 type Mutation {
@@ -98,7 +98,8 @@ input editCaptionInput{
 }
 
 input feedPostsInput{
-  followerIds: [String]!
+  userId: String!
+  index: String!
 }
 
 input followshipInput {

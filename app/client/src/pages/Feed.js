@@ -12,8 +12,6 @@ import gql from "graphql-tag";
 const { createApolloFetch } = require('apollo-fetch');
 
 
-
-
 const postsClient = new ApolloClient({
   uri: "http://localhost:3301/posts"
 });
@@ -25,22 +23,40 @@ class Feed extends Component {
 
     this.state =
     {
-      loadedPosts: 5,
-      hasMorePosts: true,
-      posts : []
+      // ---------    Global Page variables ----------------//
+      globalLoadedPosts: 5,
+      globalHasMorePosts: true,
+      globalPosts : [],
+
+      // ---------    Following Page variables ----------------//
+      followingLoadedPosts: 5,
+      followingHasMorePosts: true,
+      followingPosts : [],
     }
 
-
     this.navBarType = this.navBarType.bind(this);
-    this.loadMorePosts = this.loadMorePosts.bind(this);
-    this.queryPosts = this.queryPosts.bind(this);
 
-    this.halfDownPage = 0;
-    this.first = true;
-    this.scrollNumPosts = 5;
-    this.loadingPosts = false;
+    // ---------    Global Page variables/functions ----------------//
+    this.globalLoadMorePosts = this.globalLoadMorePosts.bind(this);
+    this.globalQueryPosts = this.globalQueryPosts.bind(this);
 
-    this.queryPosts();
+    this.globalHalfDownPage = 0;
+    this.globalFirst = true;
+    this.globalScrollNumPosts = 5;
+    this.globalLoadingPosts = false;
+
+    // ---------    Following Page variables/functions ----------------//
+    this.followingLoadMorePosts = this.followingLoadMorePosts.bind(this);
+    this.followingQueryPosts = this.followingQueryPosts.bind(this);
+
+    this.followingHalfDownPage = 0;
+    this.followingFirst = true;
+    this.followingScrollNumPosts = 5;
+    this.followingLoadingPosts = false;
+
+
+    this.globalQueryPosts();
+    this.followingQueryPosts();
 
   }
 
@@ -57,39 +73,48 @@ class Feed extends Component {
   }
 
   isHalfWayDownPage(root) {
-    if(this.first || this.scrollNumPosts!=this.state.loadedPosts)
+    if(this.globalFirst || this.globalScrollNumPosts!=this.state.globalLoadedPosts)
     {
-      this.halfDownPage = (document.getElementById('root').getBoundingClientRect().bottom + window.innerHeight) * .5;
-      this.first = false;
-      this.scrollNumPosts = this.state.loadedPosts;
+      this.globalHalfDownPage = (document.getElementById('root').getBoundingClientRect().bottom + window.innerHeight) * .5;
+      this.globalFirst = false;
+      this.globalScrollNumPosts = this.state.globalLoadedPosts;
     }
 
-    if(this.loadingPosts === true)
+    if(this.globalLoadingPosts === true)
         return false;
 
-    return root.getBoundingClientRect().bottom <= this.halfDownPage;
+    return root.getBoundingClientRect().bottom <= this.globalHalfDownPage;
   }
 
   handleOnScroll = () => {
     const wrappedElement = document.getElementById('root');
     if (this.isHalfWayDownPage(wrappedElement)) {
-      this.loadingPosts = true;
-      this.loadMorePosts();
+      this.globalLoadingPosts = true;
+      this.globalLoadMorePosts();
     }
   };
 
-  loadMorePosts()
+  globalLoadMorePosts()
   {
     //if there are more posts to be loaded
-    if(this.state.hasMorePosts)
+    if(this.state.globalHasMorePosts)
     {
-      this.queryPosts();
+      this.globalQueryPosts();
+    }
+  }
+
+  followingLoadMorePosts()
+  {
+    //if there are more posts to be loaded
+    if(this.state.followingHasMorePosts)
+    {
+      this.followingQueryPosts();
     }
   }
   ////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////
 
-  queryPosts() {
+  globalQueryPosts() {
 
     //bind this to the function
     postsQuery = postsQuery.bind(this);
@@ -98,11 +123,11 @@ class Feed extends Component {
     async function postsQuery() {
       try{
 
-        if(false === this.state.hasMorePosts)
+        if(false === this.state.globalHasMorePosts)
             return;
 
         var queryPostsVariables={
-          "index": (this.state.loadedPosts - 5).toString()
+          "index": (this.state.globalLoadedPosts - 5).toString()
         };
 
 
@@ -155,15 +180,101 @@ class Feed extends Component {
           variables: queryPostsVariables
         });
 
-
         //add the new posts to the posts array
-        let posts = this.state.posts;
+        let posts = this.state.globalPosts;
         posts = posts.concat( queryPostsResponse.data.PostsAndHasNext.posts);
 
-        this.setState({posts: posts});
-        this.setState({hasMorePosts: queryPostsResponse.data.PostsAndHasNext.hasNext});
-        this.setState({loadedPosts: this.state.loadedPosts + 5});
-        this.loadingPosts = false;
+        this.setState({globalPosts: posts});
+        this.setState({globalHasMorePosts: queryPostsResponse.data.PostsAndHasNext.hasNext});
+        this.setState({globalLoadedPosts: this.state.globalLoadedPosts + 5});
+        this.globalLoadingPosts = false;
+
+
+      } catch(err) {
+        console.log(err);
+      }
+
+      }
+  }
+
+  followingQueryPosts() {
+
+    //bind this to the function
+    postsQuery = postsQuery.bind(this);
+
+    postsQuery();
+    async function postsQuery() {
+      try{
+
+        if(false === this.state.followingHasMorePosts)
+            return;
+
+        var queryPostsVariables={
+          "input": {
+            "index": (this.state.followingLoadedPosts - 5).toString(),
+            "userId": JSON.parse(localStorage.getItem('user')).id
+          }
+        };
+
+
+        //calls database query
+        var fetch = createApolloFetch({
+          uri: "http://localhost:3301/posts"
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(queryPostsVariables)
+
+        let queryPostsResponse = await fetch({
+          query:
+          `
+          query feedPosts($input: feedPostsInput!){
+            PostsAndHasNext: feedPosts(input: $input){
+              posts{
+                errors{
+                  msg
+                }
+                fileId
+                fileType
+                userId
+                user{
+                  id
+                  name
+                  email
+                  profileUrl
+                }
+                id
+                caption
+                likeCount
+                dislikeCount
+                comments{
+                  text
+                  userId
+                  user{
+                    id
+                    name
+                    email
+                    profileUrl
+                  }
+                  id
+                }
+              }
+            hasNext
+            }
+          }
+          `,
+          variables: queryPostsVariables
+        });
+
+
+        //add the new posts to the posts array
+        let posts = this.state.followingPosts;
+        posts = posts.concat( queryPostsResponse.data.PostsAndHasNext.posts);
+
+        this.setState({followingPosts: posts});
+        this.setState({followingHasMorePosts: queryPostsResponse.data.PostsAndHasNext.hasNext});
+        this.setState({followingLoadedPosts: this.state.followingLoadedPosts + 5});
+        this.followingLoadingPosts = false;
 
 
       } catch(err) {
@@ -187,15 +298,46 @@ class Feed extends Component {
 
     return(
     <div key="feed" id="feed">
-      {navBar}
-      <div>
-        {this.state.posts.map(postInfo => (
-          <div key={postInfo.id}>
-            <PostBox postInfo={postInfo}/>
-            <p></p>
+
+      <nav className="sticky-top" style={{backgroundColor: '#e0e0eb'}}>
+        {navBar}
+        <div class="d-flex justify-content-center">
+          <ul className="nav nav-tabs" role="tablist">
+            <li className="nav-item">
+              <a className="nav-link active" id="global-tab" data-toggle="tab" href="#global" role="tab" aria-controls="global" aria-selected="true">Global</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" id="following-tab" data-toggle="tab" href="#following" role="tab" aria-controls="following" aria-selected="false">Following</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div className="tab-content">
+        <div className="tab-pane fade show active" id="global" role="tabpanel" aria-labelledby="global-tab">
+          <p></p>
+          <div>
+            {this.state.globalPosts.map(postInfo => (
+              <div key={"global" + postInfo.id}>
+                <PostBox postInfo={postInfo}/>
+                <p></p>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+        <div className="tab-pane fade" id="following" role="tabpanel" aria-labelledby="following-tab">
+          <p></p>
+          <div>
+            {this.state.followingPosts.map(postInfo => (
+              <div key={"following" + postInfo.id}>
+                <PostBox postInfo={postInfo}/>
+                <p></p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+
       <Footer id="footer"/>
     </div>
     );

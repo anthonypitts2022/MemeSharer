@@ -54,7 +54,6 @@ const getAllPostsQuery = async (root, { index }) => {
     index = parseInt(index);
 
 
-
     let posts = await Post.find()
                            .sort({date: -1})
                            .skip( index )
@@ -163,51 +162,45 @@ const feedPostsQuery = async (root, { input } ) => {
   //function to return most recent posts from a users followers (for the main feed)
 
   try{
-    var posts = [];
-    //loop through the inputted array of current user's following list
-    for(var index in input.followerEmails){
-      if(input.followerEmails.hasOwnProperty(index)){
-         try{
-           //find out if number of user's posts is less than 10
-           var lessThanTen = false;
-           var numUserPosts = await Post.countDocuments({ userEmail: input.followerEmails[index] });
-           if(10 > numUserPosts){
-             lessThanTen = true;
-           }
+    // sort the returned posts in more recent to least recent order
+    // skip() will skip the first "index" number of documents
+    // limit to 5 posts
 
-           //get the user's posts
-           var userPostsSorted = PostsDateSort(await Post.find({ userEmail: input.followerEmails[index] }));
+    if(isNaN(input.index))
+        return handleErrors("001", {index: "index not a number"});
+    index = parseInt(input.index);
 
-           //push the ten most recent posts from a users page to the posts list
-           if(lessThanTen==false){
-             posts = posts.concat(userPostsSorted.slice(0,10) );
-           }
-           //push all users posts if they have less than 10
-           else{
-             if(numUserPosts!=0){
-               posts = posts.concat(userPostsSorted.slice(0,numUserPosts) );
-             }
-           }
-         } catch(e){
-           continue;
-         }
-      }
+
+    //get all followee id's of current user
+    let followships = await Followship.find({followerId: input.userId})
+    let followingIds = [];
+    for (var i=0; i < followships.length; i++)
+    {
+      followingIds.push({userId: followships[i].followeeId})
     }
 
-    //sort all posts by date
-    var dateSortedPosts = PostsDateSort(posts);
-    //Should store this array in database so they can hit a "load more" and get next 25 posts
-    var numPostsFromFollowers = dateSortedPosts.length;
-    //return all posts if less than or equal to 25
-    if(numPostsFromFollowers<=25){
-      return dateSortedPosts;
-    }
-    //return the most recent 25 posts for feed
-    return dateSortedPosts.slice(0,25);
+    //if not following anyone
+    if(followingIds.length ===0 )
+        return {posts: [], hasNext: false};
+
+    let posts = await Post.find({$or: followingIds})
+                           .sort({date: -1})
+                           .skip( index )
+                           .limit(5);
+
+
+    //hasNext checks if it could return a 21st post
+    let hasNext = 1 === (await Post.find({$or: followingIds})
+                                   .sort({date: -1})
+                                   .skip( index + 5 )
+                                   .limit(1)).length
+
+
+
+    return {posts: posts, hasNext: hasNext};
 
   } catch (e) {
     logger.error(e.message);
-    return handleErrors("001", {feed: "could not retrieve feed"});
   }
 };
 

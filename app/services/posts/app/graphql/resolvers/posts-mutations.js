@@ -376,7 +376,7 @@ const createFollowshipMutation = async (parent, { input }) => {
 
   try {
 
-    let followship = await Followship.find({ followerId: input.followerId, followeeId: input.followeeId });
+    let followship = await Followship.findOne({ followerId: input.followerId, followeeId: input.followeeId });
     // Throw errors if already exists
     if (followship) {
       throw new Error(
