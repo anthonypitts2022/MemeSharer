@@ -36,10 +36,12 @@ class NavBarWithoutSignIn extends Component {
             <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.context.user_name}</font>
             <div className="row">
               <div className="column">
-                <Image
-                  source={{uri: this.context.user_profileUrl}}
-                  style={{width: 60, height: 60, borderRadius: 60/ 2}}
-                />
+                <a href={"/profile/"+this.context.user_id}>
+                  <Image
+                    source={{uri: this.context.user_profileUrl}}
+                    style={{width: 60, height: 60, borderRadius: 60/ 2}}
+                  />
+                </a>
               </div>
               <ul>
                 <button onClick={this.logout.bind(this)} type="button" className="btn btn-info btn-sm">Logout</button>
