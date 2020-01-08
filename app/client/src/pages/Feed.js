@@ -38,8 +38,10 @@ class Feed extends Component {
     }
 
     this.navBarType = this.navBarType.bind(this);
-    this.scroll = this.scroll.bind(this);
+    this.scrollToFollowing = this.scrollToFollowing.bind(this);
+    this.scrollToGlobal = this.scrollToGlobal.bind(this);
 
+    this.onGlobalTab = true;
 
     // ---------    Global Page variables/functions ----------------//
     this.globalLoadMorePosts = this.globalLoadMorePosts.bind(this);
@@ -49,6 +51,7 @@ class Feed extends Component {
     this.globalFirst = true;
     this.globalScrollNumPosts = 5;
     this.globalLoadingPosts = false;
+    this.globalScrollPosition = 0;
 
     // ---------    Following Page variables/functions ----------------//
     this.followingLoadMorePosts = this.followingLoadMorePosts.bind(this);
@@ -58,6 +61,7 @@ class Feed extends Component {
     this.followingFirst = true;
     this.followingScrollNumPosts = 5;
     this.followingLoadingPosts = false;
+    this.followingScrollPosition = 0;
 
 
     this.globalQueryPosts();
@@ -294,10 +298,47 @@ class Feed extends Component {
               ? "navBarWithSignIn" : "navBarWithoutSignIn";
   }
 
-  scroll(){
-    console.log(1)
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  scrollToGlobal(){
+    if(this.onGlobalTab)
+    {
+      //scroll to top
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      //set global position to 0
+      this.globalScrollPosition = 0;
+    }
+    else
+    {
+      //save the following position
+      this.followingScrollPosition = document.body.scrollTop;
+      //scroll to global position
+      document.body.scrollTop = this.globalScrollPosition; // For Safari
+      document.documentElement.scrollTop = this.globalScrollPosition; // For Chrome, Firefox, IE and Opera
+      //set the current tab to be global
+      this.onGlobalTab = true;
+    }
+  }
+
+
+  scrollToFollowing(){
+    if(false === this.onGlobalTab)
+    {
+      //scroll to top
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      //set following position to 0
+      this.followingScrollPosition = 0;
+    }
+    else
+    {
+      //save the global position
+      this.globalScrollPosition = document.body.scrollTop;
+      //scroll to following position
+      document.body.scrollTop = this.followingScrollPosition; // For Safari
+      document.documentElement.scrollTop = this.followingScrollPosition; // For Chrome, Firefox, IE and Opera
+      //set the current tab to be following
+      this.onGlobalTab = false;
+    }
   }
 
 
@@ -318,10 +359,10 @@ class Feed extends Component {
         <div className="d-flex justify-content-center">
           <ul className="nav nav-tabs" role="tablist">
             <li className="nav-item">
-              <a className="nav-link active" id="global-tab" data-toggle="tab" href="#global" onClick={this.scroll} role="tab" aria-controls="global" aria-selected="true">Global</a>
+              <a className="nav-link active" id="global-tab" data-toggle="tab" href="#global" onClick={this.scrollToGlobal} role="tab" aria-controls="global" aria-selected="true">Global</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" id="following-tab" data-toggle="tab" href="#following" onClick={this.scroll} role="tab" aria-controls="following" aria-selected="false">Following</a>
+              <a className="nav-link" id="following-tab" data-toggle="tab" href="#following" onClick={this.scrollToFollowing} role="tab" aria-controls="following" aria-selected="false">Following</a>
             </li>
           </ul>
         </div>
