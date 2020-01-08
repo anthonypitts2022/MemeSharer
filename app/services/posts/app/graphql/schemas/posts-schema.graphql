@@ -5,6 +5,7 @@ type Query {
   postDislikeCount(postId: String!): String
   userPosts(input: userPostsInput!): PostsAndHasNext
   feedPosts(input: feedPostsInput): PostsAndHasNext
+  isFollowing(input: followshipInput!): Boolean
 }
 
 type Mutation {

@@ -139,6 +139,27 @@ const userPostsQuery = async (root, { input }) => {
 };
 
 
+
+
+const isFollowingQuery = async (root, { input } ) => {
+  try{
+
+    var followship = await Followship.findOne({followerId: input.followerId, foloweeId: input.followeeId});
+
+     //check if followship does not exist
+     if(!followship){
+       return false;
+     }
+     else{
+       return true;
+     }
+
+  } catch (e) {
+    logger.error(e.message);
+  }
+};
+
+
 const getAPostQuery = async (root, { id } ) => {
   try{
 
@@ -213,5 +234,6 @@ module.exports = {
   postDislikeCountQuery,
   userPostsQuery,
   getAPostQuery,
-  feedPostsQuery
+  feedPostsQuery,
+  isFollowingQuery
 };

@@ -43,6 +43,8 @@ class PostBox extends Component {
     this.handleEditCaption = this.handleEditCaption.bind(this);
     this.handleCopyLink = this.handleCopyLink.bind(this);
     this.loadMoreComments = this.loadMoreComments.bind(this);
+    this.getFollowingButton = this.getFollowingButton.bind(this);
+
 
   }
 
@@ -503,6 +505,56 @@ class PostBox extends Component {
     this.setState({visibleComments: this.state.visibleComments + 3});
   }
 
+  getFollowingButton(){
+
+    //bind this to the addLike function
+    getFollowingButton = getFollowingButton.bind(this);
+
+    getFollowingButton();
+    async function getFollowingButton() {
+      try{
+
+        var isFollowingVariables={
+          "input": {
+            "followerId": this.context.user_id,
+            "followeeId": this.state.userId
+          }
+        };
+
+
+        //calls create comment database mutation
+        var fetch = createApolloFetch({
+          uri: "http://localhost:3301/posts"
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(isFollowingVariables)
+
+        let response = await fetch({
+          query:
+          `
+          query isFollowing($input: followshipInput!){
+            isFollowing(input: $input)
+          }
+          `,
+          variables: isFollowingVariables
+        })
+        console.log(response);
+
+        // if the current user is already following the user of this post
+        if(response){
+          return <p>Followed</p>
+        } else {
+          return <p>Follow</p>
+        }
+
+      } catch(err) {
+        console.log(err);
+      }
+
+      }
+  }
+
   render(){
 
     //if post has been deleted
@@ -524,6 +576,13 @@ class PostBox extends Component {
     if(this.state.comments.length > this.state.visibleComments){
       loadMoreCommentsButton = <button onClick={this.loadMoreComments} type="button" className="btn btn-sm btn-success">View More Comments</button>;
     }
+
+    // if this post is not by the current user, then display a follow/followed button
+    let followingUserOfPostButton;
+    if(this.context.user_id != this.state.userId){
+      followingUserOfPostButton = this.getFollowingButton();
+    }
+    console.log(followingUserOfPostButton)
 
 
 
@@ -591,6 +650,7 @@ class PostBox extends Component {
                   <div className="col-8">
                     <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.state.username}</font>
                   </div>
+                  {followingUserOfPostButton}
                 </div>
               </div>
             </a>

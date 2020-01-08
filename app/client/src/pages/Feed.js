@@ -9,6 +9,8 @@ import Footer from "../components/Footer.jsx";
 import PostBox from '../components/postBox.jsx';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
+import $ from 'jquery';
+
 const { createApolloFetch } = require('apollo-fetch');
 
 
@@ -31,10 +33,13 @@ class Feed extends Component {
       // ---------    Following Page variables ----------------//
       followingLoadedPosts: 5,
       followingHasMorePosts: true,
-      followingPosts : [],
+      followingPosts : []
+
     }
 
     this.navBarType = this.navBarType.bind(this);
+    this.scroll = this.scroll.bind(this);
+
 
     // ---------    Global Page variables/functions ----------------//
     this.globalLoadMorePosts = this.globalLoadMorePosts.bind(this);
@@ -289,25 +294,34 @@ class Feed extends Component {
               ? "navBarWithSignIn" : "navBarWithoutSignIn";
   }
 
+  scroll(){
+    console.log(1)
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  }
+
+
+
   render(){
+
     let navBar;
     if(this.navBarType()==="navBarWithSignIn")
-        navBar = <NavBarWithSignIn key="navBarWithSignIn" />
+        navBar = <NavBarWithSignIn key="navBarWithSignIn" id="navFeed"/>
     else
-        navBar = <NavBarWithoutSignIn key="navBarWithoutSignIn" />
+        navBar = <NavBarWithoutSignIn key="navBarWithoutSignIn" id="navFeed"/>
 
     return(
-    <div key="feed" id="feed">
+    <div key="feed" id="feed" data-spy="scroll">
 
       <nav className="sticky-top" style={{backgroundColor: '#e0e0eb'}}>
         {navBar}
-        <div class="d-flex justify-content-center">
+        <div className="d-flex justify-content-center">
           <ul className="nav nav-tabs" role="tablist">
             <li className="nav-item">
-              <a className="nav-link active" id="global-tab" data-toggle="tab" href="#global" role="tab" aria-controls="global" aria-selected="true">Global</a>
+              <a className="nav-link active" id="global-tab" data-toggle="tab" href="#global" onClick={this.scroll} role="tab" aria-controls="global" aria-selected="true">Global</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" id="following-tab" data-toggle="tab" href="#following" role="tab" aria-controls="following" aria-selected="false">Following</a>
+              <a className="nav-link" id="following-tab" data-toggle="tab" href="#following" onClick={this.scroll} role="tab" aria-controls="following" aria-selected="false">Following</a>
             </li>
           </ul>
         </div>
