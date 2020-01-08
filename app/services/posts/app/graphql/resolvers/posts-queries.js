@@ -144,7 +144,7 @@ const userPostsQuery = async (root, { input }) => {
 const isFollowingQuery = async (root, { input } ) => {
   try{
 
-    var followship = await Followship.findOne({followerId: input.followerId, foloweeId: input.followeeId});
+    var followship = await Followship.findOne({followerId: input.followerId, followeeId: input.followeeId});
 
      //check if followship does not exist
      if(!followship){

@@ -380,7 +380,7 @@ const createFollowshipMutation = async (parent, { input }) => {
     // Throw errors if already exists
     if (followship) {
       throw new Error(
-        JSON.stringify({ fieldName: "This modelName already exists" })
+        JSON.stringify({ fieldName: "This followship already exists" })
       );
     }
 
@@ -412,7 +412,7 @@ const deleteFollowshipMutation = async (parent, { input }) => {
 
   // Validate the user input and return errors if any
   try {
-    const { msg, isValid } = validateFollowshipInput(id);
+    const { msg, isValid } = validateFollowshipInput(input);
     if (!isValid) {
       throw new Error(JSON.stringify(msg));
     }
@@ -421,7 +421,7 @@ const deleteFollowshipMutation = async (parent, { input }) => {
   }
 
   // Initiate the models by finding if the object below exists
-  let followship = await Followship.find({ followerId: input.followerId, followeeId: input.followeeId });
+  let followship = await Followship.findOne({ followerId: input.followerId, followeeId: input.followeeId });
 
   try {
     // Throw errors if the conditions are met
@@ -437,7 +437,7 @@ const deleteFollowshipMutation = async (parent, { input }) => {
     let deletedRecord = await followship.remove();
 
     // return record;
-    if(deletedRecord==null){
+    if(deletedRecord===null){
       return false;
     }
     else{

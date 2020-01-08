@@ -31,8 +31,10 @@ class PostBox extends Component {
       addCommentText: '',
       newCaption: null,
       visibleComments: 3,
-      deleted: false
+      deleted: false,
+      followingUserOfPost: null
     };
+
 
     this.handleAddCommentChange = this.handleAddCommentChange.bind(this);
     this.handleAddComment = this.handleAddComment.bind(this);
@@ -43,11 +45,24 @@ class PostBox extends Component {
     this.handleEditCaption = this.handleEditCaption.bind(this);
     this.handleCopyLink = this.handleCopyLink.bind(this);
     this.loadMoreComments = this.loadMoreComments.bind(this);
-    this.getFollowingButton = this.getFollowingButton.bind(this);
+    this.followingStatus = this.followingStatus.bind(this);
+    this.followUserOfPost = this.followUserOfPost.bind(this);
+    this.unfollowUserOfPost = this.unfollowUserOfPost.bind(this);
 
 
   }
 
+
+  componentDidMount(){
+
+    //bind this to the addLike function
+    getFollowingStatus = getFollowingStatus.bind(this);
+    getFollowingStatus();
+    async function getFollowingStatus() {
+      this.setState({followingUserOfPost: await this.followingStatus()})
+    }
+
+  }
 
 
 
@@ -505,12 +520,12 @@ class PostBox extends Component {
     this.setState({visibleComments: this.state.visibleComments + 3});
   }
 
-  getFollowingButton(){
+  followingStatus(){
 
     //bind this to the addLike function
     getFollowingButton = getFollowingButton.bind(this);
 
-    getFollowingButton();
+    return getFollowingButton();
     async function getFollowingButton() {
       try{
 
@@ -539,13 +554,110 @@ class PostBox extends Component {
           `,
           variables: isFollowingVariables
         })
-        console.log(response);
 
         // if the current user is already following the user of this post
         if(response){
-          return <p>Followed</p>
+          if(response.data.isFollowing){
+            return true;
+          }
+          return false;
         } else {
-          return <p>Follow</p>
+          return false;
+        }
+
+      } catch(err) {
+        console.log(err);
+      }
+
+      }
+  }
+
+  followUserOfPost(){
+
+    //bind this to the addLike function
+    follow = follow.bind(this);
+
+    follow();
+    async function follow() {
+      try{
+
+        var createFollowshipVariables={
+          "input": {
+            "followerId": this.context.user_id,
+            "followeeId": this.state.userId
+          }
+        };
+
+
+        //calls database mutation
+        var fetch = createApolloFetch({
+          uri: "http://localhost:3301/posts"
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(createFollowshipVariables)
+
+        let response = await fetch({
+          query:
+          `
+          mutation createFollowship($input: followshipInput!){
+            Followship: createFollowship(input: $input){
+              followerId
+              followeeId
+            }
+          }
+          `,
+          variables: createFollowshipVariables
+        })
+
+        if(response.data.Followship != null){
+          this.setState({followingUserOfPost: true});
+        }
+
+      } catch(err) {
+        console.log(err);
+      }
+
+      }
+  }
+
+  unfollowUserOfPost(){
+
+    //bind this to the addLike function
+    unfollow = unfollow.bind(this);
+
+    unfollow();
+    async function unfollow() {
+      try{
+
+        var deleteFollowshipVariables={
+          "input": {
+            "followerId": this.context.user_id,
+            "followeeId": this.state.userId
+          }
+        };
+
+
+        //calls database mutation
+        var fetch = createApolloFetch({
+          uri: "http://localhost:3301/posts"
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(deleteFollowshipVariables)
+
+        let response = await fetch({
+          query:
+          `
+          mutation deleteFollowship($input: followshipInput!){
+            deleteFollowship(input: $input)
+          }
+          `,
+          variables: deleteFollowshipVariables
+        })
+
+        if(response.data.deleteFollowship === true){
+          this.setState({followingUserOfPost: false});
         }
 
       } catch(err) {
@@ -579,10 +691,16 @@ class PostBox extends Component {
 
     // if this post is not by the current user, then display a follow/followed button
     let followingUserOfPostButton;
-    if(this.context.user_id != this.state.userId){
-      followingUserOfPostButton = this.getFollowingButton();
+    if(this.context.user_id != this.state.userId && this.state.followingUserOfPost!=null){
+      // if following
+      if(this.state.followingUserOfPost){
+        followingUserOfPostButton = <button type="button" className="btn btn-light" onClick={this.unfollowUserOfPost}>Following</button>
+      }
+      // if not following
+      else{
+        followingUserOfPostButton = <button type="button" className="btn btn-primary" onClick={this.followUserOfPost}>Follow</button>
+      }
     }
-    console.log(followingUserOfPostButton)
 
 
 
@@ -637,23 +755,23 @@ class PostBox extends Component {
 
         <div className="col-md-6 offset-md-4">
           <div className="card" style={{width:"40rem"}}>
-            <a className="card-body" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
+            <div className="card-body">
               <div className="row">
-                <div className="col-1.5">
+                <a className="col-1.5" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
                   <Image
                     source={{uri: this.state.profileUrl}}
                     style={{width: 60, height: 60, borderRadius: 60/ 2}}
                   />
-                </div>
+                </a>
                 <div className="col">
-                  <p></p>
-                  <div className="col-8">
+                  <p href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}></p>
+                  <a className="col-8" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
                     <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.state.username}</font>
-                  </div>
+                  </a>
                   {followingUserOfPostButton}
                 </div>
               </div>
-            </a>
+            </div>
             <div style={{position:"asbolute", zIndex:"1"}}>
               <img style={{position:"relative", zIndex:"2"}} className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
               <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
