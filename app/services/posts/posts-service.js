@@ -44,6 +44,10 @@ app.route('/upload').post(function(req, res) {
     if(req.file==undefined){
       return res.status(200).send({errors: "Post must include a file. No file was provided."})
     }
+    //if unsupported file type was provided/uploaded
+    if(path.extname(req.file.originalname)!=".jpg" && path.extname(req.file.originalname)!=".png"){
+      return res.status(200).send({errors: "Unsupported file type. (Must be .png or .jpg)"})
+    }
 
     //if no errors on uploading file, proceed to create post
 
