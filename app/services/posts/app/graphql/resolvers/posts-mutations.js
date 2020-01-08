@@ -34,6 +34,7 @@ const path = require("path");
 const axios = require("axios");
 const os = require('os');
 const shortid = require("shortid");
+const isEmpty = require("../../validation/is-empty");
 
 //---------------------------------
 // Models
@@ -75,13 +76,15 @@ const createPostMutation = async (parent, { input }) => {
 
   try {
 
+    // if caption is empty, make it ""
+    let caption = input.caption === "undefined" ? "" : input.caption;
 
     // Create a Post object based on the input
     var newPost = new Post({
       userId: input.userId,
       fileId: input.fileId,
       fileType: input.fileType,
-      caption: input.caption
+      caption: caption
     });
     newPost.save();
 
