@@ -725,7 +725,7 @@ class PostBox extends Component {
 
 
     return(
-      <div className="row">
+      <div>
 
         <div className="modal fade" id="editCaptionModal" tabIndex="-1" role="dialog" aria-labelledby="editCaptionModalLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
@@ -753,7 +753,7 @@ class PostBox extends Component {
           </div>
         </div>
 
-        <div className="col-md-6 offset-md-4">
+        <div className="offset-md-4">
           <div className="card" style={{width:"40rem"}}>
             <div className="card-body">
               <div className="row">
@@ -812,6 +812,7 @@ class PostBox extends Component {
         </div>
       </div>
     );
+
   }
 }
 
