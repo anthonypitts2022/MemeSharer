@@ -258,43 +258,6 @@ const createLikeMutation = async (parent, { input }) => {
 
 
 //==============================================================================
-// Insert Image On Server
-//==============================================================================
-
-// @access : Public, User
-// @desc   : Insert the image file into the upload/images folder
-const uploadImageToServerMutation = async (parent, { input }) => {
-  try{
-    var fileWriter = new Writer();
-
-
-    return true;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-};
-
-
-//==============================================================================
-// Delete All Posts
-//==============================================================================
-
-// @access : Private, User
-// @desc   : Delete all Post Objects
-const deleteAllPostsMutation = async (parent, { isActual }, {user}) => {
-  try{
-    await Post.deleteMany();
-    return true;
-  } catch (err) {
-    // Database response after post has been created
-    console.log(err);
-    return false;
-  }
-};
-
-
-//==============================================================================
 // Delete A Post
 //==============================================================================
 
@@ -442,9 +405,7 @@ module.exports = {
   createPostMutation,
   createLikeMutation,
   createCommentMutation,
-  deleteAllPostsMutation,
   deletePostMutation,
-  uploadImageToServerMutation,
   editCaptionMutation,
   createFollowshipMutation,
   deleteFollowshipMutation,

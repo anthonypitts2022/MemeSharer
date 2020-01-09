@@ -12,9 +12,7 @@ type Mutation {
   createPost(input: createPostInput): Post
   createLike(input: createLikeInput): Like
   createComment(input: createCommentInput): Comment
-  deleteAllPosts(isActual: Boolean!): Boolean
   deletePost(id: String!): Boolean
-  uploadImageToServer(input: uploadImageInput): Boolean
   editCaption(input: editCaptionInput!): Post
   createFollowship(input: followshipInput!): Followship
   deleteFollowship(input: followshipInput!): Boolean
@@ -121,10 +119,6 @@ input createCommentInput{
   text: String!
   postId: String!
   userId: String!
-}
-
-input uploadImageInput{
-  image: String!
 }
 
 input userPostsInput{

@@ -45,9 +45,7 @@ const {
   createPostMutation,
   createLikeMutation,
   createCommentMutation,
-  deleteAllPostsMutation,
   deletePostMutation,
-  uploadImageToServerMutation,
   editCaptionMutation,
   createFollowshipMutation,
   deleteFollowshipMutation
@@ -80,9 +78,7 @@ const Mutation = {
   createPost: createPostMutation,
   createLike: createLikeMutation,
   createComment: createCommentMutation,
-  deleteAllPosts: deleteAllPostsMutation,
   deletePost: deletePostMutation,
-  uploadImageToServer: uploadImageToServerMutation,
   editCaption: editCaptionMutation,
   createFollowship: createFollowshipMutation,
   deleteFollowship: deleteFollowshipMutation
