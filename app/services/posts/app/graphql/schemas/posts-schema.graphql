@@ -12,7 +12,6 @@ type Mutation {
   createPost(input: createPostInput): Post
   createLike(input: createLikeInput): Like
   createComment(input: createCommentInput): Comment
-  deleteAllComments(isActual: Boolean!): Boolean
   deleteAllPosts(isActual: Boolean!): Boolean
   deletePost(id: String!): Boolean
   uploadImageToServer(input: uploadImageInput): Boolean

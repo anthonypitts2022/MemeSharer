@@ -256,24 +256,6 @@ const createLikeMutation = async (parent, { input }) => {
   }
 };
 
-//==============================================================================
-// Delete All Comments
-//==============================================================================
-
-// @access : Private, User
-// @desc   : Delete all Comments Objects
-const deleteAllCommentsMutation = async (parent, { isActual }) => {
-  try{
-    await Comment.deleteMany();
-    return true;
-  } catch (err) {
-    // Database response after post has been created
-    console.log(err);
-    return false;
-  }
-};
-
-
 
 //==============================================================================
 // Insert Image On Server
@@ -460,7 +442,6 @@ module.exports = {
   createPostMutation,
   createLikeMutation,
   createCommentMutation,
-  deleteAllCommentsMutation,
   deleteAllPostsMutation,
   deletePostMutation,
   uploadImageToServerMutation,
