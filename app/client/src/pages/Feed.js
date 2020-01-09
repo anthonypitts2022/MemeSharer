@@ -9,7 +9,6 @@ import Footer from "../components/Footer.jsx";
 import PostBox from '../components/postBox.jsx';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import $ from 'jquery';
 
 const { createApolloFetch } = require('apollo-fetch');
 
@@ -151,8 +150,8 @@ class Feed extends Component {
         let queryPostsResponse = await fetch({
           query:
           `
-          query getAllPosts($index: String!){
-            PostsAndHasNext: getAllPosts(index: $index){
+          query globalPosts($index: String!){
+            PostsAndHasNext: globalPosts(index: $index){
               posts{
                 errors{
                   msg

@@ -1,6 +1,6 @@
 type Query {
   getAPost(id: String!): Post
-  getAllPosts(index: String!): PostsAndHasNext
+  globalPosts(index: String!): PostsAndHasNext
   postLikeCount(postId: String!): String
   postDislikeCount(postId: String!): String
   userPosts(input: userPostsInput!): PostsAndHasNext

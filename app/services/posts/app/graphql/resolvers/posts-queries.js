@@ -43,7 +43,7 @@ const Followship = require('../../models/Followship-model.js');
 //==============================================================================
 
 
-const getAllPostsQuery = async (root, { index }) => {
+const globalPostsQuery = async (root, { index }) => {
   try{
     // sort the returned posts in more recent to least recent order
     // skip() will skip the first "index" number of documents
@@ -229,7 +229,7 @@ const feedPostsQuery = async (root, { input } ) => {
 
 module.exports = {
   getAPostQuery,
-  getAllPostsQuery,
+  globalPostsQuery,
   postLikeCountQuery,
   postDislikeCountQuery,
   userPostsQuery,

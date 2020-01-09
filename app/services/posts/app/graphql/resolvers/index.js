@@ -30,7 +30,7 @@ const Likes = require("../../models/Like-model.js");
 // posts Queries Library
 const {
   getAPostQuery,
-  getAllPostsQuery,
+  globalPostsQuery,
   postLikeCountQuery,
   postDislikeCountQuery,
   userPostsQuery,
@@ -64,7 +64,7 @@ const {
 
 const Query = {
   getAPost: getAPostQuery,
-  getAllPosts: getAllPostsQuery,
+  globalPosts: globalPostsQuery,
   postLikeCount: postLikeCountQuery,
   postDislikeCount: postDislikeCountQuery,
   userPosts: userPostsQuery,
