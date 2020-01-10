@@ -65,29 +65,6 @@ app.route('/upload').post(function(req, res) {
             errors{
               msg
             }
-            fileId
-            fileType
-            userId
-            user{
-              id
-              name
-              email
-              profileUrl
-            }
-            id
-            caption
-            likeCount
-            dislikeCount
-            comments{
-              text
-              userId
-              user{
-                id
-                name
-                email
-                profileUrl
-              }
-            }
           }
         }
       `,

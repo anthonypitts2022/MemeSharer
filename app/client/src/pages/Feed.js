@@ -158,7 +158,6 @@ class Feed extends Component {
                 }
                 fileId
                 fileType
-                userId
                 user{
                   id
                   name
@@ -175,8 +174,6 @@ class Feed extends Component {
                   user{
                     id
                     name
-                    email
-                    profileUrl
                   }
                   id
                 }
@@ -244,7 +241,6 @@ class Feed extends Component {
                 }
                 fileId
                 fileType
-                userId
                 user{
                   id
                   name
@@ -261,8 +257,6 @@ class Feed extends Component {
                   user{
                     id
                     name
-                    email
-                    profileUrl
                   }
                   id
                 }

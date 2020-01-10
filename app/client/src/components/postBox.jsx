@@ -55,7 +55,7 @@ class PostBox extends Component {
 
   componentDidMount(){
 
-    //bind this to the addLike function
+    //bind this to the function
     getFollowingStatus = getFollowingStatus.bind(this);
     getFollowingStatus();
     async function getFollowingStatus() {
@@ -121,10 +121,7 @@ class PostBox extends Component {
               id
               userId
               user{
-                id
                 name
-                email
-                profileUrl
               }
               postId
               text
@@ -186,16 +183,6 @@ class PostBox extends Component {
               errors{
                 msg
               }
-              id
-              userId
-              user{
-                id
-                name
-                email
-                profileUrl
-              }
-              postId
-              isLike
             }
           }
           `,
@@ -220,30 +207,8 @@ class PostBox extends Component {
               errors{
                 msg
               }
-              fileId
-              fileType
-              userId
-              user{
-                id
-                name
-                email
-                profileUrl
-              }
-              id
-              caption
               likeCount
               dislikeCount
-              comments{
-                text
-                userId
-                user {
-                  id
-                  name
-                  email
-                  profileUrl
-                }
-                id
-              }
             }
           }
           `,
@@ -297,16 +262,6 @@ class PostBox extends Component {
               errors{
                 msg
               }
-              id
-              userId
-              user{
-                id
-                name
-                email
-                profileUrl
-              }
-              postId
-              isLike
             }
           }
           `,
@@ -331,30 +286,8 @@ class PostBox extends Component {
               errors{
                 msg
               }
-              fileId
-              fileType
-              userId
-              user{
-                id
-                name
-                email
-                profileUrl
-              }
-              id
-              caption
               likeCount
               dislikeCount
-              comments{
-                text
-                userId
-                user {
-                  id
-                  name
-                  email
-                  profileUrl
-                }
-                id
-              }
             }
           }
           `,
@@ -603,7 +536,6 @@ class PostBox extends Component {
           mutation createFollowship($input: followshipInput!){
             Followship: createFollowship(input: $input){
               followerId
-              followeeId
             }
           }
           `,

@@ -32,122 +32,68 @@ class PostPage extends Component {
   }
 
   render(){
+
+    let navBar;
     if(this.navBarType()==="navBarWithSignIn")
-    {
-      return(
-      <div key="postpage">
-        <NavBarWithSignIn key="navBarWithSignIn" />
-        <ApolloProvider client={postsClient}>
-        <Query
-          query={gql`
-            query getAPost($id: String!){
-              Post: getAPost(id: $id){
-                errors{
-                  msg
-                }
-                fileId
-                fileType
+        navBar = <NavBarWithSignIn key="navBarWithSignIn" id="navPostPage"/>
+    else
+        navBar = <NavBarWithoutSignIn key="navBarWithoutSignIn" id="navPostPage"/>
+
+    return(
+    <div key="postpage">
+      {navBar}
+      <ApolloProvider client={postsClient}>
+      <Query
+        query={gql`
+          query getAPost($id: String!){
+            Post: getAPost(id: $id){
+              errors{
+                msg
+              }
+              fileId
+              fileType
+              user{
+                id
+                name
+                email
+                profileUrl
+              }
+              id
+              caption
+              likeCount
+              dislikeCount
+              comments{
+                text
                 userId
                 user{
                   id
                   name
-                  email
-                  profileUrl
                 }
                 id
-                caption
-                likeCount
-                dislikeCount
-                comments{
-                  text
-                  userId
-                  user{
-                    id
-                    name
-                    email
-                    profileUrl
-                  }
-                  id
-                }
               }
             }
-          `}
-          variables={{id: this.props.match.params.postId}}
-        >
-          {({ loading, error, data }) => {
-            if (loading) return <p>Loading...</p>;
-            if (error) return <p>Error :(</p>;
-            return(
-              <div>
-                {data.Post.map(postInfo => (
-                  <div key={postInfo.id}>
-                    <PostBox postInfo={postInfo}/>
-                    <p></p>
-                  </div>
-                ))}
+          }
+        `}
+        variables={{id: this.props.match.params.postId}}
+      >
+        {({ loading, error, data }) => {
+          if (loading) return <p>Loading...</p>;
+          if (error) return <p>Error :(</p>;
+          let postInfo = data.Post;
+          return(
+            <div>
+              <div key={postInfo.id}>
+                <PostBox postInfo={postInfo}/>
+                <p></p>
               </div>
-            );
-          }}
-        </Query>
-        </ApolloProvider>
-        <Footer/>
-      </div>
-      );
-    }
-    else{
-      return(
-      <div key="postpage">
-        <NavBarWithoutSignIn key="navBarWithoutSignIn" />
-        <ApolloProvider client={postsClient}>
-        <Query
-          query={gql`
-            query getAPost($id: String!){
-              Post: getAPost(id: $id){
-                errors{
-                  msg
-                }
-                fileId
-                fileType
-                userId
-                user{
-                  id
-                  name
-                  email
-                  profileUrl
-                }
-                id
-                caption
-                likeCount
-                dislikeCount
-                comments{
-                  text
-                  userId
-                  user{
-                    id
-                    name
-                    email
-                    profileUrl
-                  }
-                  id
-                }
-              }
-            }
-          `}
-          variables={{id: this.props.match.params.postId}}
-        >
-          {({ loading, error, data }) => {
-            if (loading) return <p>Loading...</p>;
-            if (error) return <p>Error :(</p>;
-            return(
-              <PostBox postInfo={data.Post}/>
-            );
-          }}
-        </Query>
-        </ApolloProvider>
-        <Footer/>
-      </div>
-      );
-    }
+            </div>
+          );
+        }}
+      </Query>
+      </ApolloProvider>
+      <Footer/>
+    </div>
+    );
   }
 };
 
