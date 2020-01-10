@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "postsservice": "file:posts",
-    "shortid": "^2.2.14",
     "userservice": "file:user"
   }
 }
