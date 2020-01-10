@@ -1,18 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Query, Mutation } from 'react-apollo';
-import gql from 'graphql-tag';
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
-import { withRouter } from "react-router-dom";
 import GoogleLogin from "react-google-login";
 import axios from 'axios';
 import UserContext from '../contexts/UserContext.js';
-
-
-const userClient = new ApolloClient({
-  uri: "http://localhost:3002/user"
-});
 
 
 class LoginForm extends Component {

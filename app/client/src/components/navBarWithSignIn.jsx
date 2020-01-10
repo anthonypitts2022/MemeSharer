@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import UserContext from '../contexts/UserContext.js';
+
+
 class NavBarWithSignIn extends Component {
 
   constructor(props){

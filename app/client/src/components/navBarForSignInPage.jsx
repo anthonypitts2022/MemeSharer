@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import UserContext from '../contexts/UserContext.js';
-import { Image } from 'react-native';
-
 
 
 class NavBarWithoutSignIn extends Component {

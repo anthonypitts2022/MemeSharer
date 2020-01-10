@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Query, Mutation } from 'react-apollo';
 import axios from 'axios';
-import { UserConsumer } from '../contexts/UserContext.js';
 import UserContext from '../contexts/UserContext.js';
 import { Image } from 'react-native';
 const { createApolloFetch } = require('apollo-fetch');

@@ -1,21 +1,12 @@
 import React, { Component } from 'react';
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
 import NavBarWithSignIn from '../components/navBarWithSignIn.jsx';
 import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
 import UserContext from '../contexts/UserContext.js';
 import Footer from "../components/Footer.jsx";
 import PostBox from '../components/postBox.jsx';
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
 const { createApolloFetch } = require('apollo-fetch');
 
 
-
-
-const postsClient = new ApolloClient({
-  uri: "http://localhost:3301/posts"
-});
 
 class Feed extends Component {
 

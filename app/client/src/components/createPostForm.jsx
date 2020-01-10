@@ -1,19 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { graphql } from 'react-apollo';
 import { Query, Mutation } from 'react-apollo';
-import { useMutation } from 'react-apollo-hooks';
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
-import { UserConsumer } from '../contexts/UserContext.js';
 import UserContext from '../contexts/UserContext.js';
 import axios from 'axios';
-const { createApolloFetch } = require('apollo-fetch');
 
-
-const postsClient = new ApolloClient({
-  uri: "http://localhost:3301/posts"
-});
 
 class CreatePostForm extends Component {
 
