@@ -23,6 +23,9 @@ class NavBarWithSignIn extends Component {
           <div className="navbar-header navbar-center">
             <a className="navbar-brand" href="/">MemeSharer</a>
           </div>
+          <div className="navbar-header navbar-right">
+            <button onClick={this.sendToLogin.bind(this)} type="button" className="btn btn-info btn-md">Login</button>
+          </div>
         </div>
       </nav>
     );

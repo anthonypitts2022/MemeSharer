@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import GoogleLogin from "react-google-login";
 import axios from 'axios';
 import UserContext from '../contexts/UserContext.js';
