@@ -3,8 +3,6 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import NavBarWithSignIn from '../components/navBarWithSignIn.jsx';
 import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
-import Post from '../queries-mutations/Post.jsx';
-import FollowingIds from '../queries-mutations/FollowingIds.js';
 import UserContext from '../contexts/UserContext.js';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";

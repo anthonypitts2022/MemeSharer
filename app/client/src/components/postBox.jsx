@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
-import AddLike from '../queries-mutations/AddLike.js';
-import AddComment from '../queries-mutations/AddComment.js';
 import axios from 'axios';
 import { UserConsumer } from '../contexts/UserContext.js';
 import UserContext from '../contexts/UserContext.js';

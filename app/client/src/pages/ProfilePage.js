@@ -3,7 +3,6 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import NavBarWithSignIn from '../components/navBarWithSignIn.jsx';
 import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
-import FollowingIds from '../queries-mutations/FollowingIds.js';
 import UserContext from '../contexts/UserContext.js';
 import Footer from "../components/Footer.jsx";
 import PostBox from '../components/postBox.jsx';

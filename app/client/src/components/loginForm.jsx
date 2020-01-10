@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-import CheckLogin from '../queries-mutations/CheckLogin.js'
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
 import GoogleLogin from "react-google-login";
 import axios from 'axios';
 import UserContext from '../contexts/UserContext.js';

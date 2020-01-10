@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { graphql } from 'react-apollo';
 import { Query, Mutation } from 'react-apollo';
 import { useMutation } from 'react-apollo-hooks';
-import CreatePost from '../queries-mutations/CreatePost.js';
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import { UserConsumer } from '../contexts/UserContext.js';
