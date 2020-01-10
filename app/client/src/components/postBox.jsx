@@ -451,6 +451,12 @@ class PostBox extends Component {
 
   followingStatus(){
 
+    //if user is not signed in
+    if(undefined === this.context.user_id)
+    {
+      return false;
+    }
+
     //bind this to the addLike function
     getFollowingButton = getFollowingButton.bind(this);
 
@@ -509,6 +515,11 @@ class PostBox extends Component {
     follow();
     async function follow() {
       try{
+        //if user is not signed in
+        if(undefined === this.context.user_id)
+        {
+          window.location = "/login"
+        }
 
         var createFollowshipVariables={
           "input": {
@@ -557,6 +568,12 @@ class PostBox extends Component {
     unfollow();
     async function unfollow() {
       try{
+
+        //if user is not signed in
+        if(undefined === this.context.user_id)
+        {
+          window.location = "/login"
+        }
 
         var deleteFollowshipVariables={
           "input": {
@@ -619,14 +636,18 @@ class PostBox extends Component {
 
     // if this post is not by the current user, then display a follow/followed button
     let followingUserOfPostButton;
-    if(this.context.user_id != this.state.userId && this.state.followingUserOfPost!=null){
-      // if following
-      if(this.state.followingUserOfPost){
-        followingUserOfPostButton = <button type="button" className="btn btn-light" onClick={this.unfollowUserOfPost}>Following</button>
-      }
-      // if not following
-      else{
-        followingUserOfPostButton = <button type="button" className="btn btn-primary" onClick={this.followUserOfPost}>Follow</button>
+    //if user is signed in
+    if(undefined != this.context.user_id)
+    {
+      if (this.context.user_id != this.state.userId && this.state.followingUserOfPost!=null){
+        // if following
+        if(this.state.followingUserOfPost){
+          followingUserOfPostButton = <button type="button" className="btn btn-light" onClick={this.unfollowUserOfPost}>Following</button>
+        }
+        // if not following
+        else{
+          followingUserOfPostButton = <button type="button" className="btn btn-primary" onClick={this.followUserOfPost}>Follow</button>
+        }
       }
     }
 
@@ -734,7 +755,7 @@ class PostBox extends Component {
                 <label htmlFor="InputComment"></label>
                 <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id={"commentInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
               </div>
-              <button type="submit" onClick={this.context.user_id!=undefined ? this.handleAddComment : false} className="badge badge-pill badge-primary">Add Comment</button>
+              <button type="submit" onClick={this.handleAddComment} className="badge badge-pill badge-primary">Add Comment</button>
             </div>
           </div>
         </div>

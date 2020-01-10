@@ -14,7 +14,7 @@ class NavBarWithoutSignIn extends Component {
 
   logout() {
     localStorage.removeItem('user');
-    window.location = "/"
+    window.location = "/login"
   }
 
   createpost() {

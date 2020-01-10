@@ -196,6 +196,12 @@ class Feed extends Component {
   }
 
   followingQueryPosts() {
+    //if user is not signed in
+    if(undefined === this.context)
+    {
+      this.state.followingHasMorePosts= false;
+      return;
+    }
 
     //bind this to the function
     postsQuery = postsQuery.bind(this);
@@ -210,7 +216,7 @@ class Feed extends Component {
         var queryPostsVariables={
           "input": {
             "index": (this.state.followingLoadedPosts - 5).toString(),
-            "userId": JSON.parse(localStorage.getItem('user')).id
+            "userId": this.context.user_id
           }
         };
 
