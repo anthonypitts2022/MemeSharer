@@ -21,20 +21,8 @@
 //---------------------------------
 // Modules
 //---------------------------------
-const bcrypt = require("bcrypt");
 const { handleErrors } = require("../../utils/handle-errors.js");
-const isMongodbid = require("../../utils/is-mongodbid");
-const config = require("../../../config/config.js");
 const { logger } = require("app-root-path").require("/config/logger.js");
-const multer = require('multer');
-const GridFsStorage = require('multer-gridfs-storage');
-const Grid = require('gridfs-stream');
-var fs = require('fs');
-const path = require("path");
-const axios = require("axios");
-const os = require('os');
-const shortid = require("shortid");
-const isEmpty = require("../../validation/is-empty");
 
 //---------------------------------
 // Models

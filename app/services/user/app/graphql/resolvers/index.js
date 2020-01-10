@@ -8,7 +8,7 @@
 //==============================================================================
 /*
 Title: Index resolver
-Auth: ya2369
+Auth: Anthony Pitts
 Vers: 1.1
 date: 7/28/19 *Last ModBODY
 desc: Main resolvers component
@@ -31,7 +31,6 @@ const Users = require("../../models/User-model.js");
 const {
   userQuery,
   usersQuery,
-  googleLoginQuery
 } = require("./user-queries.js");
 
 //---------------------------------
@@ -39,7 +38,9 @@ const {
 //---------------------------------
 
 // User Mutation Library
-const { createOrUpdateUserMutation } = require("./user-mutations.js");
+const { 
+  createOrUpdateUserMutation
+} = require("./user-mutations.js");
 
 //==============================================================================
 // BODY
@@ -52,7 +53,6 @@ const { createOrUpdateUserMutation } = require("./user-mutations.js");
 const Query = {
   user: userQuery,
   users: usersQuery,
-  googleLogin: googleLoginQuery
 };
 
 //---------------------------------

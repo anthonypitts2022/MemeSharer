@@ -1,8 +1,6 @@
 type Query {
   user(id: String!): User
-  searchIfUserExist(username: String!): User
   users: [User]
-  googleLogin(googleEmail: String!): User
 }
 
 type Mutation {

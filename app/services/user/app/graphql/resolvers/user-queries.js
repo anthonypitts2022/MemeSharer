@@ -23,7 +23,6 @@
 require("module-alias/register");
 const { logger } = require("@lib/logger");
 const { handleErrors } = require("@lib/handle-errors");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const config = require("../../../config/config.js");
@@ -64,45 +63,8 @@ const usersQuery = async (root, { args }, { user }) => {
   }
 };
 
-// @access : Public(uses)
-// @desc   : Login using google login
-const googleLoginQuery = async (root, { googleEmail }, { res }, {user}) => {
-  try {
-    let payload = {
-      email: googleEmail,      //gonna add name here
-    };
-    // Create JWT Payload
-    // Sign and creates the token. The strategy will then use this
-    // as our login
 
-    // Create a global expire token
-    let tokenExp = 1000 * 60 * 60 * 1;
-    let token = {
-      jwtToken:
-        "Bearer " +
-        jwt.sign(payload, config.jwtSecretKey, {
-          expiresIn: tokenExp
-        })
-    };
-
-    // Send the jwt token to the client as a cookie
-    res.cookie("Auth", token, {
-      secret: "mamb123werwerwer",
-      maxAge: tokenExp,
-      httpOnly: true
-    });
-
-    let loggedInUser = {
-      email: googleEmail,
-      loginExp: tokenExp
-    };
-    return loggedInUser;
-  } catch (e) {
-    console.log(e);
-  }
-};
 module.exports = {
   userQuery,
   usersQuery,
-  googleLoginQuery
 };

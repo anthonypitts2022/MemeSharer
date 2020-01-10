@@ -1,5 +1,6 @@
 require("module-alias/register");
-const { logger } = require("@lib/logger");const fs = require("fs");
+const { logger } = require("@lib/logger");
+const fs = require("fs");
 const config = require("./config");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
@@ -7,18 +8,6 @@ const { corsConfig } = require("./cors.js");
 
 // Set the environment
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
-
-// Gets the token and decodes that payload
-const getUser = token => {
-  try {
-    if (token) {
-      return jwt.verify(token, config.jwtSecretKey);
-    }
-    return null;
-  } catch (err) {
-    return null;
-  }
-};
 
 // const graphqlExpress = require("express-graphql");
 const { ApolloServer } = require("apollo-server-express");
@@ -73,20 +62,9 @@ const createServer = async app => {
       const tokenWithBearer = jwtToken || testerToken || "";
       const token = tokenWithBearer.split(" ")[1];
 
-      // Set the user information based on the token
-      // we will decrypt the jwt token and get the contents
-      var user = getUser(token);
-      if(user==null){
-        user = {
-          id: "123",
-          name: "Anonymous"
-        };
-      }
-
       return {
         req,
         res,
-        user,
         env
       };
     }

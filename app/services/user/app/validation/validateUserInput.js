@@ -7,7 +7,7 @@
 
 /*
 Title:Company query
-Auth: mambanerd
+Auth: Anthony Pitts
 Vers: 1.0
 date: 4/6/19 *Last ModBODY
 desc: Validates the user input

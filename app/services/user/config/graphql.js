@@ -9,18 +9,6 @@ const { corsConfig } = require("./cors.js");
 // Set the environment
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
-// Gets the token and decodes that payload
-const getUser = token => {
-  try {
-    if (token) {
-      return jwt.verify(token, config.jwtSecretKey);
-    }
-    return null;
-  } catch (err) {
-    return null;
-  }
-};
-
 // const graphqlExpress = require("express-graphql");
 const { ApolloServer } = require("apollo-server-express");
 // const { graphqlExpress } = require("apollo-server-express");
@@ -32,6 +20,7 @@ const {
   makeRemoteExecutableSchema,
   introspectSchema
 } = require("graphql-tools");
+
 
 //Create the master schema
 const createSchema = async () => {
@@ -73,14 +62,9 @@ const createServer = async app => {
       const tokenWithBearer = jwtToken || testerToken || "";
       const token = tokenWithBearer.split(" ")[1];
 
-      // Set the user information based on the token
-      // we will decrypt the jwt token and get the contents
-      let user = getUser(token);
-
       return {
         req,
         res,
-        user,
         env
       };
     }
@@ -90,7 +74,7 @@ const createServer = async app => {
     path,
     cors: corsConfig
   });
-  logger.info(`🚀 User graphql service ready at ${server.graphqlPath}`);
+  logger.info(`🚀 user graphql service ready at ${server.graphqlPath}`);
 };
 
 module.exports = { createSchema, createServer };

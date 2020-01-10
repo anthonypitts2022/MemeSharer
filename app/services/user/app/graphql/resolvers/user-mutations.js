@@ -8,9 +8,9 @@
 //==============================================================================
 /*
 !Title : user-Mutation
-!Auth  : ya2369
+!Auth  : Anthony Pitts
 !Vers  : 1.0
-!Date  : 6/24;/19 *Last Mod
+!Date  : 6/24/19 *Last Mod
 !Desc  : Contains All mutations for Users
 */
 
@@ -24,11 +24,6 @@
 require("module-alias/register");
 const { logger } = require("@lib/logger");
 const { handleErrors } = require("@lib/handle-errors");
-const { generatePassword } = require("@lib/passGen");
-const config = require("../../../config/config.js");
-const bcrypt = require("bcrypt");
-const path = require("path");
-const axios = require("axios");
 const { createApolloFetch } = require('apollo-fetch');
 
 

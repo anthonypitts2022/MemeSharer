@@ -7,7 +7,6 @@
 //
 //==============================================================================
 /*
-!Title : isMongodbid
 !Auth  : mambanerd
 !Vers  : 1.0
 !Date  : 6/22/19 *Last Mod
@@ -17,9 +16,6 @@
 // Checks if the company ID exists
 
 var ObjectID = require('mongodb').ObjectID
-const isMongodbid = value => ObjectID.isValid(value)
-
-module.exports = isMongodbid
 
 const { addColors, createLogger, format, transports } = require('winston')
 const morgan = require('morgan')

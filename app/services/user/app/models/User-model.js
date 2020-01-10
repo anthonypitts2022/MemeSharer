@@ -8,7 +8,7 @@
 //==============================================================================
 /*
 !Title : User-model
-!Auth  : mambanerd
+!Auth  : Anthony Pitts
 !Vers  : 1.0
 !Date  : 6/20/19 *Last Mod
 !Desc  : Sets up the user schema

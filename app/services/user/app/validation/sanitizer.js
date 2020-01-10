@@ -10,7 +10,7 @@ ___  __ _ _ __ (_) |_(_)_______ _ __
 
 /*
 Title: Sanitizer
-Auth: aep2195
+Auth: Anthony Pitts
 Vers: 1.0
 date: 9/20/19 *Last ModBODY
 desc: Sanitizes the input

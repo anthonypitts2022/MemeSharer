@@ -20,12 +20,8 @@
 //---------------------------------
 // Modules
 //---------------------------------
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const { handleErrors } = require("../../utils/handle-errors.js");
-const config = require("../../../config/config.js");
 const { logger } = require("app-root-path").require("/config/logger.js");
-const { PostsDateSort } = require("../../utils/PostsArrDateSort.js");
 
 //---------------------------------
 // Models
@@ -65,7 +61,6 @@ const globalPostsQuery = async (root, { index }) => {
                                    .sort({date: -1})
                                    .skip( index + 5 )
                                    .limit(1)).length
-
 
 
     return {posts: posts, hasNext: hasNext};
