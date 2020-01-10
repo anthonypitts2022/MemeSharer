@@ -4,7 +4,6 @@ import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
 import UserContext from '../contexts/UserContext.js';
 import Footer from "../components/Footer.jsx";
 import PostBox from '../components/postBox.jsx';
-import gql from "graphql-tag";
 
 const { createApolloFetch } = require('apollo-fetch');
 
@@ -74,7 +73,7 @@ class Feed extends Component {
   }
 
   isHalfWayDownPage(root) {
-    if(this.globalFirst || this.globalScrollNumPosts!=this.state.globalLoadedPosts)
+    if(this.globalFirst || this.globalScrollNumPosts !== this.state.globalLoadedPosts)
     {
       this.globalHalfDownPage = (document.getElementById('root').getBoundingClientRect().bottom + window.innerHeight) * .5;
       this.globalFirst = false;
@@ -117,10 +116,6 @@ class Feed extends Component {
 
   globalQueryPosts() {
 
-    //bind this to the function
-    postsQuery = postsQuery.bind(this);
-
-    postsQuery();
     async function postsQuery() {
       try{
 
@@ -193,20 +188,20 @@ class Feed extends Component {
       }
 
       }
+
+      //bind this to the function
+      let boundedPostsQuery = postsQuery.bind(this);
+
+      boundedPostsQuery();
   }
 
   followingQueryPosts() {
     //if user is not signed in
     if(undefined === this.context)
     {
-      this.state.followingHasMorePosts= false;
       return;
     }
 
-    //bind this to the function
-    postsQuery = postsQuery.bind(this);
-
-    postsQuery();
     async function postsQuery() {
       try{
 
@@ -283,6 +278,11 @@ class Feed extends Component {
       }
 
       }
+
+      //bind this to the function
+      let boundedPostsQuery = postsQuery.bind(this);
+
+      boundedPostsQuery();
   }
 
   navBarType() {

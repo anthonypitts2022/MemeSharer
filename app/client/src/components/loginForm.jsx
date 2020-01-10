@@ -13,11 +13,11 @@ class LoginForm extends Component {
     //bindings
     this.responseGoogle = this.responseGoogle.bind(this);
 
+
   }
 
 
   responseGoogle(response) {
-    signIn = signIn.bind(this);
     signIn(response);
     async function signIn(response) {
       try{
@@ -33,7 +33,7 @@ class LoginForm extends Component {
 
         //create new user in database or update user if logged in before
         var variables = { "input": newUser };
-        var createUpdateUserResponse = await axios.post("http://localhost:3002/createupdateuser", variables);
+        await axios.post("http://localhost:3002/createupdateuser", variables);
 
         window.location = "/";
 
@@ -48,11 +48,11 @@ class LoginForm extends Component {
   render(){
     return(
       <div>
-       <a>
-         <meta name="google-signin-scope" content="profile email"></meta>
-         <meta name="google-signin-client_id" content="476731474183-4tm8h88lu6tnba05q3e81ommb9g1t1oc.apps.googleusercontent.com"></meta>
-         <script src="https://apis.google.com/js/platform.js" async defer></script>
-       </a>
+
+       <meta name="google-signin-scope" content="profile email"></meta>
+       <meta name="google-signin-client_id" content="476731474183-4tm8h88lu6tnba05q3e81ommb9g1t1oc.apps.googleusercontent.com"></meta>
+       <script src="https://apis.google.com/js/platform.js" async defer></script>
+
        <form className="bg-light" method="post">
            <div className="container">
               <div className="col-md-6 mx-auto text-center">
@@ -72,15 +72,17 @@ class LoginForm extends Component {
                        render={renderProps => (
                          <input
                            type="image"
-                           src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
+                           src="/btn_google_signin_dark_normal_web.png"
                            onClick={renderProps.onClick}
                            disabled={renderProps.disabled}
+                           alt="Google login image"
                          />
                        )}
                        buttonText="Login"
                        onSuccess={this.responseGoogle}
                        onFailure={this.responseGoogle}
-                       cookiePolicy={"single_host_origin"}
+                       cookiePolicy={"http://localhost"}
+
                      />
                     <div className="g-signin2" data-onsuccess="onSignIn"></div>
                     <div className="col-md-12 ">
@@ -88,7 +90,7 @@ class LoginForm extends Component {
                           <hr className="hr-or" />
                        </div>
                     </div>
-                   <p className="small mt-3">By signing in, you are indicating that you have read and agree to the <a href="" className="ps-hero__content__link">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+                   <p className="small mt-3">By signing in, you are indicating that you have read and agree to the <a href="/contentpolicy" className="ps-hero__content__link">Terms of Use</a> and <a href="/privacypolicy">Privacy Policy</a>.</p>
               </div>
            </div>
         </div>

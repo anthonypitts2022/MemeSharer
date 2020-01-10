@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import Feed from './pages/Feed';
 import Page404 from './pages/Page404';
 import LoginPage from './pages/LoginPage';
@@ -9,7 +8,6 @@ import CreatePostPage from './pages/CreatePostPage';
 import ContentPolicyPage from './pages/ContentPolicyPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import UserAgreementPage from './pages/UserAgreementPage';
-import * as serviceWorker from './config/serviceWorker';
 import "bootstrap/dist/css/bootstrap.css";
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { UserProvider } from './contexts/UserContext.js';

@@ -4,9 +4,6 @@ import * as serviceWorker from './config/serviceWorker';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
-import $ from 'jquery';
-import Popper from 'popper.js';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import RoutingPage from './RoutingPage.jsx';
 
 

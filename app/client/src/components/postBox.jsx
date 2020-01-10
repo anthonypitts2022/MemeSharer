@@ -50,12 +50,12 @@ class PostBox extends Component {
 
   componentDidMount(){
 
-    //bind this to the function
-    getFollowingStatus = getFollowingStatus.bind(this);
-    getFollowingStatus();
     async function getFollowingStatus() {
       this.setState({followingUserOfPost: await this.followingStatus()})
     }
+    //bind this to the function
+    var boundGetFollowingStatus = getFollowingStatus.bind(this);
+    boundGetFollowingStatus();
 
   }
 
@@ -67,7 +67,7 @@ class PostBox extends Component {
   }
 
   handleAddCaptionChange(event) {
-    if(event.target.value != ""){
+    if(event.target.value !== ""){
       this.setState({newCaption: event.target.value});
     }
     else{
@@ -77,10 +77,6 @@ class PostBox extends Component {
 
   handleAddComment(event) {
 
-    //bind this to the addLike function
-    addComment = addComment.bind(this);
-
-    addComment();
     async function addComment() {
       try{
 
@@ -146,13 +142,16 @@ class PostBox extends Component {
       }
 
       }
+
+      //bind this to the addLike function
+      let boundedAddComment = addComment.bind(this);
+
+      boundedAddComment();
   }
 
   handleLikeClick(event) {
-    //bind this to the addLike function
-    addLike = addLike.bind(this);
 
-    addLike();
+
     async function addLike() {
       try{
 
@@ -225,13 +224,16 @@ class PostBox extends Component {
         console.log(err);
       }
     }
+
+    //bind this to the addLike function
+    let boundedAddLike = addLike.bind(this);
+
+    boundedAddLike();
   }
 
   handleDislikeClick(event) {
-    //bind this to the addLike function
-    addLike = addLike.bind(this);
 
-    addLike();
+
     async function addLike() {
       try{
 
@@ -304,20 +306,23 @@ class PostBox extends Component {
         console.log(err);
       }
     }
+
+    //bind this to the addLike function
+    let boundedAddLike = addLike.bind(this);
+
+    boundedAddLike();
   }
 
 
   handleDeletePost(event) {
-    //bind this to the deletePost function
-    deletePost = deletePost.bind(this);
 
-    deletePost();
+
     async function deletePost() {
       try{
         if(this.context===undefined || this.context.user_id===undefined){
           window.location = "/login";
         }
-        if(this.context.user_email != this.state.userEmail)
+        if(this.context.user_email !== this.state.userEmail)
         {
           return null;
         }
@@ -332,7 +337,7 @@ class PostBox extends Component {
         //binds the variables for query to fetch
         fetch = fetch.bind(deletePostVariables)
 
-        let deletePostResponse = await fetch({
+        await fetch({
           query:
           `
           mutation deletePost($id: String!){
@@ -349,27 +354,35 @@ class PostBox extends Component {
         console.log(err);
       }
     }
+
+    //bind this to the deletePost function
+    let boundedDeletePost = deletePost.bind(this);
+
+    boundedDeletePost();
   }
 
 
   handleEditCaption(event) {
-    //bind this to the deletePost function
-    editCaption = editCaption.bind(this);
 
-    editCaption();
+
     async function editCaption() {
       try{
 
-        // clear add new caption input from modal
-        document.getElementById("captionInput"+this.state.postId).value = ''
+
 
         if(this.context===undefined || this.context.user_id===undefined){
           window.location = "/login";
         }
-        if(this.context.user_email != this.state.userEmail)
+        if(this.context.user_email !== this.state.userEmail)
+        {
+          document.getElementById(this.state.postId + "newCaptionInput").value = ''
           return;
+        }
         if(this.state.newCaption === null)
+        {
+          document.getElementById(this.state.postId + "newCaptionInput").value = ''
           return;
+        }
 
         var editCaptionVariables={
           "input": {
@@ -402,10 +415,15 @@ class PostBox extends Component {
         })
 
         if(editCaptionResponse.errors != null)
+        {
+          document.getElementById(this.state.postId + "newCaptionInput").value = ''
           return;
+        }
 
+        document.getElementById(this.state.postId + "newCaptionInput").value = ''
         this.setState({caption: editCaptionResponse.data.Post.caption});
         this.setState({newCaption: null});
+
 
 
       }
@@ -413,14 +431,17 @@ class PostBox extends Component {
         console.log(err);
       }
     }
+
+    //bind this to the function
+    let boundedEditCaption = editCaption.bind(this);
+
+    boundedEditCaption();
   }
 
 
   handleCopyLink(event) {
-    //bind this to the copyLink function
-    copyLink = copyLink.bind(this);
 
-    copyLink();
+
     async function copyLink() {
       try{
         let link = ""
@@ -442,6 +463,11 @@ class PostBox extends Component {
         console.log(err);
       }
     }
+
+    //bind this to the copyLink function
+    let boundedCopyLink = copyLink.bind(this);
+
+    boundedCopyLink();
   }
 
   loadMoreComments(event) {
@@ -456,10 +482,7 @@ class PostBox extends Component {
       return false;
     }
 
-    //bind this to the addLike function
-    getFollowingButton = getFollowingButton.bind(this);
 
-    return getFollowingButton();
     async function getFollowingButton() {
       try{
 
@@ -504,14 +527,16 @@ class PostBox extends Component {
       }
 
       }
+
+      //bind this to the addLike function
+      let boundedGetFollowingButton = getFollowingButton.bind(this);
+
+      return boundedGetFollowingButton();
   }
 
   followUserOfPost(){
 
-    //bind this to the addLike function
-    follow = follow.bind(this);
 
-    follow();
     async function follow() {
       try{
         //if user is not signed in
@@ -557,14 +582,15 @@ class PostBox extends Component {
       }
 
       }
+
+      //bind this to the follow function
+      let boundedFollow = follow.bind(this);
+
+      boundedFollow();
   }
 
   unfollowUserOfPost(){
 
-    //bind this to the addLike function
-    unfollow = unfollow.bind(this);
-
-    unfollow();
     async function unfollow() {
       try{
 
@@ -609,6 +635,11 @@ class PostBox extends Component {
       }
 
       }
+
+      //bind this to the unfollow function
+      let boundedUnfollow = unfollow.bind(this);
+
+      boundedUnfollow();
   }
 
   render(){
@@ -619,9 +650,9 @@ class PostBox extends Component {
       <div className="row">
         <div className="col-md-6 offset-md-4">
           <div className="card" style={{width:"40rem"}}>
-            <a className="card-body">
+            <div className="card-body">
               <p className="text-center font-weight-bold"><font color="#ff1a1a">This Post Has Been Deleted</font></p>
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -636,9 +667,9 @@ class PostBox extends Component {
     // if this post is not by the current user, then display a follow/followed button
     let followingUserOfPostButton;
     //if user is signed in
-    if(undefined != this.context.user_id)
+    if(undefined !== this.context.user_id)
     {
-      if (this.context.user_id != this.state.userId && this.state.followingUserOfPost!=null){
+      if (this.context.user_id !== this.state.userId && this.state.followingUserOfPost!=null){
         // if following
         if(this.state.followingUserOfPost){
           followingUserOfPostButton = <button type="button" className="btn btn-light" onClick={this.unfollowUserOfPost}>Following</button>
@@ -690,7 +721,7 @@ class PostBox extends Component {
                 </ul>
                 <ul>
                   <font className="font-weight-bold">New Caption</font>: <label htmlFor="InputCaption"></label>
-                  <input id={this.state.postId + "newCaptionInput"} type="Comment" className="form-control" onChange={this.handleAddCaptionChange} id={"captionInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter New Caption"></input>
+                  <input id={this.state.postId + "newCaptionInput"} type="Comment" className="form-control" onChange={this.handleAddCaptionChange} aria-describedby="CommentHelp" placeholder="Enter New Caption"></input>
                 </ul>
               </div>
               <div className="modal-footer">
@@ -721,7 +752,7 @@ class PostBox extends Component {
               </div>
             </div>
             <div style={{position:"asbolute", zIndex:"1"}}>
-              <img style={{position:"relative", zIndex:"2"}} className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
+              <img style={{position:"relative", zIndex:"2"}} alt="Post Img" className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
               <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
                 <button className="btn btn-lg btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">

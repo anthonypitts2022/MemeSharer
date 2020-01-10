@@ -22,7 +22,9 @@ class PostPage extends Component {
   constructor(props){
     super(props);
     this.navBarType = this.navBarType.bind(this);
+    this.postId = this.props.match.params.postId;
   }
+
 
   navBarType() {
     return (this===undefined || this.context===undefined || this.context.user_name===undefined)
@@ -72,16 +74,15 @@ class PostPage extends Component {
             }
           }
         `}
-        variables={{id: this.props.match.params.postId}}
+        variables={{id: this.postId}}
       >
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Error :(</p>;
-          let postInfo = data.Post;
           return(
             <div>
-              <div key={postInfo.id}>
-                <PostBox postInfo={postInfo}/>
+              <div key={data.Post.id}>
+                <PostBox postInfo={data.Post}/>
                 <p></p>
               </div>
             </div>

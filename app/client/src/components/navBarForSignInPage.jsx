@@ -4,10 +4,6 @@ import UserContext from '../contexts/UserContext.js';
 
 class NavBarWithoutSignIn extends Component {
 
-  constructor(props){
-    super(props);
-  }
-
   render(){
     return(
       <nav className="navbar navbar-inverse" data-spy="affix" data-offset-top="200">

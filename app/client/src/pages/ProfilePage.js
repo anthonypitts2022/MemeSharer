@@ -47,7 +47,7 @@ class Feed extends Component {
   }
 
   isHalfWayDownPage(root) {
-    if(this.first || this.scrollNumPosts!=this.state.loadedPosts)
+    if(this.first || this.scrollNumPosts!==this.state.loadedPosts)
     {
       this.halfDownPage = (document.getElementById('root').getBoundingClientRect().bottom + window.innerHeight) * .5;
       this.first = false;
@@ -81,10 +81,6 @@ class Feed extends Component {
 
   queryPosts() {
 
-    //bind this to the function
-    postsQuery = postsQuery.bind(this);
-
-    postsQuery();
     async function postsQuery() {
       try{
 
@@ -161,6 +157,9 @@ class Feed extends Component {
       }
 
       }
+      //bind this to the function
+      var boundPostsQuery = postsQuery.bind(this);
+      boundPostsQuery();
   }
 
   navBarType() {

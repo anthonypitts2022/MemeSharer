@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { Query, Mutation } from 'react-apollo';
 import UserContext from '../contexts/UserContext.js';
 import axios from 'axios';
 
@@ -34,14 +32,12 @@ class CreatePostForm extends Component {
   }
 
   handleSubmit(event) {
-    //bindings
-    createPost = createPost.bind(this);
     //uploads file to server
     var fileData = new FormData();
     fileData.append('file', this.state.selectedFile);
     fileData.append('caption', this.state.caption);
     fileData.append('userId', this.context.user_id);
-    createPost(fileData);
+
     async function createPost( fileData ) {
       try{
         var response = await axios.post("http://localhost:3301/upload", fileData);
@@ -62,6 +58,9 @@ class CreatePostForm extends Component {
         console.log(err);
       }
     }
+    //bindings
+    var bondedCreatePost = createPost.bind(this);
+    bondedCreatePost(fileData);
   }
 
 
@@ -93,7 +92,7 @@ class CreatePostForm extends Component {
                         </div>
                     </form>
                   </div>
-                  <a type="submit" onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Post Meme</a>
+                  <div onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Post Meme</div>
                   <div>
                     {this.state.errors.map(error => (
                       <div key={error+"splitErrors"} >
@@ -131,13 +130,13 @@ class CreatePostForm extends Component {
                             <label htmlFor="file" className="custom-file-label">Choose File</label>
                           </div>
                           <p></p>
-                            <img src={this.state.temporaryFileUrl} style={{maxWidth:"100%", maxHeight:"auto", width:"200px", height:"200px"}}/>
+                            <img src={this.state.temporaryFileUrl} alt="temporary file upload" style={{maxWidth:"100%", maxHeight:"auto", width:"200px", height:"200px"}}/>
                           <p></p>
                            <input onChange={this.handleCaptionChange} type="caption" name="caption"  className="form-control my-input" id="caption" placeholder="Caption" />
                         </div>
                     </form>
                   </div>
-                  <a type="submit" onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Post Meme</a>
+                  <div onClick={this.handleSubmit} className="btn btn-lg btn-primary btn-block">Post Meme</div>
                   <div>
                     {this.state.errors.map(error => (
                       <div key={error+"splitErrors"} >
