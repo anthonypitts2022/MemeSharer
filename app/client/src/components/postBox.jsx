@@ -80,7 +80,7 @@ class PostBox extends Component {
     async function addComment() {
       try{
 
-        if(this.context===undefined || this.context.user_id===undefined){
+        if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined ){
           window.location = "/login";
         }
 
@@ -88,7 +88,7 @@ class PostBox extends Component {
           "input": {
             "text": this.state.addCommentText,
             "postId": this.state.postId,
-            "userId": this.context.user_id
+            "userId": JSON.parse(localStorage.getItem('user')).id
           }
         };
 
@@ -155,11 +155,11 @@ class PostBox extends Component {
     async function addLike() {
       try{
 
-        if(this.context===undefined || this.context.user_id===undefined){
+        if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined  ){
           window.location = "/login";
         }
 
-        var createLikeVariables={"input": { "isLike":true, "postId": this.state.postId, "userId": this.context.user_id } };
+        var createLikeVariables={"input": { "isLike":true, "postId": this.state.postId, "userId": JSON.parse(localStorage.getItem('user')).id } };
 
         //calls create like database mutation
         var fetch = createApolloFetch({
@@ -237,11 +237,11 @@ class PostBox extends Component {
     async function addLike() {
       try{
 
-        if(this.context===undefined || this.context.user_id===undefined){
+        if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined ){
           window.location = "/login";
         }
 
-        var createLikeVariables={"input": { "isLike":false, "postId": this.state.postId, "userId": this.context.user_id } };
+        var createLikeVariables={"input": { "isLike":false, "postId": this.state.postId, "userId": JSON.parse(localStorage.getItem('user')).id } };
 
         //calls create like database mutation
         var fetch = createApolloFetch({
@@ -319,10 +319,10 @@ class PostBox extends Component {
 
     async function deletePost() {
       try{
-        if(this.context===undefined || this.context.user_id===undefined){
+        if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined ){
           window.location = "/login";
         }
-        if(this.context.user_email !== this.state.userEmail)
+        if(JSON.parse(localStorage.getItem('user')).email !== this.state.userEmail)
         {
           return null;
         }
@@ -370,10 +370,10 @@ class PostBox extends Component {
 
 
 
-        if(this.context===undefined || this.context.user_id===undefined){
+        if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined ){
           window.location = "/login";
         }
-        if(this.context.user_email !== this.state.userEmail)
+        if(JSON.parse(localStorage.getItem('user')).email !== this.state.userEmail)
         {
           document.getElementById(this.state.postId + "newCaptionInput").value = ''
           return;
@@ -477,7 +477,7 @@ class PostBox extends Component {
   followingStatus(){
 
     //if user is not signed in
-    if(undefined === this.context.user_id)
+    if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
     {
       return false;
     }
@@ -488,7 +488,7 @@ class PostBox extends Component {
 
         var isFollowingVariables={
           "input": {
-            "followerId": this.context.user_id,
+            "followerId": JSON.parse(localStorage.getItem('user')).id,
             "followeeId": this.state.userId
           }
         };
@@ -540,14 +540,14 @@ class PostBox extends Component {
     async function follow() {
       try{
         //if user is not signed in
-        if(undefined === this.context.user_id)
+        if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
         {
           window.location = "/login"
         }
 
         var createFollowshipVariables={
           "input": {
-            "followerId": this.context.user_id,
+            "followerId": JSON.parse(localStorage.getItem('user')).id,
             "followeeId": this.state.userId
           }
         };
@@ -595,14 +595,14 @@ class PostBox extends Component {
       try{
 
         //if user is not signed in
-        if(undefined === this.context.user_id)
+        if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
         {
           window.location = "/login"
         }
 
         var deleteFollowshipVariables={
           "input": {
-            "followerId": this.context.user_id,
+            "followerId": JSON.parse(localStorage.getItem('user')).id,
             "followeeId": this.state.userId
           }
         };
@@ -667,9 +667,9 @@ class PostBox extends Component {
     // if this post is not by the current user, then display a follow/followed button
     let followingUserOfPostButton;
     //if user is signed in
-    if(undefined !== this.context.user_id)
+    if( localStorage.getItem('user')!=null && JSON.parse(localStorage.getItem('user')).id!==undefined )
     {
-      if (this.context.user_id !== this.state.userId && this.state.followingUserOfPost!=null){
+      if (JSON.parse(localStorage.getItem('user')).id !== this.state.userId && this.state.followingUserOfPost!=null){
         // if following
         if(this.state.followingUserOfPost){
           followingUserOfPostButton = <button type="button" className="btn btn-light" onClick={this.unfollowUserOfPost}>Following</button>
@@ -685,11 +685,11 @@ class PostBox extends Component {
 
     let postSettingsButtons;
     //if this is the signed in user's post (so they can delete it etc.)
-    if(this.context.user_id === this.state.userId)
+    if(JSON.parse(localStorage.getItem('user'))!=null && JSON.parse(localStorage.getItem('user')).id === this.state.userId)
     {
       postSettingsButtons =
       <div>
-        <button type="button" className="dropdown-item" data-toggle="modal" data-target="#editCaptionModal">Edit Caption</button>
+        <button type="button" className="dropdown-item" data-toggle="modal" data-target={"#editCaptionModal"+this.state.postId} >Edit Caption</button>
         <button onClick={this.handleDeletePost} className="dropdown-item">Delete Post</button>
         <button onClick={this.handleCopyLink} className="dropdown-item">Copy Link</button>
       </div>
@@ -706,7 +706,7 @@ class PostBox extends Component {
     return(
       <div>
 
-        <div className="modal fade" id="editCaptionModal" tabIndex="-1" role="dialog" aria-labelledby="editCaptionModalLabel" aria-hidden="true">
+        <div className="modal fade" id={"editCaptionModal"+this.state.postId} tabIndex="-1" role="dialog" aria-labelledby="editCaptionModalLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content" style={{backgroundColor: '#e0e0eb'}} >
               <div className="modal-header">

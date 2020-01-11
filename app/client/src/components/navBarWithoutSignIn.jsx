@@ -33,10 +33,10 @@ class NavBarWithoutSignIn extends Component {
           </div>
           <ul className="nav navbar-nav navbar-right">
             <font color="006699"><span className="glyphicon glyphicon-user"></span>Welcome back,</font>
-            <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.context.user_name}</font>
+            <font color="006699"><span className="glyphicon glyphicon-user"></span>{JSON.parse(localStorage.getItem('user')).name.split(" ")[0]}</font>
             <div className="row">
               <div className="column">
-                <a href={"/profile/"+this.context.user_id}>
+                <a href={"/profile/"+JSON.parse(localStorage.getItem('user')).id}>
                   <Image
                     source={{uri: this.context.user_profileUrl}}
                     style={{width: 60, height: 60, borderRadius: 60/ 2}}

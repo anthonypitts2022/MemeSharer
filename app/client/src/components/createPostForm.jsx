@@ -36,7 +36,7 @@ class CreatePostForm extends Component {
     var fileData = new FormData();
     fileData.append('file', this.state.selectedFile);
     fileData.append('caption', this.state.caption);
-    fileData.append('userId', this.context.user_id);
+    fileData.append('userId', JSON.parse(localStorage.getItem('user')).id);
 
     async function createPost( fileData ) {
       try{

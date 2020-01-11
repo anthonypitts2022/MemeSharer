@@ -163,7 +163,7 @@ class Feed extends Component {
   }
 
   navBarType() {
-    return (this===undefined || this.context===undefined || this.context.user_name===undefined)
+    return ( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
               ? "navBarWithSignIn" : "navBarWithoutSignIn";
   }
 

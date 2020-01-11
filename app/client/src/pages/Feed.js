@@ -197,7 +197,7 @@ class Feed extends Component {
 
   followingQueryPosts() {
     //if user is not signed in
-    if(undefined === this.context)
+    if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
     {
       return;
     }
@@ -206,12 +206,14 @@ class Feed extends Component {
       try{
 
         if(false === this.state.followingHasMorePosts)
-            return;
+        {
+          return;
+        }
 
         var queryPostsVariables={
           "input": {
             "index": (this.state.followingLoadedPosts - 5).toString(),
-            "userId": this.context.user_id
+            "userId": JSON.parse(localStorage.getItem('user')).id
           }
         };
 
@@ -286,7 +288,7 @@ class Feed extends Component {
   }
 
   navBarType() {
-    return (this===undefined || this.context===undefined || this.context.user_name===undefined)
+    return ( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
               ? "navBarWithSignIn" : "navBarWithoutSignIn";
   }
 
