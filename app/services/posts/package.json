@@ -22,7 +22,8 @@
     "os": "^0.1.1",
     "path": "^0.12.7",
     "shortid": "^2.2.15",
-    "validator": "^11.0.0"
+    "validator": "^11.0.0",
+    "winston": "^3.2.1"
   },
   "_moduleAliases": {
     "@lib": "./lib"
