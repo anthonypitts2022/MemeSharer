@@ -56,16 +56,8 @@ const logger = createLogger({
   // You can also comment out the line above and uncomment the line below for JSON format
   // format: format.json(),
   transports: [
-    // If the environment is set to development then log to console
-    // If it's not then log to the file
-    env == "development"
-      ? new transports.Console({
+    new transports.Console({
           level: "debug",
-          format: defaultFormat
-        })
-      : new transports.File({
-          level: "info",
-          filename: logPaths.app,
           format: defaultFormat
         })
   ]
