@@ -5,44 +5,51 @@ import Footer from "../components/Footer.jsx"
 
 const PrivacyPolicyPage = () => (
   <div>
+    <p></p>
+    <p>MemeSharer Privacy Policy</p>
+    <p>Effective Jan 1, 2019. Last Revised Jan 8, 2020</p>
+    <p>We want you to understand how and why MemeSharer, Inc. (“MemeSharer,” “we” or “us”) collects, uses, and shares information about you when you use our websites, mobile apps, widgets, and other online products and services (collectively, the "Services") or when you otherwise interact with us or receive a communication from us. This Privacy Policy applies to all of MemeSharer's Services, which maintains a separate privacy notice that incorporates this Privacy Policy by reference.</p>
+
+    <p>What We Collect</p>
+    <p>Information You Provide to Us.</p>
+    <p></p>
+    <p></p>
+    <p>The cornerstone of our data collection policy is that all information on MemeSharer's Server is public information. </p>
+    <p>Every post a user shares is public. Every Comment, like, dislike, etc is public. Every bit (0s and 1s) of data given to MemeSharer is public. This includes the information such as name, email, profile picture URL, and id that is publically provided to MemeSharer upon a user's google sign in. </p>
+    <p>When a user signs in with their google account to interact with MemeSharer, they are agreeing to supply all their PUBLIC google information to MemeSharer.</p>
+    <p></p>
+    <p></p>
+    <p>We collect information you provide to us directly when you use the Services. This includes:</p>
+
+    <p>Content you submit. We collect the content you submit to the Services. This includes your posts and comments including saved drafts, your messages with other users (e.g., private messages, chats, and modmail), and your reports and other communications with moderators and with us. Your content may include text, links, images, gifs, and videos.</p>
+
+    <p>Actions you take. We collect information about the actions you take when using the Services. This includes your interactions with content, like voting, saving, hiding, and reporting. It also includes your interactions with other users, such as following, friending, and blocking. We collect your interactions with communities, like your subscriptions or moderator status.</p>
+
+    <p>Transactional information. If you purchase products or services from us (e.g., MemeSharer Gold or MemeSharer Ads) or sign up as a potential advertiser on MemeSharer Ads, we will collect certain information from you, including your name, address, email address, and information about the product or service you are purchasing. Payments are processed by third-party payment processors (e.g., Stripe and PayPal), so please refer to the applicable processor’s terms and privacy policy for more</p> <p>information about how payment information is processed and stored.</p>
+
+    <p>Other information. You may choose to provide other information directly to us. For example, we may collect information when you fill out a form, participate in MemeSharer-sponsored activities or promotions, apply for a job, request customer support or otherwise communicate with us.</p>
+
+    <p>Information We Collect Automatically</p>
+    <p>When you access or use our Services, we may also automatically collect information about you. This includes:</p>
+
+    <p>Log and usage data. We may log information when you access and use the Services. This may include your IP address, user-agent string, browser type, operating system, referral URLs, device information (e.g., device IDs), pages visited, links clicked, the requested URL, hardware settings, and search terms. Except for the IP address used to create your account, MemeSharer will delete any IP addresses collected after 100 days.</p>
+
+    <p>Information collected from cookies and similar technologies. We may receive information from cookies, which are pieces of data your browser stores and sends back to us when making requests, and similar technologies. We use this information to improve your experience, understand user activity, personalize content and advertisements, and improve the quality of our Services. For example, we store and retrieve information about your preferred language and other settings. For more information on how you can disable cookies, please see “Your Choices” below.</p>
+
+    <p>Location information. We may receive and process information about your location. For example, with your consent, we may collect information about the specific location of your mobile device (for example, by using GPS or Bluetooth). We may also receive location information from you when you choose to share such information on our Services, including by associating your content with a location, or we may derive your approximate location from other information about you, including your IP address.</p>
+
+    <p>Information Collected from Other Sources
+    We may receive information about you from other sources, including from other users and third parties, and combine that information with the other information we have about you. For example, we may receive demographic or interest information about you from third parties, including advertisers, and combine it with our own data using a common account identifier such as a hash of an email address or a mobile-device ID. You can control how we use this information to personalize the Services for you by adjusting your preferences here.</p>
+
+    <p>Linked services. If you authorize or link other services (e.g., third-party apps or websites) to access your MemeSharer account, MemeSharer receives information about your use of that service when it uses that authorization. Linking services may also cause the other service to send us information about your account with that service. To learn how information is shared with linked services, see “How Information About You Is Shared” below.</p>
+
+    <p>Information collected from integrations. We also may receive information about you, including log and usage data and cookie information, from third-party websites that integrate our Services, including our embeds, buttons, and advertising technology. For example, when you visit a website that uses MemeSharer embeds, we may receive information about the web page you visited. You can control how we use this information to personalize the Services for you by adjusting your preferences here.</p>
+
+    <p>How We Use Information About You</p>
+    <p>We use information about you to:</p>
+
+    <p>Extra Notices:</p>
     <p>
-    MemeSharer Privacy Policy
-    Effective June 8, 2018. Last Revised May 25, 2018
-    We want you to understand how and why MemeSharer, Inc. (“MemeSharer,” “we” or “us”) collects, uses, and shares information about you when you use our websites, mobile apps, widgets, and other online products and services (collectively, the "Services") or when you otherwise interact with us or receive a communication from us. This Privacy Policy applies to all of our Services including MemeSharer Gifts, which maintains a separate privacy notice that incorporates this Privacy Policy by reference.
-
-    What We Collect
-    Information You Provide to Us
-    We collect information you provide to us directly when you use the Services. This includes:
-
-    Account information. To create an account, you must provide a username and password. Your username is public, and it doesn’t have to be related to your real name. You may also provide an email address. We also store your user account preferences and settings.
-
-    Content you submit. We collect the content you submit to the Services. This includes your posts and comments including saved drafts, your messages with other users (e.g., private messages, chats, and modmail), and your reports and other communications with moderators and with us. Your content may include text, links, images, gifs, and videos.
-
-    Actions you take. We collect information about the actions you take when using the Services. This includes your interactions with content, like voting, saving, hiding, and reporting. It also includes your interactions with other users, such as following, friending, and blocking. We collect your interactions with communities, like your subscriptions or moderator status.
-
-    Transactional information. If you purchase products or services from us (e.g., MemeSharer Gold or MemeSharer Ads) or sign up as a potential advertiser on MemeSharer Ads, we will collect certain information from you, including your name, address, email address, and information about the product or service you are purchasing. Payments are processed by third-party payment processors (e.g., Stripe and PayPal), so please refer to the applicable processor’s terms and privacy policy for more information about how payment information is processed and stored.
-
-    Other information. You may choose to provide other information directly to us. For example, we may collect information when you fill out a form, participate in MemeSharer-sponsored activities or promotions, apply for a job, request customer support or otherwise communicate with us.
-
-    Information We Collect Automatically
-    When you access or use our Services, we may also automatically collect information about you. This includes:
-
-    Log and usage data. We may log information when you access and use the Services. This may include your IP address, user-agent string, browser type, operating system, referral URLs, device information (e.g., device IDs), pages visited, links clicked, the requested URL, hardware settings, and search terms. Except for the IP address used to create your account, MemeSharer will delete any IP addresses collected after 100 days.
-
-    Information collected from cookies and similar technologies. We may receive information from cookies, which are pieces of data your browser stores and sends back to us when making requests, and similar technologies. We use this information to improve your experience, understand user activity, personalize content and advertisements, and improve the quality of our Services. For example, we store and retrieve information about your preferred language and other settings. For more information on how you can disable cookies, please see “Your Choices” below.
-
-    Location information. We may receive and process information about your location. For example, with your consent, we may collect information about the specific location of your mobile device (for example, by using GPS or Bluetooth). We may also receive location information from you when you choose to share such information on our Services, including by associating your content with a location, or we may derive your approximate location from other information about you, including your IP address.
-
-    Information Collected from Other Sources
-    We may receive information about you from other sources, including from other users and third parties, and combine that information with the other information we have about you. For example, we may receive demographic or interest information about you from third parties, including advertisers, and combine it with our own data using a common account identifier such as a hash of an email address or a mobile-device ID. You can control how we use this information to personalize the Services for you by adjusting your preferences here.
-
-    Linked services. If you authorize or link other services (e.g., third-party apps or websites) to access your MemeSharer account, MemeSharer receives information about your use of that service when it uses that authorization. Linking services may also cause the other service to send us information about your account with that service. To learn how information is shared with linked services, see “How Information About You Is Shared” below.
-
-    Information collected from integrations. We also may receive information about you, including log and usage data and cookie information, from third-party websites that integrate our Services, including our embeds, buttons, and advertising technology. For example, when you visit a website that uses MemeSharer embeds, we may receive information about the web page you visited. You can control how we use this information to personalize the Services for you by adjusting your preferences here.
-
-    How We Use Information About You
-    We use information about you to:
-
     Provide, maintain, and improve the Services;
     Research and develop new services;
     Help protect the safety of MemeSharer and our users, which includes blocking suspected spammers, addressing abuse, and enforcing the MemeSharer user agreement and our other policies;
