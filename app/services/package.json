@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "postsservice": "file:posts",
-    "userservice": "file:user"
+    "userservice": "file:user",
+    "concurrently": "^4.1.0"
   }
 }
