@@ -1,4 +1,4 @@
-process.env.NODE_ENV = process.env.NODE_ENV || 'development'
+process.env.NODE_ENV = require('./config/env/environment.js') || 'development'
 require('module-alias/register')
 const rootPath = require('app-root-path')
 const { logger } = require('@lib/logger.js')
