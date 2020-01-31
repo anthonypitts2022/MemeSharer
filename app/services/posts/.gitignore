@@ -1,6 +1,7 @@
 # Ignore node_modules
 /node_modules
-/config/env/
+/config/env/development.js
+/config/env/production.js
 /log/
 uploads/*
 !uploads/sampleImage_id.jpg
