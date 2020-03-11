@@ -129,7 +129,7 @@ class Feed extends Component {
 
         //calls database query
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -220,7 +220,7 @@ class Feed extends Component {
 
         //calls database query
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -276,7 +276,7 @@ class Feed extends Component {
 
 
       } catch(err) {
-        console.log(err);
+        //console.log(err);
       }
 
       }

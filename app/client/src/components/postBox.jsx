@@ -95,7 +95,7 @@ class PostBox extends Component {
 
         //calls create comment database mutation
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -138,7 +138,7 @@ class PostBox extends Component {
         document.getElementById("commentInput"+this.state.postId).value = '';
 
       } catch(err) {
-        console.log(err);
+        //console.log(err);
       }
 
       }
@@ -163,7 +163,7 @@ class PostBox extends Component {
 
         //calls create like database mutation
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -221,7 +221,7 @@ class PostBox extends Component {
 
       }
       catch(err) {
-        console.log(err);
+        //console.log(err);
       }
     }
 
@@ -245,7 +245,7 @@ class PostBox extends Component {
 
         //calls create like database mutation
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -303,7 +303,7 @@ class PostBox extends Component {
 
       }
       catch(err) {
-        console.log(err);
+        //console.log(err);
       }
     }
 
@@ -331,7 +331,7 @@ class PostBox extends Component {
 
         //calls create like database mutation
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -351,7 +351,7 @@ class PostBox extends Component {
 
       }
       catch(err) {
-        console.log(err);
+        //console.log(err);
       }
     }
 
@@ -393,7 +393,7 @@ class PostBox extends Component {
 
         //calls create like database mutation
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -428,7 +428,7 @@ class PostBox extends Component {
 
       }
       catch(err) {
-        console.log(err);
+        //console.log(err);
       }
     }
 
@@ -446,7 +446,7 @@ class PostBox extends Component {
       try{
         let link = ""
         //if in local host dev
-        if(window.location.hostname==="localhost"){
+        if(window.location.hostname==="memesharer.com"){
           link = window.location.hostname + ":" +
                   window.location.port + "/post/" + this.state.postId;
         }
@@ -460,7 +460,7 @@ class PostBox extends Component {
 
       }
       catch(err) {
-        console.log(err);
+        //console.log(err);
       }
     }
 
@@ -496,7 +496,7 @@ class PostBox extends Component {
 
         //calls create comment database mutation
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -523,7 +523,7 @@ class PostBox extends Component {
         }
 
       } catch(err) {
-        console.log(err);
+        //console.log(err);
       }
 
       }
@@ -555,7 +555,7 @@ class PostBox extends Component {
 
         //calls database mutation
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -578,7 +578,7 @@ class PostBox extends Component {
         }
 
       } catch(err) {
-        console.log(err);
+        //console.log(err);
       }
 
       }
@@ -610,7 +610,7 @@ class PostBox extends Component {
 
         //calls database mutation
         var fetch = createApolloFetch({
-          uri: "http://localhost:3301/posts"
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
 
         //binds the variables for query to fetch
@@ -631,7 +631,7 @@ class PostBox extends Component {
         }
 
       } catch(err) {
-        console.log(err);
+        //console.log(err);
       }
 
       }
@@ -752,7 +752,7 @@ class PostBox extends Component {
               </div>
             </div>
             <div style={{position:"asbolute", zIndex:"1"}}>
-              <img style={{position:"relative", zIndex:"2"}} alt="Post Img" className="card-img-top" src={"http://localhost:3301/file/" + this.state.fileId +"/"+this.state.fileType} ></img>
+              <img style={{position:"relative", zIndex:"2"}} alt="Post Img" className="card-img-top" src={`${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_postsms_port}/file/${this.state.fileId}/${this.state.fileType}`} ></img>
               <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
                 <button className="btn btn-lg btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">

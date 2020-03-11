@@ -1,0 +1,29 @@
+#==============================================================================
+# environment variables
+#==============================================================================
+export NODE_ENV=development
+
+#http or https for SSL
+export ssl=$([ $NODE_ENV == development ] && echo http || echo https)
+
+# MongoDB environments
+export MEMESHARER_posts_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
+export MEMESHARER_user_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
+export MEMESHARER_gateway_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
+
+#Ports
+export gatewayms_port=3300
+export userms_port=3301
+export postsms_port=3302
+
+#Server Addresses
+export gatewayms_address=http://localhost:3300
+export userms_address=http://localhost:3301
+export postsms_address=http://localhost:3302
+
+#HTTPS SSL key files
+export privateKeyFilePath=/etc/letsencrypt/live/memesharer.com/privkey.pem
+export fullChainKeyFilePath=/etc/letsencrypt/live/memesharer.com/privkey.pem
+
+#website name
+export website_name=$([ $NODE_ENV == development ] && echo localhost || echo www.memesharer.com)

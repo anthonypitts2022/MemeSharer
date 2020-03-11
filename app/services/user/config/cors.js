@@ -1,6 +1,10 @@
 const allowedOrigins = [
-  'http://localhost'
-]
+  "http://localhost",
+  "https://localhost",
+  "http://memesharer.com",
+  "https://memesharer.com",
+  "memesharer.com"
+];
 
 const corsConfig = {
   origin: (origin, callback) => {
@@ -10,5 +14,5 @@ const corsConfig = {
     return callback(null, true);
   },
   credentials: true
-}
-module.exports = { corsConfig }
+};
+module.exports = { corsConfig };

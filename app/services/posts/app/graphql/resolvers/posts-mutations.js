@@ -253,6 +253,7 @@ const createLikeMutation = async (parent, { input }) => {
 // @desc   : Delete a Post Object
 const deletePostMutation = async (parent, { id }) => {
   // Validate the user input and return errors if any
+  
   try {
     const { msg, isValid } = validateID(id);
     if (!isValid) {
@@ -262,6 +263,7 @@ const deletePostMutation = async (parent, { id }) => {
   } catch (err) {
     throw err;
   }
+
 
   // Initiate the models by finding if the fields below exist
   let post = await Post.findById(id);

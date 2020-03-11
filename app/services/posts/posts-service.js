@@ -1,4 +1,3 @@
-process.env.NODE_ENV = require('./config/env/environment.js') || 'development'
 const rootPath = require("app-root-path");
 require("module-alias/register");
 const { logger } = require("@lib/logger.js");
@@ -10,93 +9,104 @@ const shortid = require("shortid");
 var path = require('path');
 
 const db = mongoose();
-const app = express();
-const port = process.env.PORT || 3301;
+const port = process.env.postsms_port
+
+let app_info = express();
+
+app_info.then(function(app_info){
+  app = app_info[0] //app is the return from express
+  server = app_info[1] //server is the return from https.createServer(credentials, app)
 
 
 
-//============  Uploading images with posts   ====================//
+  //============  Uploading images with posts   ====================//
 
-app.route('/upload').post(function(req, res) {
+  app.route('/upload').post(function(req, res) {
+    try{
+      //generates the image file id
+      const fileId = shortid.generate();
 
-  //generates the image file id
-  const fileId = shortid.generate();
+      var storage = multer.diskStorage({
+          destination: function (req, file, cb) {
+            cb(null, "uploads")
+          },
+          filename: function (req, file, cb) {
+            cb(null, fileId + path.extname(file.originalname) );
+          }
+      });
 
-  var storage = multer.diskStorage({
-      destination: function (req, file, cb) {
-        cb(null, "uploads")
-      },
-      filename: function (req, file, cb) {
-        cb(null, fileId + path.extname(file.originalname) );
-      }
+      var upload = multer({ storage: storage }).single('file');
+
+      upload(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+           res.status(500).send({errors: err});
+        } else if (err) {
+           console.log(err)
+           res.status(500).send({errors: err});
+        }
+        //if no file was provided/uploaded
+        if(req.file==undefined){
+          return res.status(200).send({errors: "Post must include a file. No file was provided."})
+        }
+        //if unsupported file type was provided/uploaded
+        if(path.extname(req.file.originalname)!=".jpg" && path.extname(req.file.originalname)!=".png"){
+          return res.status(200).send({errors: "Unsupported file type. (Must be .png or .jpg)"})
+        }
+
+        //if no errors on uploading file, proceed to create post
+
+        //calls create post database mutation
+        var fetch = createApolloFetch({
+          uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
+        });
+        //binds the res of upload to fetch to return the fetch data
+        fetch = fetch.bind(res)
+        fetch({
+          query:
+          `
+            mutation createPost($input: createPostInput){
+              Post: createPost(input: $input){
+                errors{
+                  msg
+                }
+              }
+            }
+          `,
+          variables: {
+            input: {
+               caption : req.body.caption,
+               userId : req.body.userId,
+               fileId : fileId,
+               fileType : path.extname(req.file.originalname)
+             }
+          }
+      })
+      .then(result => {
+        //result.data holds the data returned from the createPost mutation
+        return res.status(200).send(result.data.Post);
+      })
+      })
+    }catch(err){
+      console.log(2);
+      console.log(err);
+    }
   });
 
-  var upload = multer({ storage: storage }).single('file');
 
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-       res.status(500).send({errors: err});
-    } else if (err) {
-       console.log(err)
-       res.status(500).send({errors: err});
-    }
-    //if no file was provided/uploaded
-    if(req.file==undefined){
-      return res.status(200).send({errors: "Post must include a file. No file was provided."})
-    }
-    //if unsupported file type was provided/uploaded
-    if(path.extname(req.file.originalname)!=".jpg" && path.extname(req.file.originalname)!=".png"){
-      return res.status(200).send({errors: "Unsupported file type. (Must be .png or .jpg)"})
-    }
-
-    //if no errors on uploading file, proceed to create post
-
-    //calls create post database mutation
-    var fetch = createApolloFetch({
-      uri: "http://localhost:3301/posts"
-    });
-    //binds the res of upload to fetch to return the fetch data
-    fetch = fetch.bind(res)
-    fetch({
-      query:
-      `
-        mutation createPost($input: createPostInput){
-          Post: createPost(input: $input){
-            errors{
-              msg
-            }
-          }
-        }
-      `,
-      variables: {
-        input: {
-           caption : req.body.caption,
-           userId : req.body.userId,
-           fileId : fileId,
-           fileType : path.extname(req.file.originalname)
-         }
-      }
-  })
-  .then(result => {
-    //result.data holds the data returned from the createPost mutation
-    return res.status(200).send(result.data.Post);
-  })
-  })
-});
+  //=========================================================================//
 
 
-//=========================================================================//
+  //============  Serving files of posts   ====================//
 
 
-//============  Serving files of posts   ====================//
+  app.route("/file/:fileId/:extension").get(function (req, res) {
+    res.sendFile(req.params.fileId + req.params.extension, { root: "./uploads"});
+  });
 
 
-app.route("/file/:fileId/:extension").get(function (req, res) {
-  res.sendFile(req.params.fileId + req.params.extension, { root: "./uploads"});
-});
+  //============================================================//
 
 
-//============================================================//
+  server.listen(port, () => logger.info(`posts service started on port ${port}`));
 
-
-app.listen(port, () => logger.info(`posts service started on port ${port}`));
+})

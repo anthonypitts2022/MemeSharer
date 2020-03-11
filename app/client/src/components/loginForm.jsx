@@ -4,6 +4,7 @@ import axios from 'axios';
 import UserContext from '../contexts/UserContext.js';
 
 
+
 class LoginForm extends Component {
 
   constructor(props){
@@ -14,6 +15,7 @@ class LoginForm extends Component {
     this.responseGoogle = this.responseGoogle.bind(this);
 
 
+
   }
 
 
@@ -21,6 +23,10 @@ class LoginForm extends Component {
     signIn(response);
     async function signIn(response) {
       try{
+
+        if(response.profileObj === undefined){
+          return
+        }
 
         //put user in local storage
         let newUser = {
@@ -33,7 +39,8 @@ class LoginForm extends Component {
 
         //create new user in database or update user if logged in before
         var variables = { "input": newUser };
-        await axios.post("http://localhost:3002/createupdateuser", variables);
+
+        await axios.post(`${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_userms_port}/createupdateuser`, variables);
 
         window.location = "/";
 
@@ -50,7 +57,7 @@ class LoginForm extends Component {
       <div>
 
        <meta name="google-signin-scope" content="profile email"></meta>
-       <meta name="google-signin-client_id" content="476731474183-4tm8h88lu6tnba05q3e81ommb9g1t1oc.apps.googleusercontent.com"></meta>
+       <meta name="google-signin-client_id" content="544936028407-cfo7s4fd5fpcd8n2ttoat5h8438dk7gq.apps.googleusercontent.com"></meta>
        <script src="https://apis.google.com/js/platform.js" async defer></script>
 
        <form className="bg-light" method="post">
@@ -68,9 +75,10 @@ class LoginForm extends Component {
               <div className="row">
                  <div className="col-md-4 mx-auto">
                      <GoogleLogin
-                       clientId="476731474183-u57mkkmp59abldh9ko2vvrk65f2md5i4.apps.googleusercontent.com"
+                       clientId="476731474183-m4mk97e3v7hikda986n95qih07eqpi2e.apps.googleusercontent.com"
                        render={renderProps => (
                          <input
+                           id="loginInput"
                            type="image"
                            src="/btn_google_signin_dark_normal_web.png"
                            onClick={renderProps.onClick}

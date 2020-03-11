@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const rootPath = require("app-root-path");
 const logDir = rootPath + "/log";
-const env = process.env.NODE_ENV || "development";
+const env = process.env.NODE_ENV 
 
 // Create the log directory if it does not exist
 if (!fs.existsSync(logDir)) {

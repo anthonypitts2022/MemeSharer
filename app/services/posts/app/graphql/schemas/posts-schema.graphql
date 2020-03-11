@@ -1,4 +1,4 @@
-type Query {
+extend type Query {
   getAPost(id: String!): Post
   globalPosts(index: String!): PostsAndHasNext
   postLikeCount(postId: String!): String
@@ -8,7 +8,7 @@ type Query {
   isFollowing(input: followshipInput!): Boolean
 }
 
-type Mutation {
+extend type Mutation {
   createPost(input: createPostInput): Post
   createLike(input: createLikeInput): Like
   createComment(input: createCommentInput): Comment
@@ -32,7 +32,7 @@ type Post {
   comments: [Comment]
   fileId: String
   fileType: String
-  user: User
+  user: PostUser
   errors: Error
   success: Success
   bulkAddReport: [BulkAddReport]
@@ -41,7 +41,7 @@ type Post {
 type Like {
   id: ID
   userId: String
-  user: User
+  user: PostUser
   postId: String
   isLike: Boolean
   errors: Error
@@ -52,7 +52,7 @@ type Like {
 type Comment {
   id: ID
   userId: String
-  user: User
+  user: PostUser
   postId: String
   text: String
   errors: Error
@@ -66,7 +66,7 @@ type Followship {
   followeeId: String
 }
 
-type User {
+type PostUser {
   id: String
   name: String
   email: String

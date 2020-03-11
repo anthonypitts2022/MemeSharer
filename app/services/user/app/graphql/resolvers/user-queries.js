@@ -25,9 +25,7 @@ const { logger } = require("@lib/logger");
 const { handleErrors } = require("@lib/handle-errors");
 const jwt = require("jsonwebtoken");
 
-const config = require("../../../config/config.js");
 
-// const { logger } = reqlib("/config/logger.js");
 
 //---------------------------------
 // Models

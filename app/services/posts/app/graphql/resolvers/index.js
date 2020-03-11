@@ -115,7 +115,7 @@ const Post = {
     try{
       //calls database mutation
       var fetch = createApolloFetch({
-        uri: "http://localhost:3002/user"
+        uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
       });
 
       //fetch and return the user data corresponding to this user id
@@ -154,7 +154,7 @@ const Like = {
     try{
       //calls database mutation
       var fetch = createApolloFetch({
-        uri: "http://localhost:3002/user"
+        uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
       });
 
       //fetch and return the user data corresponding to this user id
@@ -193,7 +193,7 @@ const Comment = {
     try{
       //calls database mutation
       var fetch = createApolloFetch({
-        uri: "http://localhost:3002/user"
+        uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
       });
 
       //fetch and return the user data corresponding to this user id

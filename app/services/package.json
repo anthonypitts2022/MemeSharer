@@ -7,14 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "user": "npm run user --prefix user",
     "posts": "npm run posts --prefix posts",
-    "services": "concurrently \"npm:user\" \"npm:posts\"",
-    "compile": "npm i user --prefix user && npm i posts --prefix posts",
-    "removeNodeModules": "rm -r user/node_modules && rm -r posts/node_modules",
-    "installModuleAlias": "npm i -C user -S module-alias && npm i -C posts -S module-alias",
-    "addNodeModulesFolder": "mkdir -p user/node_modules && mkdir -p posts/node_modules",
+    "gateway": "wait-on tcp:$userms_port && wait-on tcp:$postsms_port && npm run gateway --prefix gateway",
+    "services": "concurrently \"npm:user\" \"npm:posts\" \"npm:gateway\"",
+    "compile": "npm i user --prefix user && npm i posts --prefix posts && npm i gateway --prefix gateway",
+    "removeNodeModules": "rm -r user/node_modules && rm -r posts/node_modules  && rm -r gateway/node_modules && rm -r node_modules",
+    "installModuleAlias": "npm i -C user -S module-alias && npm i -C posts -S module-alias && npm i -C gateway -S module-alias",
+    "addNodeModulesFolder": "mkdir -p node_modules && mkdir -p user/node_modules && mkdir -p posts/node_modules && mkdir -p gateway/node_modules",
     "prodCompile": "npm run addNodeModulesFolder && npm run compile && npm run removeNodeModules && npm run compile && npm run installModuleAlias"
   },
-  "author": "",
+  "author": "Anthony Pitts",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^4.1.0"
@@ -22,6 +23,8 @@
   "dependencies": {
     "postsservice": "file:posts",
     "userservice": "file:user",
-    "concurrently": "^4.1.0"
+    "gatewayservice": "file:gateway",
+    "concurrently": "^4.1.0",
+    "wait-on": "^4.0.0"
   }
 }

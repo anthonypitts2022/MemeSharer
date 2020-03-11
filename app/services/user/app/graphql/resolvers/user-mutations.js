@@ -94,7 +94,7 @@ const createOrUpdateUserMutation = async (parent, { input }) => {
 
       //calls create followship database mutation
       var fetch = createApolloFetch({
-        uri: "http://localhost:3301/posts"
+        uri: "https://www.memesharer.com:3301/posts"
       });
 
       //binds the variables for query to fetch

@@ -12,7 +12,7 @@ import Footer from "../components/Footer.jsx"
 
 
 const postsClient = new ApolloClient({
-  uri: "http://localhost:3301/posts"
+  uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
 });
 
 

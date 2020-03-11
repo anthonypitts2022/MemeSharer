@@ -3,6 +3,7 @@ import UserContext from '../contexts/UserContext.js';
 import axios from 'axios';
 
 
+
 class CreatePostForm extends Component {
 
   constructor(props){
@@ -40,7 +41,8 @@ class CreatePostForm extends Component {
 
     async function createPost( fileData ) {
       try{
-        var response = await axios.post("http://localhost:3301/upload", fileData);
+
+        var response = await axios.post(`${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_postsms_port}/upload`, fileData);
 
         //newPost holds the data of the newly created post
         var newPost = response.data;
@@ -55,7 +57,7 @@ class CreatePostForm extends Component {
         }
       }
       catch(err) {
-        console.log(err);
+        //console.log(err);
       }
     }
     //bindings

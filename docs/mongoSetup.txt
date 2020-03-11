@@ -22,7 +22,7 @@ switched to db socialMediaFeedDB
 > db.createUser(
 ... {
 ... user:"socialMediaFeedUsr",
-... pwd:"Qrfiuj48726rr36",
+... pwd:"sdlkfjei433",
 ... roles: [ { role:    "dbOwner", db: "socialMediaFeedDB" } ]
 ... }
 ... )

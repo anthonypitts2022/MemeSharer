@@ -1,0 +1,12 @@
+const { logger } = require("app-root-path").require("/config/logger.js");
+const mongoose = require("mongoose");
+
+module.exports = () => {
+  const db = mongoose
+    .connect(
+      process.env.MEMESHARER_gateway_dbConnection,
+      { useNewUrlParser: true, useCreateIndex: true }
+    )
+    .then(() => logger.info("Mongoose connected!"))
+    .catch(err => logger.error(`${err}`));
+};

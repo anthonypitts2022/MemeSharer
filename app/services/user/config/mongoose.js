@@ -1,13 +1,12 @@
 require("module-alias/register");
 const { logger } = require("@lib/logger");
-require("module-alias/register");
-const config = require("./config");
 const mongoose = require("mongoose");
+mongoose.set('useFindAndModify', false);
 
 module.exports = () => {
   const db = mongoose
     .connect(
-      config.mongoURI,
+      process.env.MEMESHARER_user_dbConnection,
       { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }
     )
     .then(() => logger.info("Mongoose connected!"))

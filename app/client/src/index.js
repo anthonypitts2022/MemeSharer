@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import RoutingPage from './RoutingPage.jsx';
 
-
 const routing = (
     <div style={{backgroundColor: '#e0e0eb'}} id="body">
       <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>
