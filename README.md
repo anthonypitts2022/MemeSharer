@@ -10,7 +10,7 @@ App configuration:
 2) Install and set up a mongo database database for the app. The directions to do this are in docs/mongoSetup.txt
 3) Create an environment variable file similar to "env" in the root directory of the app. Then use the command "source env" before starting up the app to refresh the enviornment variables.
 
-                  How to run the app:
+How to run the app:
 
 Backend:
 1) In a terminal shell, source the enviornment variables
