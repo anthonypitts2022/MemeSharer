@@ -348,8 +348,11 @@ class Feed extends Component {
     return(
     <div key="feed" id="feed" data-spy="scroll">
 
-      <nav className="sticky-top" style={{backgroundColor: '#e0e0eb'}}>
-        {navBar}
+
+      <nav className="sticky-top" style={{backgroundColor: '#e0e0eb', paddingTop:"5px"}}>
+        <div className="d-flex justify-content-center" >
+          {navBar}
+        </div>
         <div className="d-flex justify-content-center">
           <ul className="nav nav-tabs" role="tablist">
             <li className="nav-item">

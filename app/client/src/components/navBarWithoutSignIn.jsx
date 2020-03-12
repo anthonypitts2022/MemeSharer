@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import UserContext from '../contexts/UserContext.js';
 import { Image } from 'react-native';
+import { Icon } from '@iconify/react';
+import signOutAlt from '@iconify/icons-fa-solid/sign-out-alt';
+
 
 
 
@@ -23,33 +26,47 @@ class NavBarWithoutSignIn extends Component {
 
   render(){
     return(
-      <nav className="navbar navbar-inverse" data-spy="affix" data-offset-top="200">
         <div className="container-fluid">
-          <ul className="nav navbar-nav">
-            <button type="button" onClick={this.createpost.bind(this)} className="btn btn-info">Create Post</button>
-          </ul>
-          <div className="navbar-header navbar-center">
-            <a className="navbar-brand" href="/">MemeSharer</a>
-          </div>
-          <ul className="nav navbar-nav navbar-right">
-            <font color="006699"><span className="glyphicon glyphicon-user"></span>Welcome back,</font>
-            <font color="006699"><span className="glyphicon glyphicon-user"></span>{JSON.parse(localStorage.getItem('user')).name.split(" ")[0]}</font>
-            <div className="row">
-              <div className="column">
-                <a href={"/profile/"+JSON.parse(localStorage.getItem('user')).id}>
-                  <Image
-                    source={{uri: this.context.user_profileUrl}}
-                    style={{width: 60, height: 60, borderRadius: 60/ 2}}
-                  />
-                </a>
-              </div>
-              <ul>
-                <button onClick={this.logout.bind(this)} type="button" className="btn btn-info btn-sm">Logout</button>
-              </ul>
+          <div className="row" >
+
+            <div className="col-4 " >
+              <button type="button" onClick={this.createpost.bind(this)} className="btn btn-info btn-sm">Create Post</button>
             </div>
-          </ul>
+
+            <div className="col-4 text-center" >
+              <a className="navbar-brand" href="/">MemeSharer</a>
+            </div>
+
+            <div className="col-4 ">
+              <div className="container">
+                <div className="row">
+                  <div className="col-4 ">
+                  </div>
+                  <div className="col-4 ">
+                    <div className="container">
+                      <div className="row">
+                        <div className="col-6">
+                          <a href={"/profile/"+JSON.parse(localStorage.getItem('user')).id}>
+                            <Image
+                              source={{uri: this.context.user_profileUrl}}
+                              style={{width: 30, height: 30, borderRadius: 30/ 2}}
+                            />
+                          </a>
+                        </div>
+                        <div className="col-6">
+                          <button onClick={this.logout.bind(this)} type="button" className="btn btn-info btn-sm"><Icon icon={signOutAlt} /></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
-      </nav>
     );
   }
 

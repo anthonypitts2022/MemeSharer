@@ -732,8 +732,8 @@ class PostBox extends Component {
           </div>
         </div>
 
-        <div className="offset-md-4">
-          <div className="card" style={{width:"40rem"}}>
+        <div className="container-fluid">
+          <div className="card" >
             <div className="card-body">
               <div className="row">
                 <a className="col-1.5" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
@@ -789,6 +789,7 @@ class PostBox extends Component {
             </div>
           </div>
         </div>
+
       </div>
     );
 
