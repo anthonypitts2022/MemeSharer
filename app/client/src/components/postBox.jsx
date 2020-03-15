@@ -513,13 +513,12 @@ class PostBox extends Component {
       try{
         let link = ""
         //if in local host dev
-        if(window.location.hostname==="memesharer.com"){
-          link = window.location.hostname + ":" +
-                  window.location.port + "/post/" + this.state.postId;
+        if(process.env.REACT_APP_NODE_ENV==="development"){
+          link = window.location.hostname + ":" + window.location.port + "/post/" + this.state.postId;
         }
         //if in production
         else{
-          link = "www." + window.location.hostname + ".com/post/" + this.state.postId;
+          link = process.env.REACT_APP_website_name + "/post/" + this.state.postId;
         }
 
         //copy post link to clipboard
