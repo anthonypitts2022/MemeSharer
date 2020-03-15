@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import UserContext from '../contexts/UserContext.js';
 import { Image } from 'react-native';
-const { createApolloFetch } = require('apollo-fetch');
+import { Icon } from '@iconify/react';
+import ellipsisH from '@iconify/icons-fa/ellipsis-h';
+import userIcon from '@iconify/icons-simple-line-icons/user';
+import userFollowing from '@iconify/icons-simple-line-icons/user-following';
+import thumbsUp from '@iconify/icons-dashicons/thumbs-up';
+import thumbsDown from '@iconify/icons-dashicons/thumbs-down';
+import $ from "jquery"
 
+const { createApolloFetch } = require('apollo-fetch');
 
 
 
@@ -57,10 +64,68 @@ class PostBox extends Component {
     var boundGetFollowingStatus = getFollowingStatus.bind(this);
     boundGetFollowingStatus();
 
+    this.checkLikeStatus()
+
   }
 
+  checkLikeStatus(){
+    //change the color of the thumbs up/thumbs down buttons
+    async function getLike() {
+      try{
 
+        if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined  ){
+          return
+        }
 
+        var getLikedVariables={"input": { "postId": this.state.postId, "userId": JSON.parse(localStorage.getItem('user')).id } };
+
+        //calls create like database mutation
+        var fetch = createApolloFetch({
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(getLikedVariables)
+
+        let response = await fetch({
+          query:
+          `
+          query liked($input: likedInput!){
+            Like: liked(input: $input){
+              errors{
+                msg
+              }
+              isLike
+            }
+          }
+          `,
+          variables: getLikedVariables
+        })
+
+        var like = response.data.Like;
+        if(like.errors != null)
+          return;
+
+        //if current user liked this post
+        if(like.isLike){
+          $(`#thumbsUp${this.state.postId}`).css("color", "#00BFFF")
+        }
+        //if current user disliked this post
+        else{
+          $(`#thumbsDown${this.state.postId}`).css("color", "red")
+        }
+
+      }
+      catch(err) {
+        console.log(err);
+      }
+    }
+
+    //bind this to the getLike function
+    let boundedGetLike = getLike.bind(this);
+
+    boundedGetLike();
+  }
 
   handleAddCommentChange(event) {
     this.setState({addCommentText: event.target.value});
@@ -187,6 +252,9 @@ class PostBox extends Component {
         var newLike = createLikeResponse.data.Like;
         if(newLike.errors != null)
           return;
+        $(`#thumbsUp${this.state.postId}`).css("color", "#00BFFF")
+        $(`#thumbsDown${this.state.postId}`).css("color", "")
+
 
         // ------    retrieve new like count ------//
         var queryPostVariables={"id": this.state.postId };
@@ -269,6 +337,8 @@ class PostBox extends Component {
         var newLike = createLikeResponse.data.Like;
         if(newLike.errors != null)
           return;
+        $(`#thumbsUp${this.state.postId}`).css("color", "")
+        $(`#thumbsDown${this.state.postId}`).css("color", "red")
 
         // ------    retrieve new like count ------//
         var queryPostVariables={"id": this.state.postId };
@@ -312,7 +382,6 @@ class PostBox extends Component {
 
     boundedAddLike();
   }
-
 
   handleDeletePost(event) {
 
@@ -360,7 +429,6 @@ class PostBox extends Component {
 
     boundedDeletePost();
   }
-
 
   handleEditCaption(event) {
 
@@ -437,7 +505,6 @@ class PostBox extends Component {
 
     boundedEditCaption();
   }
-
 
   handleCopyLink(event) {
 
@@ -661,7 +728,7 @@ class PostBox extends Component {
     // if there are more comments that can be displayed
     let loadMoreCommentsButton;
     if(this.state.comments.length > this.state.visibleComments){
-      loadMoreCommentsButton = <button onClick={this.loadMoreComments} type="button" className="btn btn-sm btn-success">View More Comments</button>;
+      loadMoreCommentsButton = <button onClick={this.loadMoreComments} type="button" className="btn btn-sm btn-success" style={{fontSize:'12px'}}>View More Comments</button>;
     }
 
     // if this post is not by the current user, then display a follow/followed button
@@ -672,11 +739,11 @@ class PostBox extends Component {
       if (JSON.parse(localStorage.getItem('user')).id !== this.state.userId && this.state.followingUserOfPost!=null){
         // if following
         if(this.state.followingUserOfPost){
-          followingUserOfPostButton = <button type="button" className="btn btn-light" onClick={this.unfollowUserOfPost}>Following</button>
+          followingUserOfPostButton = <button className="btn btn-lg btn-secondary " type="button" id="dropdownMenuButton" onClick={this.unfollowUserOfPost} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userFollowing} /></button>
         }
         // if not following
         else{
-          followingUserOfPostButton = <button type="button" className="btn btn-primary" onClick={this.followUserOfPost}>Follow</button>
+          followingUserOfPostButton = <button className="btn btn-lg btn-secondary " type="button" id="dropdownMenuButton" onClick={this.followUserOfPost} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userIcon} /></button>
         }
       }
     }
@@ -704,7 +771,7 @@ class PostBox extends Component {
 
 
     return(
-      <div>
+      <div className="container">
 
         <div className="modal fade" id={"editCaptionModal"+this.state.postId} tabIndex="-1" role="dialog" aria-labelledby="editCaptionModalLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
@@ -732,63 +799,70 @@ class PostBox extends Component {
           </div>
         </div>
 
-        <div className="container-fluid">
-          <div className="card" >
-            <div className="card-body">
-              <div className="row">
-                <a className="col-1.5" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
-                  <Image
-                    source={{uri: this.state.profileUrl}}
-                    style={{width: 60, height: 60, borderRadius: 60/ 2}}
-                  />
-                </a>
-                <div className="col">
-                  <p href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}></p>
-                  <a className="col-8" href={"/profile/"+this.state.userId} style={{textDecoration:"none"}}>
-                    <font color="006699"><span className="glyphicon glyphicon-user"></span>{this.state.username}</font>
+          <div className="card" style={{backgroundColor: '#F0F8FF'}}>
+            <div className="card-body" style={{paddingTop: '8px', paddingBottom:'5px'}}>
+                <div className="row">
+
+                <div className="col-9 ">
+                  <a href={"/profile/"+this.state.userId} style={{textDecoration:"none", float:"left", marginRight:'3%'}}>
+                    <Image
+                      source={{uri: this.state.profileUrl}}
+                      style={{width: 30, height: 30, borderRadius: 30/ 2}}
+                    />
+                  </a>
+                  <a href={"/profile/"+this.state.userId} style={{textDecoration:"none", float:"left", fontSize:'12px', marginRight:'3%'}} color="006699">
+                    {this.state.username}
                   </a>
                   {followingUserOfPostButton}
                 </div>
+
+
+
+                <div className="col-3">
+                  <button className="btn btn-md btn-secondary " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{backgroundColor: 'Transparent', border:'none', float: "right"}}>
+                    <Icon icon={ellipsisH} style={{color: "grey"}}/>
+                  </button>
+                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {postSettingsButtons}
+                  </div>
+                </div>
+
               </div>
             </div>
+
             <div style={{position:"asbolute", zIndex:"1"}}>
               <img style={{position:"relative", zIndex:"2"}} alt="Post Img" className="card-img-top" src={`${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_postsms_port}/file/${this.state.fileId}/${this.state.fileType}`} ></img>
-              <div className="dropdown" style={{position:"absolute", top:"0px", zIndex:"3", right:"0px", opacity:"0.75"}}>
-                <button className="btn btn-lg btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  {postSettingsButtons}
-                </div>
-              </div>
             </div>
-            <div className="card-body">
-              <button onClick={this.handleLikeClick} className="badge badge-pill badge-primary">Like</button>
-              <span className="badge badge-success">{this.state.likeCount}</span>
 
-              <button onClick={this.handleDislikeClick} className="badge badge-pill badge-danger">Dislike</button>
-              <span className="badge badge-success">{this.state.dislikeCount}</span>
+            <div className="card-body" style={{paddingTop:'2px', paddingBottom:'10px'}}>
+              <Icon style={{fontSize:'25px'}} onClick={this.handleLikeClick} icon={thumbsUp} id={"thumbsUp"+this.state.postId}/>&nbsp;
+              <span style={{fontSize:'25px', fontWeight:'bold'}} >{this.state.likeCount}</span>&nbsp;&nbsp;
 
-              <h5 className="card-title">{this.state.caption}</h5>
+              <Icon style={{fontSize:'25px'}} onClick={this.handleDislikeClick} icon={thumbsDown} id={"thumbsDown"+this.state.postId}/>&nbsp;
+              <span style={{fontSize:'25px', fontWeight:'bold'}} >{this.state.dislikeCount}</span>
 
-              <div>
+              <h5 className="card-title" style={{fontSize:'18px', fontWeight:'bold'}}>{this.state.caption}</h5>
+
+              <span>
                 {this.state.comments.slice(0,this.state.visibleComments).map(comment => (
                   <div key={comment.id}>
                     <p key={comment.id+"user"} className="card-text">{comment.user.name + ": "}{comment.text}</p>
-                    <p key={comment.id+ "space"}></p>
                   </div>
                 ))}
-              </div>
+              </span>
               <div>
                 {loadMoreCommentsButton}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="InputComment"></label>
-                <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id={"commentInput"+this.state.postId} aria-describedby="CommentHelp" placeholder="Enter Comment"></input>
+              <div className="input-group mb-3" style={{paddingTop:'5px'}}>
+                <input type="Comment" className="form-control" onChange={this.handleAddCommentChange} id={"commentInput"+this.state.postId} placeholder="Enter Comment"></input>
+                <div className="input-group-append">
+                  <button className="btn btn-outline-secondary" onClick={this.handleAddComment} type="button">Post</button>
+                </div>
               </div>
-              <button type="submit" onClick={this.handleAddComment} className="badge badge-pill badge-primary">Add Comment</button>
+
             </div>
           </div>
-        </div>
 
       </div>
     );

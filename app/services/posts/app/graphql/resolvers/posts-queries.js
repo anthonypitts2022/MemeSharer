@@ -154,6 +154,18 @@ const isFollowingQuery = async (root, { input } ) => {
   }
 };
 
+const likedQuery = async (root, { input } ) => {
+  try{
+
+    var like = await Like.findOne({userId: input.userId, postId: input.postId});
+
+     return like
+
+  } catch (e) {
+    logger.error(e.message);
+  }
+};
+
 
 const getAPostQuery = async (root, { id } ) => {
   try{
@@ -230,5 +242,6 @@ module.exports = {
   userPostsQuery,
   getAPostQuery,
   feedPostsQuery,
-  isFollowingQuery
+  isFollowingQuery,
+  likedQuery
 };

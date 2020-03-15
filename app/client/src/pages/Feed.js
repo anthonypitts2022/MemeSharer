@@ -368,13 +368,22 @@ class Feed extends Component {
       <div className="tab-content">
         <div className="tab-pane fade show active" id="global" role="tabpanel" aria-labelledby="global-tab">
           <p></p>
-          <div>
-            {this.state.globalPosts.map(postInfo => (
-              <div key={"global" + postInfo.id}>
-                <PostBox postInfo={postInfo}/>
-                <p></p>
+          <div className="container">
+            <div className="row">
+
+
+              <div className="col-12">
+                {this.state.globalPosts.map(postInfo => (
+                  <div key={"global" + postInfo.id}>
+                    <PostBox postInfo={postInfo}/>
+                    <p></p>
+                  </div>
+                ))}
               </div>
-            ))}
+
+
+
+            </div>
           </div>
         </div>
         <div className="tab-pane fade" id="following" role="tabpanel" aria-labelledby="following-tab">

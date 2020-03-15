@@ -6,6 +6,7 @@ extend type Query {
   userPosts(input: userPostsInput!): PostsAndHasNext
   feedPosts(input: feedPostsInput): PostsAndHasNext
   isFollowing(input: followshipInput!): Boolean
+  liked(input: likedInput!): Like
 }
 
 extend type Mutation {
@@ -107,6 +108,11 @@ input followshipInput {
 
 input createLikeInput{
   isLike: Boolean!
+  postId: String!
+  userId: String!
+}
+
+input likedInput{
   postId: String!
   userId: String!
 }

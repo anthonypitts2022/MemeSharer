@@ -35,7 +35,8 @@ const {
   postDislikeCountQuery,
   userPostsQuery,
   feedPostsQuery,
-  isFollowingQuery
+  isFollowingQuery,
+  likedQuery
 } = require("./posts-queries.js");
 
 
@@ -67,7 +68,8 @@ const Query = {
   userPosts: userPostsQuery,
   getAPost: getAPostQuery,
   feedPosts: feedPostsQuery,
-  isFollowing: isFollowingQuery
+  isFollowing: isFollowingQuery,
+  liked: likedQuery
 };
 
 //---------------------------------

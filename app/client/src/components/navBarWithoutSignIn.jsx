@@ -25,6 +25,11 @@ class NavBarWithoutSignIn extends Component {
   }
 
   render(){
+    let logoutBtn;
+    //if the user visiting this profile page is the user who's page this is for.
+    if(JSON.parse(localStorage.getItem('user'))!=null && JSON.parse(localStorage.getItem('user')).id === (window.location.href.split('/').pop()) ){
+      logoutBtn = <button onClick={this.logout.bind(this)} type="button" className="btn btn-info btn-sm"><Icon icon={signOutAlt} /></button>
+    }
     return(
         <div className="container-fluid">
           <div className="row" >
@@ -40,12 +45,12 @@ class NavBarWithoutSignIn extends Component {
             <div className="col-4 ">
               <div className="container">
                 <div className="row">
-                  <div className="col-4 ">
+                  <div className="col-9 ">
                   </div>
-                  <div className="col-4 ">
+                  <div className="col-2 ">
                     <div className="container">
                       <div className="row">
-                        <div className="col-6">
+                        <div className="col-1" >
                           <a href={"/profile/"+JSON.parse(localStorage.getItem('user')).id}>
                             <Image
                               source={{uri: this.context.user_profileUrl}}
@@ -53,13 +58,13 @@ class NavBarWithoutSignIn extends Component {
                             />
                           </a>
                         </div>
-                        <div className="col-6">
-                          <button onClick={this.logout.bind(this)} type="button" className="btn btn-info btn-sm"><Icon icon={signOutAlt} /></button>
+                        <div className="col-1">
+                          {logoutBtn}
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="col-4">
+                  <div className="col-1">
                   </div>
                 </div>
               </div>
