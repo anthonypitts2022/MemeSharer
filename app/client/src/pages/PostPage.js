@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
 import NavBarWithSignIn from '../components/navBarWithSignIn.jsx';
 import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
 import UserContext from '../contexts/UserContext.js';
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
+import Footer from "../components/Footer.jsx";
 import PostBox from '../components/postBox.jsx';
-import Footer from "../components/Footer.jsx"
-
-
-
-const postsClient = new ApolloClient({
-  uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
-});
+const { createApolloFetch } = require('apollo-fetch');
 
 
 
@@ -21,30 +12,97 @@ class PostPage extends Component {
 
   constructor(props){
     super(props);
+
+    this.state =
+    {
+      loadedPosts: 5,
+      hasMorePosts: true,
+      posts : []
+    }
+
+
     this.navBarType = this.navBarType.bind(this);
-    this.postId = this.props.match.params.postId;
+    this.loadMorePosts = this.loadMorePosts.bind(this);
+    this.queryPosts = this.queryPosts.bind(this);
+
+    this.halfDownPage = 0;
+    this.first = true;
+    this.scrollNumPosts = 5;
+    this.loadingPosts = false;
+
+    this.queryPosts();
+
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  /*     functions to determine if user has scrolled to bottom and needs to laod more posts
+  *///////////////////////////////////////////////////////////////////////////////////////////
 
-  navBarType() {
-    return ( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
-              ? "navBarWithSignIn" : "navBarWithoutSignIn";
+  componentDidMount() {
+    window.addEventListener("scroll", this.handleOnScroll);
   }
 
-  render(){
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleOnScroll);
+  }
 
-    let navBar;
-    if(this.navBarType()==="navBarWithSignIn")
-        navBar = <NavBarWithSignIn key="navBarWithSignIn" id="navPostPage"/>
-    else
-        navBar = <NavBarWithoutSignIn key="navBarWithoutSignIn" id="navPostPage"/>
+  isHalfWayDownPage(root) {
+    if(this.first || this.scrollNumPosts!==this.state.loadedPosts)
+    {
+      this.halfDownPage = (document.getElementById('root').getBoundingClientRect().bottom + window.innerHeight) * .5;
+      this.first = false;
+      this.scrollNumPosts = this.state.loadedPosts;
+    }
 
-    return(
-    <div key="postpage">
-      {navBar}
-      <ApolloProvider client={postsClient}>
-      <Query
-        query={gql`
+    if(this.loadingPosts === true)
+        return false;
+
+    return root.getBoundingClientRect().bottom <= this.halfDownPage;
+  }
+
+  handleOnScroll = () => {
+    const wrappedElement = document.getElementById('root');
+    if (this.isHalfWayDownPage(wrappedElement)) {
+      this.loadingPosts = true;
+      this.loadMorePosts();
+    }
+  };
+
+  loadMorePosts()
+  {
+    //if there are more posts to be loaded
+    if(this.state.hasMorePosts)
+    {
+      this.queryPosts();
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////
+
+  queryPosts() {
+
+    async function postsQuery() {
+      try{
+
+        if(false === this.state.hasMorePosts)
+            return;
+
+        var queryPostsVariables={
+          id: window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
+        };
+
+
+        //calls database query
+        var fetch = createApolloFetch({
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
+        });
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(queryPostsVariables)
+
+        let queryPostsResponse = await fetch({
+          query:
+          `
           query getAPost($id: String!){
             Post: getAPost(id: $id){
               errors{
@@ -73,24 +131,64 @@ class PostPage extends Component {
               }
             }
           }
-        `}
-        variables={{id: this.postId}}
-      >
-        {({ loading, error, data }) => {
-          if (loading) return <p>Loading...</p>;
-          if (error) return <p>Error :(</p>;
-          return(
-            <div>
-              <div key={data.Post.id}>
-                <PostBox postInfo={data.Post}/>
+          `,
+          variables: queryPostsVariables
+        });
+
+
+        //add the new posts to the posts array
+        let posts = this.state.posts;
+        posts = [queryPostsResponse.data.Post];
+
+        this.setState({posts: posts});
+        this.setState({hasMorePosts: false});
+        this.setState({loadedPosts: this.state.loadedPosts + 5});
+        this.loadingPosts = false;
+
+
+      } catch(err) {
+        //console.log(err);
+      }
+
+      }
+      //bind this to the function
+      var boundPostsQuery = postsQuery.bind(this);
+      boundPostsQuery();
+  }
+
+  navBarType() {
+    return ( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
+              ? "navBarWithSignIn" : "navBarWithoutSignIn";
+  }
+
+  render(){
+    let navBar;
+    if(this.navBarType()==="navBarWithSignIn")
+        navBar = <NavBarWithSignIn key="navBarWithSignIn" />
+    else
+        navBar = <NavBarWithoutSignIn key="navBarWithoutSignIn" />
+
+    return(
+    <div key="feed" id="feed" data-spy="scroll">
+
+      <nav className="sticky-top" style={{backgroundColor: '#e0e0eb', paddingTop:"5px"}}>
+        <div className="d-flex justify-content-center" >
+          {navBar}
+        </div>
+      </nav>
+
+
+          <p></p>
+          <div>
+            {this.state.posts.map(postInfo => (
+              <div key={"posts" + postInfo.id}>
+                <PostBox postInfo={postInfo}/>
                 <p></p>
               </div>
-            </div>
-          );
-        }}
-      </Query>
-      </ApolloProvider>
-      <Footer/>
+            ))}
+          </div>
+
+      <Footer id="footer"/>
     </div>
     );
   }

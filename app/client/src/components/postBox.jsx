@@ -50,6 +50,8 @@ class PostBox extends Component {
     this.followingStatus = this.followingStatus.bind(this);
     this.followUserOfPost = this.followUserOfPost.bind(this);
     this.unfollowUserOfPost = this.unfollowUserOfPost.bind(this);
+    this.setupOnClicks = this.setupOnClicks.bind(this);
+    this.checkLikeStatus = this.checkLikeStatus.bind(this);
 
 
   }
@@ -65,6 +67,8 @@ class PostBox extends Component {
     boundGetFollowingStatus();
 
     this.checkLikeStatus()
+
+    this.setupOnClicks()
 
   }
 
@@ -103,7 +107,8 @@ class PostBox extends Component {
         })
 
         var like = response.data.Like;
-        if(like.errors != null)
+        //if the current user hasn't liked or disliked the post or an error returned
+        if(like === null || like.errors!=null)
           return;
 
         //if current user liked this post
@@ -708,6 +713,35 @@ class PostBox extends Component {
       boundedUnfollow();
   }
 
+  setupOnClicks(){
+    let postBoxMethods = this
+
+    $("#editCaptionSubmit").on('click touchstart', function(){
+      console.log(1);
+      postBoxMethods.handleEditCaption()
+    })
+
+    $("#loadMoreCommentsBtn").on('click touchstart', function(){
+      console.log(2);
+      postBoxMethods.loadMoreComments()
+    })
+
+    //this doesnt work so there is a problem finding the following button
+
+    $("#followingUserOfPostBtn").on('click touchstart', function(){
+      console.log(3);
+      postBoxMethods.unfollowUserOfPost()
+    })
+
+    $("#unfollowingUserOfPostBtn").on('click touchstart', function(){
+      console.log(4);
+      postBoxMethods.followUserOfPost()
+    })
+
+
+
+  }
+
   render(){
 
     //if post has been deleted
@@ -727,7 +761,7 @@ class PostBox extends Component {
     // if there are more comments that can be displayed
     let loadMoreCommentsButton;
     if(this.state.comments.length > this.state.visibleComments){
-      loadMoreCommentsButton = <button onClick={this.loadMoreComments} type="button" className="btn btn-sm btn-success" style={{fontSize:'12px'}}>View More Comments</button>;
+      loadMoreCommentsButton = <button id="loadMoreCommentsBtn" type="button" className="btn btn-sm btn-success" style={{fontSize:'12px'}}>View More Comments</button>;
     }
 
     // if this post is not by the current user, then display a follow/followed button
@@ -738,11 +772,11 @@ class PostBox extends Component {
       if (JSON.parse(localStorage.getItem('user')).id !== this.state.userId && this.state.followingUserOfPost!=null){
         // if following
         if(this.state.followingUserOfPost){
-          followingUserOfPostButton = <button className="btn btn-lg btn-secondary " type="button" id="dropdownMenuButton" onClick={this.unfollowUserOfPost} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userFollowing} /></button>
+          followingUserOfPostButton = <button className="btn btn-lg btn-secondary " type="button" id="followingUserOfPostBtn" style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userFollowing} /></button>
         }
         // if not following
         else{
-          followingUserOfPostButton = <button className="btn btn-lg btn-secondary " type="button" id="dropdownMenuButton" onClick={this.followUserOfPost} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userIcon} /></button>
+          followingUserOfPostButton = <button className="btn btn-lg btn-secondary " type="button" id="unfollowingUserOfPostBtn" style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userIcon} /></button>
         }
       }
     }
@@ -792,7 +826,7 @@ class PostBox extends Component {
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary" onClick={this.handleEditCaption} data-dismiss="modal">Save changes</button>
+                <button type="button" className="btn btn-primary" id="editCaptionSubmit" data-dismiss="modal">Save changes</button>
               </div>
             </div>
           </div>
@@ -809,7 +843,7 @@ class PostBox extends Component {
                       style={{width: 30, height: 30, borderRadius: 30/ 2}}
                     />
                   </a>
-                  <a href={"/profile/"+this.state.userId} style={{textDecoration:"none", float:"left", fontSize:'12px', marginRight:'3%'}} color="006699">
+                  <a href={"/profile/"+this.state.userId} style={{textDecoration:"none", float:"left", fontSize:'15px', marginRight:'3%'}} color="006699">
                     {this.state.username}
                   </a>
                   {followingUserOfPostButton}

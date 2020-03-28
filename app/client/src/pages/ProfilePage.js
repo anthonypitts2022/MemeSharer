@@ -175,16 +175,25 @@ class Feed extends Component {
         navBar = <NavBarWithoutSignIn key="navBarWithoutSignIn" />
 
     return(
-    <div key="feed" id="feed">
-      {navBar}
-      <div>
-        {this.state.posts.map(postInfo => (
-          <div key={postInfo.id}>
-            <PostBox postInfo={postInfo}/>
-            <p></p>
+    <div key="PostPage" id="feed" data-spy="scroll">
+
+      <nav className="sticky-top" style={{backgroundColor: '#e0e0eb', paddingTop:"5px"}}>
+        <div className="d-flex justify-content-center" >
+          {navBar}
+        </div>
+      </nav>
+
+
+          <p></p>
+          <div>
+            {this.state.posts.map(postInfo => (
+              <div key={"posts" + postInfo.id}>
+                <PostBox postInfo={postInfo}/>
+                <p></p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+
       <Footer id="footer"/>
     </div>
     );
