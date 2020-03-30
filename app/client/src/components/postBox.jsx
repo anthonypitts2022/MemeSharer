@@ -843,7 +843,8 @@ class PostBox extends Component {
                       style={{width: 30, height: 30, borderRadius: 30/ 2}}
                     />
                   </a>
-                  <a href={"/profile/"+this.state.userId} style={{textDecoration:"none", float:"left", fontSize:'15px', marginRight:'3%'}} color="006699">
+
+                  <a href={"/profile/"+this.state.userId} style={{textDecoration:"none", float:"left", fontSize:'15px', marginRight:'3%', display:'inline-block', height:'1em', verticalAlign:'bottom', paddingTop:'5px'}} color="006699">
                     {this.state.username}
                   </a>
                   {followingUserOfPostButton}
@@ -868,11 +869,12 @@ class PostBox extends Component {
             </div>
 
             <div className="card-body" style={{paddingTop:'2px', paddingBottom:'10px'}}>
+
               <Icon style={{fontSize:'25px'}} onClick={this.handleLikeClick} icon={thumbsUp} id={"thumbsUp"+this.state.postId}/>&nbsp;
-              <span style={{fontSize:'25px', fontWeight:'bold'}} >{this.state.likeCount}</span>&nbsp;&nbsp;
+              <span style={{fontSize:'25px', fontWeight:'bold', display:'inline-block', height:'1.2em', verticalAlign:'bottom'}} >{this.state.likeCount}</span>&nbsp;&nbsp;
 
               <Icon style={{fontSize:'25px'}} onClick={this.handleDislikeClick} icon={thumbsDown} id={"thumbsDown"+this.state.postId}/>&nbsp;
-              <span style={{fontSize:'25px', fontWeight:'bold'}} >{this.state.dislikeCount}</span>
+              <span style={{fontSize:'25px', fontWeight:'bold', display:'inline-block', height:'1.2em', verticalAlign:'bottom'}} >{this.state.dislikeCount}</span>
 
               <h5 className="card-title" style={{fontSize:'18px', fontWeight:'bold'}}>{this.state.caption}</h5>
 
