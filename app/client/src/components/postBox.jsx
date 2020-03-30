@@ -113,11 +113,11 @@ class PostBox extends Component {
 
         //if current user liked this post
         if(like.isLike){
-          $(`#thumbsUp${this.state.postId}`).css("color", "#00BFFF")
+          $(`.thumbsUp${this.state.postId}`).css("color", "#00BFFF")
         }
         //if current user disliked this post
         else{
-          $(`#thumbsDown${this.state.postId}`).css("color", "red")
+          $(`.thumbsDown${this.state.postId}`).css("color", "red")
         }
 
       }
@@ -257,8 +257,8 @@ class PostBox extends Component {
         var newLike = createLikeResponse.data.Like;
         if(newLike.errors != null)
           return;
-        $(`#thumbsUp${this.state.postId}`).css("color", "#00BFFF")
-        $(`#thumbsDown${this.state.postId}`).css("color", "")
+        $(`.thumbsUp${this.state.postId}`).css("color", "#00BFFF")
+        $(`.thumbsDown${this.state.postId}`).css("color", "")
 
 
         // ------    retrieve new like count ------//
@@ -342,8 +342,8 @@ class PostBox extends Component {
         var newLike = createLikeResponse.data.Like;
         if(newLike.errors != null)
           return;
-        $(`#thumbsUp${this.state.postId}`).css("color", "")
-        $(`#thumbsDown${this.state.postId}`).css("color", "red")
+        $(`.thumbsUp${this.state.postId}`).css("color", "")
+        $(`.thumbsDown${this.state.postId}`).css("color", "red")
 
         // ------    retrieve new like count ------//
         var queryPostVariables={"id": this.state.postId };
@@ -717,24 +717,20 @@ class PostBox extends Component {
     let postBoxMethods = this
 
     $("#editCaptionSubmit").on('click touchstart', function(){
-      console.log(1);
       postBoxMethods.handleEditCaption()
     })
 
     $("#loadMoreCommentsBtn").on('click touchstart', function(){
-      console.log(2);
       postBoxMethods.loadMoreComments()
     })
 
     //this doesnt work so there is a problem finding the following button
 
     $("#followingUserOfPostBtn").on('click touchstart', function(){
-      console.log(3);
       postBoxMethods.unfollowUserOfPost()
     })
 
     $("#unfollowingUserOfPostBtn").on('click touchstart', function(){
-      console.log(4);
       postBoxMethods.followUserOfPost()
     })
 
@@ -870,10 +866,10 @@ class PostBox extends Component {
 
             <div className="card-body" style={{paddingTop:'2px', paddingBottom:'10px'}}>
 
-              <Icon style={{fontSize:'25px'}} onClick={this.handleLikeClick} icon={thumbsUp} id={"thumbsUp"+this.state.postId}/>&nbsp;
+              <Icon style={{fontSize:'25px'}} onClick={this.handleLikeClick} icon={thumbsUp} className={"thumbsUp"+this.state.postId}/>&nbsp;
               <span style={{fontSize:'25px', fontWeight:'bold', display:'inline-block', height:'1.2em', verticalAlign:'bottom'}} >{this.state.likeCount}</span>&nbsp;&nbsp;
 
-              <Icon style={{fontSize:'25px'}} onClick={this.handleDislikeClick} icon={thumbsDown} id={"thumbsDown"+this.state.postId}/>&nbsp;
+              <Icon style={{fontSize:'25px'}} onClick={this.handleDislikeClick} icon={thumbsDown} className={"thumbsDown"+this.state.postId}/>&nbsp;
               <span style={{fontSize:'25px', fontWeight:'bold', display:'inline-block', height:'1.2em', verticalAlign:'bottom'}} >{this.state.dislikeCount}</span>
 
               <h5 className="card-title" style={{fontSize:'18px', fontWeight:'bold'}}>{this.state.caption}</h5>

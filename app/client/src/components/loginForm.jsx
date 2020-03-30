@@ -57,7 +57,7 @@ class LoginForm extends Component {
       <div>
 
        <meta name="google-signin-scope" content="profile email"></meta>
-       <meta name="google-signin-client_id" content="544936028407-cfo7s4fd5fpcd8n2ttoat5h8438dk7gq.apps.googleusercontent.com"></meta>
+       <meta name="google-signin-client_id" content="476731474183-ec2s8gf2ib5mboa8qr8ovvs6as8jl7ah.apps.googleusercontent.com"></meta>
        <script src="https://apis.google.com/js/platform.js" async defer></script>
 
        <form className="bg-light" method="post">
@@ -75,7 +75,7 @@ class LoginForm extends Component {
               <div className="row">
                  <div className="col-md-4 mx-auto">
                      <GoogleLogin
-                       clientId="476731474183-m4mk97e3v7hikda986n95qih07eqpi2e.apps.googleusercontent.com"
+                       clientId="476731474183-ec2s8gf2ib5mboa8qr8ovvs6as8jl7ah.apps.googleusercontent.com"
                        render={renderProps => (
                          <input
                            id="loginInput"
@@ -89,7 +89,7 @@ class LoginForm extends Component {
                        buttonText="Login"
                        onSuccess={this.responseGoogle}
                        onFailure={this.responseGoogle}
-                       cookiePolicy={"http://localhost"}
+                       cookiePolicy={"https://memesharer.com"}
 
                      />
                     <div className="g-signin2" data-onsuccess="onSignIn"></div>
