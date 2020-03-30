@@ -1,7 +1,10 @@
+let http = require('http');
+let https = require('https');
 const { logger } = require("app-root-path").require("/config/logger.js");
 const { corsConfig } = require("./cors.js");
 const { ApolloServer } = require("apollo-server-express");
 const { ApolloGateway } = require("@apollo/gateway");
+const fs = require("fs");
 
 
 const gateway = new ApolloGateway({
@@ -13,7 +16,7 @@ const gateway = new ApolloGateway({
     {
       name: "posts",
       url: `${process.env.postsms_address}/posts`
-    },
+    }
   ]
 });
 
@@ -39,13 +42,31 @@ const createServer = async app => {
   server.applyMiddleware({
     app,
     path,
-    cors: corsConfig,
     tracing: true,
     cacheControl: {
       defaultMaxAge: 3500
     }
   });
   logger.info(`🚀 gateway graphql service ready at ${server.graphqlPath}`);
+
+  //production https server
+  if(process.env.NODE_ENV=="production"){
+    //https certificate files
+    let privateKey = fs.readFileSync(process.env.privateKeyFilePath, 'utf8');
+    let certificate = fs.readFileSync(process.env.fullChainKeyFilePath, 'utf8');
+    let credentials = {
+    	key: privateKey,
+    	cert: certificate
+    };
+    //return the https server entrance for SSL termination
+    return await https.createServer(credentials, app)
+  }
+  //development http server
+  else{
+    //return the http server entrance
+    return await http.createServer(app)
+  }
+
 };
 
 module.exports = { createServer };

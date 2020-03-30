@@ -1,10 +1,19 @@
-process.env.NODE_ENV = process.env.NODE_ENV || "development";
-const { logger } = require("app-root-path").require("/config/logger.js");
-// const mongoose = require("./config/mongoose.js");
-const express = require("./config/express");
+require('module-alias/register')
+const rootPath = require('app-root-path')
+const { logger } = require('@lib/logger.js')
+const { createApolloFetch } = require('apollo-fetch');
+const mongoose = require('./config/mongoose.js')
+const express = require('./config/express.js')
 
-// const db = mongoose();
-const app = express();
+const db = mongoose()
 const port = process.env.gatewayms_port
 
-app.listen(port, () => logger.info(`gateway server running on port ${port}`));
+let app_info = express();
+
+app_info.then(function(app_info){
+  app = app_info[0] //app is the return from express
+  server = app_info[1] //server is the return from https.createServer(credentials, app)
+
+  server.listen(port, () => logger.info(`User service started on port ${port}`))
+
+})

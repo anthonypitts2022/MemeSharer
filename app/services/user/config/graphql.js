@@ -74,8 +74,8 @@ const createServer = async app => {
   //production https server
   if(process.env.NODE_ENV=="production"){
     //https certificate files
-    let privateKey = fs.readFileSync(`${process.env.privateKeyFilePath}`, 'utf8');
-    let certificate = fs.readFileSync(`${process.env.fullChainKeyFilePath}`, 'utf8');
+    let privateKey = fs.readFileSync(process.env.privateKeyFilePath, 'utf8');
+    let certificate = fs.readFileSync(process.env.fullChainKeyFilePath, 'utf8');
     let credentials = {
     	key: privateKey,
     	cert: certificate

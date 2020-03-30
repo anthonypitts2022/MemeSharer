@@ -16,14 +16,14 @@ export gatewayms_port=3300
 export userms_port=3301
 export postsms_port=3302
 
+#website name
+export website_name=$([ $NODE_ENV == development ] && echo localhost || echo www.memesharer.com)
+
 #Server Addresses
-export gatewayms_address=http://localhost:3300
-export userms_address=http://localhost:3301
-export postsms_address=http://localhost:3302
+export gatewayms_address=$ssl://$website_name:$gatewayms_port
+export userms_address=$ssl://$website_name:$userms_port
+export postsms_address=$ssl://$website_name:$postsms_port
 
 #HTTPS SSL key files
 export privateKeyFilePath=/etc/letsencrypt/live/memesharer.com/privkey.pem
-export fullChainKeyFilePath=/etc/letsencrypt/live/memesharer.com/privkey.pem
-
-#website name
-export website_name=$([ $NODE_ENV == development ] && echo localhost || echo www.memesharer.com)
+export fullChainKeyFilePath=/etc/letsencrypt/live/memesharer.com/fullchain.pem
