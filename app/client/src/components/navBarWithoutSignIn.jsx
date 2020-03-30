@@ -3,7 +3,7 @@ import UserContext from '../contexts/UserContext.js';
 import { Image } from 'react-native';
 import { Icon } from '@iconify/react';
 import signOutAlt from '@iconify/icons-fa-solid/sign-out-alt';
-
+import $ from "jquery"
 
 
 
@@ -13,6 +13,17 @@ class NavBarWithoutSignIn extends Component {
     super(props);
     this.logout = this.logout.bind(this);
     this.createpost = this.createpost.bind(this);
+  }
+
+  componentDidMount() {
+
+    $(document).ready(function(){
+      $("#curUserProfPic").on('touch click', function(){
+        window.location.href = "/profile/"+JSON.parse(localStorage.getItem('user')).id
+      })
+
+    })
+
   }
 
   logout() {
@@ -51,12 +62,12 @@ class NavBarWithoutSignIn extends Component {
                     <div className="container">
                       <div className="row">
                         <div className="col-1" >
-                          <a href={"/profile/"+JSON.parse(localStorage.getItem('user')).id}>
+                          <span id="curUserProfPic" style={{cursor:'pointer'}}>
                             <Image
                               source={{uri: this.context.user_profileUrl}}
                               style={{width: 30, height: 30, borderRadius: 30/ 2}}
                             />
-                          </a>
+                          </span>
                         </div>
                         <div className="col-1">
                           {logoutBtn}
