@@ -44,19 +44,23 @@ const validateUserInput = require("../../validation/validateUserInput.js");
 // @access : Root
 // @desc   : Create Or Updates a single user
 const createOrUpdateUserMutation = async (parent, { input }) => {
-  // Validate the user input and return errors if any
-  const { msg, isValid } = validateUserInput(input);
-  if (!isValid) {
-    return handleErrors("001", msg);
-  }
-  //check if user already exists
-  let user = await User.findOne({id: input.id});
-
+  
   try {
+
+    // Validate the user input and return errors if any
+    const { msg, isValid } = validateUserInput(input);
+    if (!isValid) {
+      return handleErrors("001", msg);
+    }
+    
+    //check if user already exists
+    let user = await User.findOne({id: input.id});
+
 
     //update user info
     if (user)
     {
+      
       //collect fields to be updated
       let updateRecord = {};
       for (let field in input){
@@ -71,10 +75,13 @@ const createOrUpdateUserMutation = async (parent, { input }) => {
       });
 
       // Database response after record has been created
+      
+      
       return await User.findOne({id: input.id});
     }
     //create new user
     else{
+      try{
       // Create a user object based on the input
       const newUser = new User({
         id: input.id,
@@ -94,7 +101,7 @@ const createOrUpdateUserMutation = async (parent, { input }) => {
 
       //calls create followship database mutation
       var fetch = createApolloFetch({
-        uri: "https://www.memesharer.com:3301/posts"
+        uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
       });
 
       //binds the variables for query to fetch
@@ -111,15 +118,17 @@ const createOrUpdateUserMutation = async (parent, { input }) => {
         }
         `,
         variables: createFollowshipVariables
-      })
-
-
+      })      
+    
       // Save the user to the database and return
       return newUser.save();
+      }catch(err){
+        //console.log(err);
+      }
     }
 
   } catch (err) {
-    logger.info(`${err}`);
+    //console.log(err);
     return handleErrors("001", { user: err});
   }
 };

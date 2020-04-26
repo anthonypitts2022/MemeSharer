@@ -10,11 +10,8 @@ class LoginForm extends Component {
   constructor(props){
     super(props);
 
-
     //bindings
     this.responseGoogle = this.responseGoogle.bind(this);
-
-
 
   }
 
@@ -36,7 +33,6 @@ class LoginForm extends Component {
           "id": response.profileObj.googleId
         };
         localStorage.setItem('user', JSON.stringify(newUser)); //JSON.parse(dict) to undo
-
         //create new user in database or update user if logged in before
         var variables = { "input": newUser };
 
@@ -46,7 +42,7 @@ class LoginForm extends Component {
 
       }
       catch(err) {
-        console.log(err);
+        //console.log(err);
       }
     }
   };

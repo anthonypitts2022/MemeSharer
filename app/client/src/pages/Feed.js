@@ -126,7 +126,6 @@ class Feed extends Component {
           "index": (this.state.globalLoadedPosts - 5).toString()
         };
 
-
         //calls database query
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`

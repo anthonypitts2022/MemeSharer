@@ -2,7 +2,7 @@
   "name": "MemeSharer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://localhost",
+  "homepage": "https://www.memesharer.com",
   "dependencies": {
     "@iconify/icons-dashicons": "^1.0.4",
     "@iconify/icons-fa": "^1.0.1",

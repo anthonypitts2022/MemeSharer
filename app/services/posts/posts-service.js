@@ -49,8 +49,9 @@ app_info.then(function(app_info){
           return res.status(200).send({errors: "Post must include a file. No file was provided."})
         }
         //if unsupported file type was provided/uploaded
-        if(path.extname(req.file.originalname)!=".jpg" && path.extname(req.file.originalname)!=".png"){
-          return res.status(200).send({errors: "Unsupported file type. (Must be .png or .jpg)"})
+        let fileExtension = path.extname(req.file.originalname.toLowerCase())
+        if(fileExtension!=".jpg" && fileExtension!=".png" && fileExtension!=".jpeg" && fileExtension!=".gif"){
+          return res.status(200).send({errors: "Unsupported file type. (Must be .png, .jpg, .jpeg, or .gif)"})
         }
 
         //if no errors on uploading file, proceed to create post

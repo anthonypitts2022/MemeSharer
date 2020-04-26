@@ -14,41 +14,11 @@ app_info.then(function(app_info){
   app = app_info[0] //app is the return from express
   server = app_info[1] //server is the return from https.createServer(credentials, app)
 
-  //============  login user mutation call   ====================//
-
-  app.route('/login').post(function(req, res) {
-    //calls database mutation
-    var fetch = createApolloFetch({
-      uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
-    });
-    //binds the res of upload to fetch to return the fetch data
-    fetch = fetch.bind(res)
-    fetch({
-      query:
-      `
-      query googleLogin($googleEmail: String!){
-        user: googleLogin(googleEmail: $googleEmail){
-        email
-        errors{
-          msg
-        }
-        }
-      }
-      `,
-      variables: {
-        googleEmail: req.body.input.googleEmail,
-      }
-    })
-    .then(result => {
-      //result.data holds the data returned from the mutation
-      return res.status(200).send(result.data);
-    })
-  });
-
 
   //============  create or update user mutation call   ====================//
 
   app.route('/createupdateuser').post(function(req, res) {
+    
     //calls database mutation
     var fetch = createApolloFetch({
       uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`

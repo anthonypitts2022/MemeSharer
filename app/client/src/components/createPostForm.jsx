@@ -33,6 +33,11 @@ class CreatePostForm extends Component {
   }
 
   handleSubmit(event) {
+    if(undefined === JSON.parse(localStorage.getItem('user')) || null === JSON.parse(localStorage.getItem('user')) || undefined===JSON.parse(localStorage.getItem('user')) || null === JSON.parse(localStorage.getItem('user')) ){
+          console.log("user not logged in");
+          return;
+    }
+    console.log(JSON.parse(localStorage.getItem('user')));
     //uploads file to server
     var fileData = new FormData();
     fileData.append('file', this.state.selectedFile);

@@ -49,7 +49,7 @@ module.exports = function validateUserInput(data) {
   }
 
   //alphanumeric validation
-  if (!Validator.isAlpha(data.name.replace(" ",""))) {
+  if (!Validator.isAlpha(data.name.split(" ").join(""))) {   
     errors.name = 'Invalid characters inserted'
   }
 

@@ -264,10 +264,10 @@ const deletePostMutation = async (parent, { id }) => {
     throw err;
   }
 
-
+  
   // Initiate the models by finding if the fields below exist
   let post = await Post.findById(id);
-
+  console.log(post);
   try {
     // Throw errors if the conditions are met
     if (!post) {

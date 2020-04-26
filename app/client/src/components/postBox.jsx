@@ -17,7 +17,7 @@ class PostBox extends Component {
 
   constructor(props){
     super(props);
-
+    
     this.state = {
       fileId: (typeof props.postInfo.fileId === 'undefined') ? "" : props.postInfo.fileId,
       fileType: (typeof props.postInfo.fileType === 'undefined') ? "" : props.postInfo.fileType,
@@ -25,10 +25,10 @@ class PostBox extends Component {
       dislikeCount: (typeof props.postInfo.dislikeCount === 'undefined') ? 0: props.postInfo.dislikeCount,
       caption: (typeof props.postInfo.caption === 'undefined') ? "" : props.postInfo.caption,
       postId: (typeof props.postInfo.id === 'undefined') ? "" : props.postInfo.id,
-      userEmail: (typeof props.postInfo.user.email === 'undefined') ? "" : props.postInfo.user.email,
-      profileUrl: (typeof props.postInfo.user.profileUrl === 'undefined') ? "" : props.postInfo.user.profileUrl,
-      username: (typeof props.postInfo.user.name === 'undefined') ? "" : props.postInfo.user.name,
-      userId: (typeof props.postInfo.user.id === 'undefined') ? "" : props.postInfo.user.id,
+      userEmail: (props.postInfo.user==null || typeof props.postInfo.user.email === 'undefined') ? "" : props.postInfo.user.email,
+      profileUrl: (props.postInfo.user==null || typeof props.postInfo.user.profileUrl === 'undefined') ? "" : props.postInfo.user.profileUrl,
+      username: (props.postInfo.user==null || typeof props.postInfo.user.name === 'undefined') ? "" : props.postInfo.user.name,
+      userId: (props.postInfo.user==null || typeof props.postInfo.user.id === 'undefined') ? "" : props.postInfo.user.id,
       comments: (typeof props.postInfo.comments === 'undefined') ? [] : props.postInfo.comments,
       addCommentText: '',
       newCaption: null,
@@ -68,7 +68,9 @@ class PostBox extends Component {
 
     this.checkLikeStatus()
 
-    this.setupOnClicks()
+    //bind this to the unfollow function
+    let boundedSetupOnClicks = this.setupOnClicks.bind(this);
+    boundedSetupOnClicks();
 
   }
 
@@ -610,9 +612,11 @@ class PostBox extends Component {
 
     async function follow() {
       try{
+        
         //if user is not signed in
         if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
         {
+          
           window.location = "/login"
         }
 
@@ -622,7 +626,6 @@ class PostBox extends Component {
             "followeeId": this.state.userId
           }
         };
-
 
         //calls database mutation
         var fetch = createApolloFetch({
@@ -713,27 +716,36 @@ class PostBox extends Component {
       boundedUnfollow();
   }
 
-  setupOnClicks(){
+  setupOnClicks(){ 
+    
     let postBoxMethods = this
+    let postID = postBoxMethods.state.postId
+    let isFollowing = this.state.followingUserOfPost
 
-    $("#editCaptionSubmit").on('click touchstart', function(){
+    $(`.editCaptionSubmit${postID}`).on('click touchstart', function(){
       postBoxMethods.handleEditCaption()
-    })
+    })      
 
-    $("#loadMoreCommentsBtn").on('click touchstart', function(){
+    $(`.loadMoreCommentsBtn${postID}`).on('click touchstart', function(){
       postBoxMethods.loadMoreComments()
     })
+    
+    //if user is signed in
+    if( localStorage.getItem('user')!=null && JSON.parse(localStorage.getItem('user')).id!==undefined )
+    {
+      if (JSON.parse(localStorage.getItem('user')).id !== this.state.userId){
 
-    //this doesnt work so there is a problem finding the following button
+        $(`.followBtnArea${postID}`).on('click touchstart', function(){
+          if(this.state.followingUserOfPost){
+            postBoxMethods.unfollowUserOfPost()
+          }
+          else{
+            postBoxMethods.followUserOfPost()
+          }
+        }.bind(this))
 
-    $("#followingUserOfPostBtn").on('click touchstart', function(){
-      postBoxMethods.unfollowUserOfPost()
-    })
-
-    $("#unfollowingUserOfPostBtn").on('click touchstart', function(){
-      postBoxMethods.followUserOfPost()
-    })
-
+      }
+    }
 
 
   }
@@ -757,7 +769,7 @@ class PostBox extends Component {
     // if there are more comments that can be displayed
     let loadMoreCommentsButton;
     if(this.state.comments.length > this.state.visibleComments){
-      loadMoreCommentsButton = <button id="loadMoreCommentsBtn" type="button" className="btn btn-sm btn-success" style={{fontSize:'12px'}}>View More Comments</button>;
+      loadMoreCommentsButton = <button type="button" className={`btn btn-sm btn-success loadMoreCommentsBtn${this.state.postId}`} style={{fontSize:'12px'}}>View More Comments</button>;
     }
 
     // if this post is not by the current user, then display a follow/followed button
@@ -765,14 +777,14 @@ class PostBox extends Component {
     //if user is signed in
     if( localStorage.getItem('user')!=null && JSON.parse(localStorage.getItem('user')).id!==undefined )
     {
-      if (JSON.parse(localStorage.getItem('user')).id !== this.state.userId && this.state.followingUserOfPost!=null){
+      if (JSON.parse(localStorage.getItem('user')).id !== this.state.userId && this.state.followingUserOfPost!=null && this.state.userId!=""){
         // if following
         if(this.state.followingUserOfPost){
-          followingUserOfPostButton = <button className="btn btn-lg btn-secondary " type="button" id="followingUserOfPostBtn" style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userFollowing} /></button>
+          followingUserOfPostButton = $(<button className="btn btn-lg btn-secondary " type="button" id={`followingUserOfPostBtn${this.state.postId}`} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userFollowing} /></button>)
         }
         // if not following
         else{
-          followingUserOfPostButton = <button className="btn btn-lg btn-secondary " type="button" id="unfollowingUserOfPostBtn" style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userIcon} /></button>
+          followingUserOfPostButton = $(<button className="btn btn-lg btn-secondary " type="button" id={`unfollowingUserOfPostBtn${this.state.postId}`} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userIcon} /></button>)
         }
       }
     }
@@ -822,7 +834,7 @@ class PostBox extends Component {
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary" id="editCaptionSubmit" data-dismiss="modal">Save changes</button>
+                <button type="button" className={`btn btn-primary editCaptionSubmit${this.state.postId}`} data-dismiss="modal">Save changes</button>
               </div>
             </div>
           </div>
@@ -843,7 +855,9 @@ class PostBox extends Component {
                   <a href={"/profile/"+this.state.userId} style={{textDecoration:"none", float:"left", fontSize:'15px', marginRight:'3%', display:'inline-block', height:'1em', verticalAlign:'bottom', paddingTop:'5px'}} color="006699">
                     {this.state.username}
                   </a>
-                  {followingUserOfPostButton}
+                  <span className={`followBtnArea${this.state.postId}`}>
+                    {followingUserOfPostButton}
+                  </span>
                 </div>
 
 
@@ -872,16 +886,16 @@ class PostBox extends Component {
               <Icon style={{fontSize:'25px'}} onClick={this.handleDislikeClick} icon={thumbsDown} className={"thumbsDown"+this.state.postId}/>&nbsp;
               <span style={{fontSize:'25px', fontWeight:'bold', display:'inline-block', height:'1.2em', verticalAlign:'bottom'}} >{this.state.dislikeCount}</span>
 
-              <h5 className="card-title" style={{fontSize:'18px', fontWeight:'bold'}}>{this.state.caption}</h5>
+              <h5 className="card-title" style={{fontSize:'17px'}}><span style={{fontWeight:'bold'}}>{this.state.username+": "}</span>{this.state.caption}</h5>
 
               <span>
                 {this.state.comments.slice(0,this.state.visibleComments).map(comment => (
                   <div key={comment.id}>
-                    <p key={comment.id+"user"} className="card-text">{comment.user.name + ": "}{comment.text}</p>
+                    <p key={comment.id+"user"} className="card-text"><span style={{fontWeight: 'bold', fontSize:'15'}}>{comment.user.name + ": "}</span>{comment.text}</p>
                   </div>
                 ))}
               </span>
-              <div>
+              <div id="followUnfollowArea">
                 {loadMoreCommentsButton}
               </div>
 
