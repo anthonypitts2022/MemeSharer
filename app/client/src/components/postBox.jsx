@@ -9,6 +9,7 @@ import thumbsUp from '@iconify/icons-dashicons/thumbs-up';
 import thumbsDown from '@iconify/icons-dashicons/thumbs-down';
 import $ from "jquery"
 
+const shortid = require('shortid')
 const { createApolloFetch } = require('apollo-fetch');
 
 
@@ -17,7 +18,7 @@ class PostBox extends Component {
 
   constructor(props){
     super(props);
-    
+
     this.state = {
       fileId: (typeof props.postInfo.fileId === 'undefined') ? "" : props.postInfo.fileId,
       fileType: (typeof props.postInfo.fileType === 'undefined') ? "" : props.postInfo.fileType,
@@ -34,7 +35,8 @@ class PostBox extends Component {
       newCaption: null,
       visibleComments: 3,
       deleted: false,
-      followingUserOfPost: null
+      followingUserOfPost: null,
+      modalIdentifier: shortid.generate()
     };
 
 
@@ -612,11 +614,11 @@ class PostBox extends Component {
 
     async function follow() {
       try{
-        
+
         //if user is not signed in
         if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
         {
-          
+
           window.location = "/login"
         }
 
@@ -716,20 +718,20 @@ class PostBox extends Component {
       boundedUnfollow();
   }
 
-  setupOnClicks(){ 
-    
+  setupOnClicks(){
+
     let postBoxMethods = this
     let postID = postBoxMethods.state.postId
     let isFollowing = this.state.followingUserOfPost
 
     $(`.editCaptionSubmit${postID}`).on('click touchstart', function(){
       postBoxMethods.handleEditCaption()
-    })      
+    })
 
     $(`.loadMoreCommentsBtn${postID}`).on('click touchstart', function(){
       postBoxMethods.loadMoreComments()
     })
-    
+
     //if user is signed in
     if( localStorage.getItem('user')!=null && JSON.parse(localStorage.getItem('user')).id!==undefined )
     {
@@ -797,7 +799,7 @@ class PostBox extends Component {
     {
       postSettingsButtons =
       <div>
-        <button type="button" className="dropdown-item" data-toggle="modal" data-target={"#editCaptionModal"+this.state.postId} >Edit Caption</button>
+        <button type="button" className="dropdown-item" data-toggle="modal" data-target={"#editCaptionModal"+this.state.postId+this.state.modalIdentifier} >Edit Caption</button>
         <button onClick={this.handleDeletePost} className="dropdown-item">Delete Post</button>
         <button onClick={this.handleCopyLink} className="dropdown-item">Copy Link</button>
       </div>
@@ -810,11 +812,16 @@ class PostBox extends Component {
       </div>
     }
 
+    let captionArea;
+    if(this.state.caption.split(" ").join("")!=""){
+      captionArea = <h5 className="card-title" style={{fontSize:'17px'}}><span style={{fontWeight:'bold'}}>{this.state.username+": "}</span>{this.state.caption}</h5>
+    }
+
 
     return(
       <div className="container">
 
-        <div className="modal fade" id={"editCaptionModal"+this.state.postId} tabIndex="-1" role="dialog" aria-labelledby="editCaptionModalLabel" aria-hidden="true">
+        <div className="modal fade" id={"editCaptionModal"+this.state.postId+this.state.modalIdentifier} tabIndex="-1" role="dialog" aria-labelledby="editCaptionModalLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content" style={{backgroundColor: '#e0e0eb'}} >
               <div className="modal-header">
@@ -886,7 +893,7 @@ class PostBox extends Component {
               <Icon style={{fontSize:'25px'}} onClick={this.handleDislikeClick} icon={thumbsDown} className={"thumbsDown"+this.state.postId}/>&nbsp;
               <span style={{fontSize:'25px', fontWeight:'bold', display:'inline-block', height:'1.2em', verticalAlign:'bottom'}} >{this.state.dislikeCount}</span>
 
-              <h5 className="card-title" style={{fontSize:'17px'}}><span style={{fontWeight:'bold'}}>{this.state.username+": "}</span>{this.state.caption}</h5>
+              {captionArea}
 
               <span>
                 {this.state.comments.slice(0,this.state.visibleComments).map(comment => (
