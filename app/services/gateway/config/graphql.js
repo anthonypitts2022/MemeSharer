@@ -16,6 +16,10 @@ const gateway = new ApolloGateway({
     {
       name: "posts",
       url: `${process.env.postsms_address}/posts`
+    },
+    {
+      name: "perms",
+      url: `${process.env.permsms_address}/perms`
     }
   ]
 });

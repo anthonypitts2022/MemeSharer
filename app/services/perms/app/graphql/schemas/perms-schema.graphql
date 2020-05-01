@@ -1,0 +1,76 @@
+extend type Query {
+  getAllRoles: [Role]
+  getAllPerms: [Permission]
+  getRole(id: ID!): Role
+  getRolePermissions(roleID: ID!): [RolePermission]
+  getUserRoles(userID: ID!): [UserRole]
+}
+
+extend type Mutation {
+  createRole(input: RoleInput!): Role
+  createPermission(permName: String!): Permission
+  addUserRole(input: UserRoleInput!): UserRole
+  removeUserRole(input: UserRoleInput!): Boolean
+  addRolePermission(input: RolePermissionInput!): RolePermission
+  removePermissionFromRole(input: RolePermissionInput!): Boolean
+  deleteRole(id: ID!): Boolean
+  deletePermission(permissionID: String!): Boolean
+}
+
+#===============================================================================
+# Role
+#===============================================================================
+
+type Role {
+  id: ID!
+  roleName: String!
+  rolePermissions: [RolePermission]
+}
+
+input RoleInput {
+  roleName: String
+}
+#===============================================================================
+# Permission
+#===============================================================================
+
+type Permission {
+  id: ID!
+  permName: String!
+}
+
+input PermissionInput {
+  permName: String!
+}
+
+#===============================================================================
+# RolePermission
+#===============================================================================
+
+type RolePermission {
+  id: ID!
+  roleID: String!
+  permID: String!
+  permission: Permission
+  role: Role
+}
+
+input RolePermissionInput {
+  roleID: String!
+  permID: String!
+}
+
+#===============================================================================
+# extension of UserRole
+#===============================================================================
+
+type UserRole {
+  userID: String
+  roleID: String
+  role: Role
+}
+
+input UserRoleInput {
+  userID: String!
+  roleID: String!
+}

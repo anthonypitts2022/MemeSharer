@@ -8,6 +8,7 @@ export ssl=$([ $NODE_ENV == development ] && echo http || echo https)
 
 # MongoDB environments
 export MEMESHARER_posts_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
+export MEMESHARER_perms_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
 export MEMESHARER_user_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
 export MEMESHARER_gateway_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
 
@@ -15,6 +16,7 @@ export MEMESHARER_gateway_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726r
 export gatewayms_port=3300
 export userms_port=3301
 export postsms_port=3302
+export permsms_port=3303
 
 #website name
 export website_name=$([ $NODE_ENV == development ] && echo localhost || echo www.memesharer.com)
@@ -23,6 +25,7 @@ export website_name=$([ $NODE_ENV == development ] && echo localhost || echo www
 export gatewayms_address=$ssl://$website_name:$gatewayms_port
 export userms_address=$ssl://$website_name:$userms_port
 export postsms_address=$ssl://$website_name:$postsms_port
+export permsms_address=$ssl://$website_name:$permsms_port
 
 #HTTPS SSL key files
 export privateKeyFilePath=/etc/letsencrypt/live/memesharer.com/privkey.pem
