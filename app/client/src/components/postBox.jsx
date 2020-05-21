@@ -11,6 +11,8 @@ import $ from "jquery"
 
 const shortid = require('shortid')
 const { createApolloFetch } = require('apollo-fetch');
+const { addReqHeaders } = require('../lib/addReqHeaders.js')
+
 
 
 
@@ -19,23 +21,25 @@ class PostBox extends Component {
   constructor(props){
     super(props);
 
+    var post = props && props.postInfo;
+
     this.state = {
-      fileId: (typeof props.postInfo.fileId === 'undefined') ? "" : props.postInfo.fileId,
-      fileType: (typeof props.postInfo.fileType === 'undefined') ? "" : props.postInfo.fileType,
-      likeCount: (typeof props.postInfo.likeCount === 'undefined') ? 0: props.postInfo.likeCount,
-      dislikeCount: (typeof props.postInfo.dislikeCount === 'undefined') ? 0: props.postInfo.dislikeCount,
-      caption: (typeof props.postInfo.caption === 'undefined') ? "" : props.postInfo.caption,
-      postId: (typeof props.postInfo.id === 'undefined') ? "" : props.postInfo.id,
-      userEmail: (props.postInfo.user==null || typeof props.postInfo.user.email === 'undefined') ? "" : props.postInfo.user.email,
-      profileUrl: (props.postInfo.user==null || typeof props.postInfo.user.profileUrl === 'undefined') ? "" : props.postInfo.user.profileUrl,
-      username: (props.postInfo.user==null || typeof props.postInfo.user.name === 'undefined') ? "" : props.postInfo.user.name,
-      userId: (props.postInfo.user==null || typeof props.postInfo.user.id === 'undefined') ? "" : props.postInfo.user.id,
-      comments: (typeof props.postInfo.comments === 'undefined') ? [] : props.postInfo.comments,
+      fileId: (!post || !post.fileId) ? "" : post.fileId,
+      fileType: (!post || !post.fileType) ? "" : post.fileType,
+      likeCount: (!post || !post.likeCount) ? 0: post.likeCount,
+      dislikeCount: (!post || !post.dislikeCount) ? 0: post.dislikeCount,
+      caption: (!post || !post.caption) ? "" : post.caption,
+      postId: (!post || !post.id) ? "" : post.id,
+      userEmail: (!post || !post.user || !post.user.email) ? "" : post.user.email,
+      profileUrl: (!post || !post.user || !post.user.profileUrl) ? "" : post.user.profileUrl,
+      username: (!post || !post.user || !post.user.name) ? "" : post.user.name,
+      userId: (!post || !post.user || !post.user.id) ? "" : post.user.id,
+      comments: (!post || !post.comments) ? [] : post.comments,
       addCommentText: '',
       newCaption: null,
       visibleComments: 3,
       deleted: false,
-      followingUserOfPost: null,
+      followingUserOfPost: false,
       modalIdentifier: shortid.generate()
     };
 
@@ -91,6 +95,8 @@ class PostBox extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(getLikedVariables)
@@ -171,6 +177,8 @@ class PostBox extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(createCommentVariables)
@@ -239,6 +247,8 @@ class PostBox extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(createLikeVariables)
@@ -324,6 +334,8 @@ class PostBox extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(createLikeVariables)
@@ -411,6 +423,8 @@ class PostBox extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(deletePostVariables)
@@ -472,6 +486,8 @@ class PostBox extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(editCaptionVariables)
@@ -573,6 +589,8 @@ class PostBox extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(isFollowingVariables)
@@ -633,6 +651,8 @@ class PostBox extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(createFollowshipVariables)
@@ -688,6 +708,8 @@ class PostBox extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(deleteFollowshipVariables)
@@ -722,7 +744,6 @@ class PostBox extends Component {
 
     let postBoxMethods = this
     let postID = postBoxMethods.state.postId
-    let isFollowing = this.state.followingUserOfPost
 
     $(`.editCaptionSubmit${postID}`).on('click touchstart', function(){
       postBoxMethods.handleEditCaption()
@@ -755,47 +776,42 @@ class PostBox extends Component {
   render(){
 
     //if post has been deleted
-    if(this.state.deleted === true)
-    return(
-      <div className="row">
-        <div className="col-md-6 offset-md-4">
-          <div className="card" style={{width:"40rem"}}>
-            <div className="card-body">
-              <p className="text-center font-weight-bold"><font color="#ff1a1a">This Post Has Been Deleted</font></p>
+    if(this.state.deleted)
+      return(
+        <div className="row">
+          <div className="col-md-6 offset-md-4">
+            <div className="card" style={{width:"40rem"}}>
+              <div className="card-body">
+                <p className="text-center font-weight-bold"><font color="#ff1a1a">This Post Has Been Deleted</font></p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    )
+      )
 
     // if there are more comments that can be displayed
     let loadMoreCommentsButton;
-    if(this.state.comments.length > this.state.visibleComments){
+    if(this.state.comments.length > this.state.visibleComments)
       loadMoreCommentsButton = <button type="button" className={`btn btn-sm btn-success loadMoreCommentsBtn${this.state.postId}`} style={{fontSize:'12px'}}>View More Comments</button>;
-    }
 
     // if this post is not by the current user, then display a follow/followed button
     let followingUserOfPostButton;
     //if user is signed in
-    if( localStorage.getItem('user')!=null && JSON.parse(localStorage.getItem('user')).id!==undefined )
+    if( localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).id )
     {
-      if (JSON.parse(localStorage.getItem('user')).id !== this.state.userId && this.state.followingUserOfPost!=null && this.state.userId!=""){
+      if (JSON.parse(localStorage.getItem('user')).id !== this.state.userId && this.state.userId!==""){
         // if following
-        if(this.state.followingUserOfPost){
-          followingUserOfPostButton = $(<button className="btn btn-lg btn-secondary " type="button" id={`followingUserOfPostBtn${this.state.postId}`} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userFollowing} /></button>)
-        }
+        if(this.state.followingUserOfPost)
+          followingUserOfPostButton = $(<button className="btn btn-lg btn-secondary " type="button" key={`followingUserOfPostBtn${this.state.postId}`} id={`followingUserOfPostBtn${this.state.postId}`} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userFollowing} /></button>)
         // if not following
-        else{
-          followingUserOfPostButton = $(<button className="btn btn-lg btn-secondary " type="button" id={`unfollowingUserOfPostBtn${this.state.postId}`} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userIcon} /></button>)
-        }
+        else
+          followingUserOfPostButton = $(<button className="btn btn-lg btn-secondary " type="button" key={`unfollowingUserOfPostBtn${this.state.postId}`} id={`unfollowingUserOfPostBtn${this.state.postId}`} style={{backgroundColor: 'Transparent', border:'none',  color:'black'}}><Icon icon={userIcon} /></button>)
       }
     }
 
-
-
     let postSettingsButtons;
     //if this is the signed in user's post (so they can delete it etc.)
-    if(JSON.parse(localStorage.getItem('user'))!=null && JSON.parse(localStorage.getItem('user')).id === this.state.userId)
+    if(JSON.parse(localStorage.getItem('user')) && JSON.parse(localStorage.getItem('user')).id === this.state.userId)
     {
       postSettingsButtons =
       <div>
@@ -813,9 +829,8 @@ class PostBox extends Component {
     }
 
     let captionArea;
-    if(this.state.caption.split(" ").join("")!=""){
+    if(this.state.caption.split(" ").join("")!=="")
       captionArea = <h5 className="card-title" style={{fontSize:'17px'}}><span style={{fontWeight:'bold'}}>{this.state.username+": "}</span>{this.state.caption}</h5>
-    }
 
 
     return(

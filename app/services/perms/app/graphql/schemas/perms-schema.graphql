@@ -4,6 +4,7 @@ extend type Query {
   getRole(id: ID!): Role
   getRolePermissions(roleID: ID!): [RolePermission]
   getUserRoles(userID: ID!): [UserRole]
+  getUserPermissions(userID: String!): [String]
 }
 
 extend type Mutation {

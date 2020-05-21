@@ -14,6 +14,6 @@ app_info.then(function(app_info){
   app = app_info[0] //app is the return from express
   server = app_info[1] //server is the return from https.createServer(credentials, app)
 
-  server.listen(port, () => logger.info(`User service started on port ${port}`))
+  server.listen(port, () => logger.info(`Gateway service started on port ${port}`))
 
 })

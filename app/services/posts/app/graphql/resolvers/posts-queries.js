@@ -22,6 +22,8 @@
 //---------------------------------
 const { handleErrors } = require("../../utils/handle-errors.js");
 const { logger } = require("app-root-path").require("/config/logger.js");
+const { AuthenticateToken } = require('../../../lib/AuthenticateToken')
+const validateID = require("../../validation/validateID.js");
 
 //---------------------------------
 // Models
@@ -95,8 +97,8 @@ const postDislikeCountQuery = async (root, { postId }) => {
 
 const userPostsQuery = async (root, { input }) => {
   try {
-    //checks if user is signed in
-    if(!input.userId){
+    //checks if user id was provided
+    if(!input || !input.userId){
       return handleErrors("001", {user: "Did not recieve userid"});
     }
 
@@ -186,26 +188,36 @@ const getAPostQuery = async (root, { id } ) => {
 };
 
 
-const feedPostsQuery = async (root, { input } ) => {
-  //function to return most recent posts from a users followers (for the main feed)
+const feedPostsQuery = async (root, { input }, { req } ) => {
+  //function to return most recent posts from a users followers (for the followers feed)
 
   try{
     // sort the returned posts in more recent to least recent order
     // skip() will skip the first "index" number of documents
     // limit to 5 posts
-
+    
     if(isNaN(input.index))
         return handleErrors("001", {index: "index not a number"});
     index = parseInt(input.index);
 
+    const { msg, isValid } = validateID(input.userId);
+    if (!isValid) return handleErrors("001", msg)
+    
+    //Get the signed-in user's decrypted auth token payload
+    const authTokenData = new AuthenticateToken(req);
+
+    //'invalid user auth token or not signed in'
+    if(authTokenData.errors) return handleErrors("001", authTokenData.errors)
+
+    //if signed in user doesn't match requested user feed
+    if(!authTokenData.hasMatchingUserID(input.userId))
+      return handleErrors("001", 'Signed in user does not match requested user feed')
 
     //get all followee id's of current user
     let followships = await Followship.find({followerId: input.userId})
     let followingIds = [];
     for (var i=0; i < followships.length; i++)
-    {
       followingIds.push({userId: followships[i].followeeId})
-    }
 
     //if not following anyone
     if(followingIds.length ===0 )
@@ -214,8 +226,8 @@ const feedPostsQuery = async (root, { input } ) => {
     let posts = await Post.find({$or: followingIds})
                            .sort({date: -1})
                            .skip( index )
-                           .limit(5);
-
+                           .limit(5);   
+    
 
     //hasNext checks if it could return a 21st post
     let hasNext = 1 === (await Post.find({$or: followingIds})

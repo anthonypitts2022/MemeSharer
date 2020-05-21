@@ -20,6 +20,7 @@ note: Remember to export the query types resolver!
 //==============================================================================
 const { handleErrors } = require("../../utils/handle-errors.js");
 const { createApolloFetch } = require('apollo-fetch');
+const { addReqHeaders } = require('../../../lib/addReqHeaders.js')
 
 
 //bring in models
@@ -119,6 +120,8 @@ const Post = {
       var fetch = createApolloFetch({
         uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
       });
+      //sets the authorization request header
+      addReqHeaders(fetch, undefined);
 
       //fetch and return the user data corresponding to this user id
       return await fetch({
@@ -158,6 +161,8 @@ const Like = {
       var fetch = createApolloFetch({
         uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
       });
+      //sets the authorization request header
+      addReqHeaders(fetch, undefined);
 
       //fetch and return the user data corresponding to this user id
       return await fetch({
@@ -197,6 +202,8 @@ const Comment = {
       var fetch = createApolloFetch({
         uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
       });
+      //sets the authorization request header
+      addReqHeaders(fetch, undefined);
 
       //fetch and return the user data corresponding to this user id
       return await fetch({

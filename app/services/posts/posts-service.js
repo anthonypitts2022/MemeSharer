@@ -6,6 +6,8 @@ const express = require("./config/express.js");
 const multer = require('multer');
 const { createApolloFetch } = require('apollo-fetch');
 const shortid = require("shortid");
+const { AuthenticateToken } = require('./lib/AuthenticateToken')
+const { addReqHeaders } = require('./lib/addReqHeaders.js')
 var path = require('path');
 
 const db = mongoose();
@@ -23,6 +25,13 @@ app_info.then(function(app_info){
 
   app.route('/upload').post(function(req, res) {
     try{
+
+      //Get the signed-in user's decrypted auth token payload
+      const authTokenData = new AuthenticateToken(req);
+
+      //'invalid user auth token or not signed in'
+      if(authTokenData.errors) return res.status(200).send({errors: authTokenData.errors})
+
       //generates the image file id
       const fileId = shortid.generate();
 
@@ -41,11 +50,15 @@ app_info.then(function(app_info){
         if (err instanceof multer.MulterError) {
            res.status(500).send({errors: err});
         } else if (err) {
-           console.log(err)
            res.status(500).send({errors: err});
         }
+
+        //if signed in user doesn't does match the userId being created with the post
+        if(!authTokenData.hasMatchingUserID(req.body.userId)) 
+          return res.status(200).send({errors: 'Signed in user does not match the user creating the post'})
+
         //if no file was provided/uploaded
-        if(req.file==undefined){
+        if(!req.file){
           return res.status(200).send({errors: "Post must include a file. No file was provided."})
         }
         //if unsupported file type was provided/uploaded
@@ -60,8 +73,12 @@ app_info.then(function(app_info){
         var fetch = createApolloFetch({
           uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
         });
+
+        //sets the authorization request header
+        addReqHeaders(fetch, req.headers.authorization);
         //binds the res of upload to fetch to return the fetch data
         fetch = fetch.bind(res)
+
         fetch({
           query:
           `
@@ -88,8 +105,7 @@ app_info.then(function(app_info){
       })
       })
     }catch(err){
-      console.log(2);
-      console.log(err);
+      //console.log(err);
     }
   });
 

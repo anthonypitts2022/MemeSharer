@@ -15,10 +15,15 @@
     "apollo-server-express": "^2.9.16",
     "axios": "^0.19.1",
     "cookie-parser": "^1.4.4",
+    "crypto": "^1.0.1",
     "express": "^4.17.1",
+    "jose-simple": "^1.2.4",
+    "js-base64": "^2.5.2",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
     "mongoose": "^5.8.6",
+    "node-jose": "^1.1.4",
+    "node-rsa": "^1.0.8",
     "validator": "^11.1.0"
   },
   "_moduleAliases": {

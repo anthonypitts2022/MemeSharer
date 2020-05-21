@@ -10,7 +10,8 @@ const {
   getAllPermsQuery,
   getRoleQuery,
   getRolePermissionsQuery,
-  getUserRolesQuery
+  getUserRolesQuery,
+  getUserPermissionsQuery
 } = require("./perms-queries.js");
 const {
   createRoleMutation,
@@ -36,7 +37,8 @@ const Query = {
   getAllPerms: getAllPermsQuery,
   getRole: getRoleQuery,
   getRolePermissions: getRolePermissionsQuery,
-  getUserRoles: getUserRolesQuery
+  getUserRoles: getUserRolesQuery,
+  getUserPermissions: getUserPermissionsQuery
 };
 
 const Mutation = {

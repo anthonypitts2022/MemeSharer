@@ -22,9 +22,15 @@
 // Modules
 //---------------------------------
 require("module-alias/register");
-const { logger } = require("@lib/logger");
+var Base64 = require('js-base64').Base64;
+const jwt = require('jsonwebtoken')
+const fs = require("fs");
 const { handleErrors } = require("@lib/handle-errors");
 const { createApolloFetch } = require('apollo-fetch');
+const { addReqHeaders } = require('../../../lib/addReqHeaders.js')
+const { authenticateToken } = require('../../../lib/AuthenticateToken')
+const { signEncryptJWT } = require('../../../lib/signEncryptJWT')
+const crypto = require('crypto');
 
 
 //---------------------------------
@@ -43,24 +49,23 @@ const validateUserInput = require("../../validation/validateUserInput.js");
 
 // @access : Root
 // @desc   : Create Or Updates a single user
-const createOrUpdateUserMutation = async (parent, { input }) => {
+const createOrUpdateUserMutation = async (parent, { input }, { req, res }) => {
   
   try {
 
     // Validate the user input and return errors if any
     const { msg, isValid } = validateUserInput(input);
-    if (!isValid) {
+    if (!isValid) 
       return handleErrors("001", msg);
-    }
-    
-    //check if user already exists
-    let user = await User.findOne({id: input.id});
 
+    //check if user already exists    
+    var user = await User.findOne({id: input.id});    
+
+    let createdOrUpdatedUser; //the user object that will get returned
 
     //update user info
     if (user)
     {
-      
       //collect fields to be updated
       let updateRecord = {};
       for (let field in input){
@@ -77,7 +82,7 @@ const createOrUpdateUserMutation = async (parent, { input }) => {
       // Database response after record has been created
       
       
-      return await User.findOne({id: input.id});
+      createdOrUpdatedUser = await User.findOne({id: input.id});
     }
     //create new user
     else{
@@ -89,49 +94,69 @@ const createOrUpdateUserMutation = async (parent, { input }) => {
         profileUrl: input.profileUrl,
         email: input.email
       });
-
-      //make new user follow itself
-      var createFollowshipVariables={
-        "input": {
-          "followerId": newUser.id,
-          "followeeId": newUser.id
-        }
-      };
-
-
-      //calls create followship database mutation
-      var fetch = createApolloFetch({
-        uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
-      });
-
-      //binds the variables for query to fetch
-      fetch = fetch.bind(createFollowshipVariables)
-
-      let createFollowshipResponse = await fetch({
-        query:
-        `
-        mutation createFollowship($input: followshipInput!){
-          Followship: createFollowship(input: $input){
-            followerId
-            followeeId
-          }
-        }
-        `,
-        variables: createFollowshipVariables
-      })      
     
       // Save the user to the database and return
-      return newUser.save();
+      createdOrUpdatedUser = await newUser.save();
+
       }catch(err){
         //console.log(err);
       }
+    }    
+
+    //sign and encrypt JWT with user permissions 
+    let encryptedToken = await signEncryptJWT(createdOrUpdatedUser.id);
+
+    //putting encryptedToken into header    
+    res.append('Authorization', `Bearer ${encryptedToken}`);  
+    
+    
+    //have the new user follow themselves
+    if(!user){
+      try{        
+        //make new user follow itself
+        var createFollowshipVariables={
+          "input": {
+            "followerId": input.id,
+            "followeeId": input.id
+          }
+        };        
+
+        //calls create followship database mutation
+        var fetch = createApolloFetch({
+          uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
+        });
+        //sets the authorization request header
+        addReqHeaders(fetch, `Bearer ${encryptedToken}`);
+
+        //binds the variables for query to fetch
+        fetch = fetch.bind(createFollowshipVariables)
+
+        let createFollowshipResponse = await fetch({
+          query:
+          `
+          mutation createFollowship($input: followshipInput!){
+            Followship: createFollowship(input: $input){
+              followerId
+              followeeId
+            }
+          }
+          `,
+          variables: createFollowshipVariables
+        })
+      } catch (err) {
+        console.log('Failed to have new user follow themself.')
+      }
     }
+
+    return await createdOrUpdatedUser;
 
   } catch (err) {
     //console.log(err);
     return handleErrors("001", { user: err});
   }
 };
+
+
 module.exports = {
   createOrUpdateUserMutation
 };

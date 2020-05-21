@@ -1,8 +1,11 @@
 const allowedOrigins = [
   "http://localhost",
+  "http://localhost:3000",
+  "http://localhost:3000/login",
   "https://localhost",
   "http://memesharer.com",
   "https://memesharer.com",
+  "https://memesharer.com:3000",
   "memesharer.com"
 ];
 

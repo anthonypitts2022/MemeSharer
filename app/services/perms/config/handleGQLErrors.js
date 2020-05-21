@@ -56,6 +56,16 @@ const handleErrors = {
     if (!isEmpty(errors)) {
       handleReturnGQLErrors(errors);
     }
+  },
+  invalidAuthToken: msg => {
+    handleReturnGQLErrors({
+      invalidToken: `${msg}`
+    })
+  },
+  permissionDenied: msg => {
+    handleReturnGQLErrors({
+      permissionDenied: `${msg}`
+    })
   }
 };
 

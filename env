@@ -28,5 +28,18 @@ export postsms_address=$ssl://$website_name:$postsms_port
 export permsms_address=$ssl://$website_name:$permsms_port
 
 #HTTPS SSL key files
-export privateKeyFilePath=/etc/letsencrypt/live/memesharer.com/privkey.pem
-export fullChainKeyFilePath=/etc/letsencrypt/live/memesharer.com/fullchain.pem
+export sslPrivateKeyFilePath=/etc/letsencrypt/live/memesharer.com/privkey.pem
+export sslFullChainKeyFilePath=/etc/letsencrypt/live/memesharer.com/fullchain.pem
+
+#JWT signature key files
+export signaturePrivateKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key
+export signaturePublicKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key.pub
+
+# Encryption Auth Token Key file
+export encryptionAuthKeyFilePath=/home/anthony/.ssh/encryptionAuthKey.key
+
+# Encryption Auth Token IV file
+export encryptionAuthIVFilePath=/home/anthony/.ssh/encryptionAuthIV.key
+
+#google API sign in clientID
+export googleSignInClientID=476731474183-m4mk97e3v7hikda986n95qih07eqpi2e.apps.googleusercontent.com

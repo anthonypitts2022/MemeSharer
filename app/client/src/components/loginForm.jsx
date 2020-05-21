@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import GoogleLogin from "react-google-login";
-import axios from 'axios';
 import UserContext from '../contexts/UserContext.js';
+const { createApolloFetch } = require('apollo-fetch');
+const { addReqHeaders } = require('../lib/addReqHeaders.js')
+const { setResHeaders } = require('../lib/setResHeaders.js')
+
 
 
 
@@ -15,37 +18,78 @@ class LoginForm extends Component {
 
   }
 
-
-  responseGoogle(response) {
-    signIn(response);
-    async function signIn(response) {
+  
+  responseGoogle(googleResponse) {
+    signIn(googleResponse);
+    async function signIn(googleResponse) {
       try{
 
-        if(response.profileObj === undefined){
+        if(!googleResponse.profileObj || !googleResponse.profileObj.name 
+          || !googleResponse.profileObj.email || !googleResponse.profileObj.googleId 
+          || !googleResponse.profileObj.imageUrl)
+        {
+          console.log("Invalid response from google login.");
           return
         }
 
-        //put user in local storage
-        let newUser = {
-          "name": response.profileObj.name,
-          "email": response.profileObj.email,
-          "profileUrl": response.profileObj.imageUrl,
-          "id": response.profileObj.googleId
-        };
-        localStorage.setItem('user', JSON.stringify(newUser)); //JSON.parse(dict) to undo
-        //create new user in database or update user if logged in before
-        var variables = { "input": newUser };
+        //clear all current user data in local storage
+        localStorage.removeItem('user')
+        localStorage.removeItem('authToken')
 
-        await axios.post(`${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_userms_port}/createupdateuser`, variables);
+        //calls backend mutation
+        var fetch = createApolloFetch({
+          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
+        });
+
+        //sets the authorization request header
+        addReqHeaders(fetch);
+        //get the response authorization header and store in localStorage
+        setResHeaders(fetch)
+
+        fetch = fetch.bind(googleResponse)
+        var loginResponse = await fetch({
+          query:
+          `
+          mutation createOrUpdateUser($input: CreateUserInput){
+            User: createOrUpdateUser(input: $input){
+              errors{
+                msg
+              }
+              id
+              name
+              email
+              profileUrl
+            }
+          }
+          `,
+          variables: {
+            input: {
+              id: googleResponse.profileObj.googleId,
+              email: googleResponse.profileObj.email,
+              name: googleResponse.profileObj.name,
+              profileUrl: googleResponse.profileObj.imageUrl
+            }
+          }
+        })
+
+        //check if valid return from login mutation
+        if(!loginResponse.data || !loginResponse.data.User || loginResponse.data.User.errors){
+          console.log("error in login: "+JSON.stringify(loginResponse.data && loginResponse.data.User && loginResponse.data.User.errors));
+          return
+        }
+
+
+        localStorage.setItem('user', JSON.stringify(loginResponse.data.User)); //JSON.parse(dict) to undo
 
         window.location = "/";
 
       }
       catch(err) {
-        //console.log(err);
+        console.log(err);
       }
     }
   };
+  
 
 
   render(){
@@ -53,7 +97,7 @@ class LoginForm extends Component {
       <div>
 
        <meta name="google-signin-scope" content="profile email"></meta>
-       <meta name="google-signin-client_id" content="476731474183-ec2s8gf2ib5mboa8qr8ovvs6as8jl7ah.apps.googleusercontent.com"></meta>
+       <meta name="google-signin-client_id" content={`${process.env.REACT_APP_googleSignInClientID}`}></meta>
        <script src="https://apis.google.com/js/platform.js" async defer></script>
 
        <form className="bg-light" method="post">
@@ -71,7 +115,7 @@ class LoginForm extends Component {
               <div className="row">
                  <div className="col-md-4 mx-auto">
                      <GoogleLogin
-                       clientId="476731474183-ec2s8gf2ib5mboa8qr8ovvs6as8jl7ah.apps.googleusercontent.com"
+                       clientId={`${process.env.REACT_APP_googleSignInClientID}`}
                        render={renderProps => (
                          <input
                            id="loginInput"
@@ -85,7 +129,7 @@ class LoginForm extends Component {
                        buttonText="Login"
                        onSuccess={this.responseGoogle}
                        onFailure={this.responseGoogle}
-                       cookiePolicy={"https://memesharer.com"}
+                       cookiePolicy={`${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}`}
 
                      />
                     <div className="g-signin2" data-onsuccess="onSignIn"></div>

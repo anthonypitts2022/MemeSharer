@@ -22,8 +22,9 @@
 //---------------------------------
 require("module-alias/register");
 const { logger } = require("@lib/logger");
-const { handleErrors } = require("@lib/handle-errors");
-const jwt = require("jsonwebtoken");
+const validateID = require("../../validation/validateID.js");
+const { handleErrors } = require("@lib/handle-errors.js");
+const { AuthenticateToken } = require('../../../lib/AuthenticateToken')
 
 
 
@@ -39,25 +40,44 @@ const User = require("../../models/User-model.js");
 // @access : Private(Root, Admin, Staff)
 // @desc   : Get a user
 const userQuery = async (root, { id }) => {
-  const user = await User.findOne({ id: id });
   try {
+
+    // Validate the input and return errors if any
+    const { msg, isValid } = validateID(id);
+    if (!isValid) throw handleErrors("001", JSON.stringify(msg))
+
+    const user = await User.findOne({ id: id });
     return user;
-  } catch (e) {
-    logger.error(`${e}`);
+
+  } catch (err) {
+    //logger.error(`${err}`);
   }
 };
 
 // @access : Private(Root)
 // @desc   : Existing users
-const usersQuery = async (root, { args }, { user }) => {
-  // TODO: Add perms
-  const users = await User.find()
+const usersQuery = async (_, __, { req }) => {
+  try {
+
+    //Get the signed-in user's decrypted auth token payload
+    const authTokenData = new AuthenticateToken(req);
+
+    //'invalid user auth token or not signed in'
+    if(authTokenData.errors) return handleErrors("001", authTokenData.errors)
+
+    //if signed in user doesn't have access to this query
+    if(!authTokenData.hasPermission(`users`)) {
+      throw handleErrors("001", 'Signed in user does not have access to this query')
+    }
+
+    const users = await User.find()
     .skip(0)
     .limit(200);
-  try {
+
     return users;
+
   } catch (e) {
-    logger.error(`${e}`);
+    //logger.error(`${e}`);
   }
 };
 

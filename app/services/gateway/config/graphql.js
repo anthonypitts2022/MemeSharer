@@ -2,6 +2,7 @@ let http = require('http');
 let https = require('https');
 const { logger } = require("app-root-path").require("/config/logger.js");
 const { corsConfig } = require("./cors.js");
+const { GatewayMicroServiceDataTransfer } = require("./GatewayDataTransfer.js");
 const { ApolloServer } = require("apollo-server-express");
 const { ApolloGateway } = require("@apollo/gateway");
 const fs = require("fs");
@@ -21,7 +22,11 @@ const gateway = new ApolloGateway({
       name: "perms",
       url: `${process.env.permsms_address}/perms`
     }
-  ]
+  ],
+  buildService({ url }) {
+    //handles transfering req/res objects between microservices and the gateway 
+    return new GatewayMicroServiceDataTransfer({ url });
+  }
 });
 
 //Create the graphqlserver
@@ -32,13 +37,33 @@ const createServer = async app => {
     schema,
     executor,
     context: ({ req, res }) => {
-      const env = process.env.NODE_ENV;
+      var env = process.env.NODE_ENV;
+      var reqAuthToken = req.headers.authorization;
+      var resAuthToken;
       return {
         req,
         res,
+        reqAuthToken,
+        resAuthToken,
         env
       };
     },
+    plugins: [
+      {
+        requestDidStart() {
+          return {
+            willSendResponse({ context, response }) {
+              // Append authToken from context to the outgoing client's response headers
+              if(context && context.resAuthToken){
+                response.http.headers.set('Authorization', context.resAuthToken);
+                response.http.headers.set('Access-Control-Expose-Headers', 'Authorization');
+              }
+            }
+          };
+        }
+      }
+    ],
+    subscriptions: false,
     formatError: err => {
       return { message: err.message };
     }
@@ -56,8 +81,8 @@ const createServer = async app => {
   //production https server
   if(process.env.NODE_ENV=="production"){
     //https certificate files
-    let privateKey = fs.readFileSync(process.env.privateKeyFilePath, 'utf8');
-    let certificate = fs.readFileSync(process.env.fullChainKeyFilePath, 'utf8');
+    let privateKey = fs.readFileSync(`${process.env.sslPrivateKeyFilePath}`, 'utf8');
+    let certificate = fs.readFileSync(`${process.env.sslFullChainKeyFilePath}`, 'utf8');
     let credentials = {
     	key: privateKey,
     	cert: certificate

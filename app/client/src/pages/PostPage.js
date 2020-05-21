@@ -5,6 +5,8 @@ import UserContext from '../contexts/UserContext.js';
 import Footer from "../components/Footer.jsx";
 import PostBox from '../components/postBox.jsx';
 const { createApolloFetch } = require('apollo-fetch');
+const { addReqHeaders } = require('../lib/addReqHeaders.js')
+
 
 
 
@@ -96,6 +98,8 @@ class PostPage extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(queryPostsVariables)

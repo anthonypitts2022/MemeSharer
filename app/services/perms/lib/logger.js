@@ -4,13 +4,14 @@ const fs = require("fs");
 const path = require("path");
 const rootPath = require("app-root-path");
 const logDir = rootPath + "/log";
-const env = process.env.NODE_ENV || "production";
+const env = process.env.NODE_ENV || "development";
 
 // Create the log directory if it does not exist
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
 }
 
+// Set the log file
 const logPaths = {
   app: path.join(logDir, "app.log"),
   http: path.join(logDir, "http.log")
@@ -78,16 +79,4 @@ const httpLog = app => {
   // setup the logger
   app.use(morgan("combined", { stream: accessLogStream }));
 };
-
-const logSuccess = (functionName, successObj) => {
-  logger.info(
-    `${functionName}: Success: 
-      ${JSON.stringify(successObj)}`
-  );
-};
-
-const logFail = (functionName, err) => {
-  logger.error(`${functionName}: Failed: ${err}.`);
-};
-
-module.exports = { logger, httpLog, logSuccess, logFail };
+module.exports = { logger, httpLog };

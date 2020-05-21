@@ -6,6 +6,8 @@ import Footer from "../components/Footer.jsx";
 import PostBox from '../components/postBox.jsx';
 
 const { createApolloFetch } = require('apollo-fetch');
+const { addReqHeaders } = require('../lib/addReqHeaders.js')
+
 
 
 
@@ -130,6 +132,8 @@ class Feed extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);
 
         //binds the variables for query to fetch
         fetch = fetch.bind(queryPostsVariables)
@@ -196,18 +200,13 @@ class Feed extends Component {
 
   followingQueryPosts() {
     //if user is not signed in
-    if( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
-    {
+    if( !localStorage.getItem('user') || !JSON.parse(localStorage.getItem('user')).id )
       return;
-    }
 
     async function postsQuery() {
       try{
-
-        if(false === this.state.followingHasMorePosts)
-        {
+        if(!this.state.followingHasMorePosts)
           return;
-        }
 
         var queryPostsVariables={
           "input": {
@@ -221,6 +220,8 @@ class Feed extends Component {
         var fetch = createApolloFetch({
           uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
         });
+        //sets the authorization request header
+        addReqHeaders(fetch);        
 
         //binds the variables for query to fetch
         fetch = fetch.bind(queryPostsVariables)
@@ -372,12 +373,12 @@ class Feed extends Component {
 
 
               <div className="col-12">
-                {this.state.globalPosts.map(postInfo => (
+                {this.state.globalPosts.map(postInfo => postInfo ? (
                   <div key={"global" + postInfo.id}>
                     <PostBox postInfo={postInfo}/>
                     <p></p>
                   </div>
-                ))}
+                ) : "")}
               </div>
 
 
@@ -388,12 +389,12 @@ class Feed extends Component {
         <div className="tab-pane fade" id="following" role="tabpanel" aria-labelledby="following-tab">
           <p></p>
           <div>
-            {this.state.followingPosts.map(postInfo => (
+            {this.state.followingPosts.map(postInfo => postInfo ? (
               <div key={"following" + postInfo.id}>
                 <PostBox postInfo={postInfo}/>
                 <p></p>
               </div>
-            ))}
+            ): "")}
           </div>
         </div>
       </div>
