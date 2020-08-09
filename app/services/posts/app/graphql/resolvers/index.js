@@ -18,9 +18,8 @@ note: Remember to export the query types resolver!
 //==============================================================================
 // HEAD
 //==============================================================================
-const { handleErrors } = require("../../utils/handle-errors.js");
-const { createApolloFetch } = require('apollo-fetch');
-const { addReqHeaders } = require('../../../lib/addReqHeaders.js')
+const { handleErrors } = require("../../../lib/handleErrors.js");
+const { getUser } = require('../../../APIFetches/getUser')
 
 
 //bring in models
@@ -50,7 +49,7 @@ const {
   deletePostMutation,
   editCaptionMutation,
   createFollowshipMutation,
-  deleteFollowshipMutation
+  deleteFollowshipMutation,
 } = require("./posts-mutations.js");
 
 //==============================================================================
@@ -84,7 +83,7 @@ const Mutation = {
   deletePost: deletePostMutation,
   editCaption: editCaptionMutation,
   createFollowship: createFollowshipMutation,
-  deleteFollowship: deleteFollowshipMutation
+  deleteFollowship: deleteFollowshipMutation,
 };
 
 
@@ -97,58 +96,31 @@ const Post = {
     try{
       return await Likes.countDocuments({postId: post.id, isLike: true});
     } catch(err){
-      return handleErrors("001", {postId: "post does not exist."})
+      return handleErrors.error(err)
     }
   },
   dislikeCount: async (post) => {
     try{
       return await Likes.countDocuments({postId: post.id, isLike: false});
     } catch(err){
-      return handleErrors("001", {postId: "post does not exist."})
+      return handleErrors.error(err)
     }
   },
   comments: async (post) => {
     try{
       return await Comments.find({postId: post.id}).limit(20);
     } catch(err){
-      return handleErrors("001", {postId: "failed to get comments"})
+      return handleErrors.error(err)
     }
   },
   user: async (post) => {
     try{
-      //calls database mutation
-      var fetch = createApolloFetch({
-        uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
-      });
-      //sets the authorization request header
-      addReqHeaders(fetch, undefined);
-
-      //fetch and return the user data corresponding to this user id
-      return await fetch({
-        query:
-        `
-        query user($id: String!){
-          User: user(id: $id){
-            errors{
-              msg
-            }
-            id
-            name
-            email
-            profileUrl
-          }
-        }
-        `,
-        variables: {
-          id: post.userId,
-        }
-      })
-      .then(result => {
-        //result.data holds the data returned from the mutation
-        return result.data.User;
-      })
+      //fetch and return the user data corresponding to this post's creator
+      var user = await getUser(post.userId)
+      return user && user.data && user.data.User
     } catch(err){
-      return handleErrors("001", {postId: "failed to get post's user"})
+      console.log(err);  
+      return handleErrors.error(err)
     }
   }
 }
@@ -157,39 +129,11 @@ const Post = {
 const Like = {
   user: async (like) => {
     try{
-      //calls database mutation
-      var fetch = createApolloFetch({
-        uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
-      });
-      //sets the authorization request header
-      addReqHeaders(fetch, undefined);
-
-      //fetch and return the user data corresponding to this user id
-      return await fetch({
-        query:
-        `
-        query user($id: String!){
-          User: user(id: $id){
-            errors{
-              msg
-            }
-            id
-            name
-            email
-            profileUrl
-          }
-        }
-        `,
-        variables: {
-          id: like.userId,
-        }
-      })
-      .then(result => {
-        //result.data holds the data returned from the mutation
-        return result.data.User;
-      })
+      //fetch and return the user data corresponding to this like's user
+      var user = await getUser(like.userId)
+      return user && user.data && user.data.User
     } catch(err){
-      return handleErrors("001", {postId: "failed to get like's user"})
+      return handleErrors.error(err)
     }
   }
 }
@@ -198,39 +142,12 @@ const Like = {
 const Comment = {
   user: async (comment) => {
     try{
-      //calls database mutation
-      var fetch = createApolloFetch({
-        uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
-      });
-      //sets the authorization request header
-      addReqHeaders(fetch, undefined);
-
       //fetch and return the user data corresponding to this user id
-      return await fetch({
-        query:
-        `
-        query user($id: String!){
-          User: user(id: $id){
-            errors{
-              msg
-            }
-            id
-            name
-            email
-            profileUrl
-          }
-        }
-        `,
-        variables: {
-          id: comment.userId,
-        }
-      })
-      .then(result => {
-        //result.data holds the data returned from the mutation
-        return result.data.User;
-      })
+      var user = await getUser(comment.userId)
+      return user && user.data && user.data.User
     } catch(err){
-      return handleErrors("001", {postId: "failed to get comments's user"})
+      console.log(err);
+      return handleErrors.error(err)
     }
   }
 }

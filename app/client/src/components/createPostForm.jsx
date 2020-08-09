@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import UserContext from '../contexts/UserContext.js';
-import axios from 'axios';
+
+//MemeSharer API
+const { uploadPost } = require('../APIFetches/uploadPost.js')
+const { refreshAccessToken } = require('../APIFetches/refreshAccessToken')
+
+const { hasInvalidAccessToken } = require('../lib/hasInvalidAccessToken')
 
 
 
@@ -33,7 +38,7 @@ class CreatePostForm extends Component {
   }
 
   handleSubmit(event) {
-    if( !localStorage.getItem('authToken') ){
+    if( !localStorage.getItem('user') ){
           console.log("user not logged in");
           return;
     }
@@ -47,28 +52,26 @@ class CreatePostForm extends Component {
     async function createPost( fileData ) {
       try{
 
-        var axiosReqConfig = {
-          headers: {
-            "Authorization": localStorage.getItem('authToken') || undefined,
-            "Access-Control-Allow-Headers": "Authorization"
-          }
-        }
-        var response = await axios.post(`${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_postsms_port}/upload`, fileData, axiosReqConfig);
+        //call create post API on Post MicroService
+        var newPost = await uploadPost(fileData)
 
-        //newPost holds the data of the newly created post
-        var newPost = response.data;
+        //if invalid accessToken, try to refresh it, then call function again
+        if(hasInvalidAccessToken(newPost)){
+          if(await refreshAccessToken())
+            this.handleSubmit()
+          return
+        }
 
         //if no errors when creating post
-        if(newPost.errors==null){
+        if(!newPost.errors)
           window.location.href = "/";
-        }
         //if errors were returned, then store them in errors field in the state
-        else{
+        else
           this.setState({errors: newPost.errors.split("; ") });
-        }
+
       }
       catch(err) {
-        //console.log(err);
+        console.log(err);
       }
     }
     //bindings
@@ -79,7 +82,7 @@ class CreatePostForm extends Component {
 
   render(){
     //if a file has not yet been uploaded
-    if(this.state.temporaryFileUrl===null)
+    if(!this.state.temporaryFileUrl)
     {
       return(
         <div>

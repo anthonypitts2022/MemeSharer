@@ -9,6 +9,7 @@ const { corsConfig } = require("./cors.js");
 const { ApolloServer, gql } = require("apollo-server-express");
 const { buildFederatedSchema } = require("@apollo/federation");
 const { createHttpLink } = require("apollo-link-http");
+const { formatGQLError } = require("../lib/formatGQLError");
 // the below will take all the schemas available and merge them
 const { makeExecutableSchema } = require("graphql-tools");
 
@@ -46,18 +47,12 @@ const createServer = async app => {
   const server = new ApolloServer({
     schema,
     context: ({ req, res }) => {
-      // Set the current environment
-      const env = process.env.NODE_ENV;
-
       return {
         req,
-        res,
-        env
+        res
       };
     },
-    formatError: err => {
-      return { message: err.message };
-    }
+    formatError: err => formatGQLError(err)
   });
   server.applyMiddleware({
     app,
@@ -74,9 +69,9 @@ const createServer = async app => {
   //production https server
   if(process.env.NODE_ENV=="production"){
     //https certificate files
-    let privateKey = fs.readFileSync(`${process.env.sslPrivateKeyFilePath}`, 'utf8');
-    let certificate = fs.readFileSync(`${process.env.sslFullChainKeyFilePath}`, 'utf8');
-    let credentials = {
+    var privateKey = fs.readFileSync(`${process.env.sslPrivateKeyFilePath}`, 'utf8');
+    var certificate = fs.readFileSync(`${process.env.sslFullChainKeyFilePath}`, 'utf8');
+    var credentials = {
     	key: privateKey,
     	cert: certificate
     };

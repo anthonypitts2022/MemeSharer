@@ -4,7 +4,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createOrUpdateUser(input: CreateUserInput): User
+  createOrUpdateUser(googleToken: String!): User
 }
 
 #===============================================================================
@@ -16,34 +16,4 @@ type User {
   name: String
   email: String
   profileUrl: String
-  errors: Error
-  success: Success
-  bulkAddReport: [BulkAddReport]
-}
-
-#--------------------------------------
-# Inputs
-#--------------------------------------
-input CreateUserInput {
-  id: String!
-  name: String!
-  email: String!
-  profileUrl: String!
-}
-
-#===============================================================================
-# Messages
-#===============================================================================
-
-type Error {
-  msg: String
-}
-
-type Success {
-  msg: String
-}
-
-type BulkAddReport {
-  msg: String
-  val: String
 }

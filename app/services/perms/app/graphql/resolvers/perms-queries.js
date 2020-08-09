@@ -7,8 +7,8 @@ require("module-alias/register");
 const { logFail } = require("@config/logger");
 const { logger } = require("@config/logger.js");
 const validateInput = require("../../validation/validateInput.js");
-const { AuthenticateToken } = require('../../../lib/AuthenticateToken');
-const { handleErrors } = require("@config/handleGQLErrors");
+const { AuthenticateAccessToken } = require('../../../lib/AuthenticateAccessToken');
+const { handleErrors } = require("@lib/handleErrors");
 
 
 // Models
@@ -21,13 +21,13 @@ const getAllRolesQuery = async (_, __, { req }) => {
   try {
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //invalid user auth token or not signed in
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to get all roles
-    if(!authTokenData.hasPermission(`getAllRoles`)) 
+    if(!accessTokenData.hasPermission(`getAllRoles`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to get all roles`)
 
     let roles = await Role.find().limit(400);
@@ -43,13 +43,13 @@ const getAllPermsQuery = async (_, __, { req }) => {
   try {
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //invalid user auth token or not signed in
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to get all perms
-    if(!authTokenData.hasPermission(`getAllPerms`)) 
+    if(!accessTokenData.hasPermission(`getAllPerms`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to get all perms`)
 
     let permissions = await Permission.find().limit(400);

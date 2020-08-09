@@ -1,6 +1,6 @@
 require('module-alias/register')
 const rootPath = require('app-root-path')
-const { logger } = require('@lib/logger.js')
+const { logger } = require('./lib/logger.js')
 const { createApolloFetch } = require('apollo-fetch');
 const mongoose = require('./config/mongoose.js')
 const express = require('./config/express.js')

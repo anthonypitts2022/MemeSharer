@@ -3,12 +3,14 @@ import NavBarWithSignIn from '../components/navBarWithSignIn.jsx';
 import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
 import UserContext from '../contexts/UserContext.js';
 import Footer from "../components/Footer.jsx";
-import PostBox from '../components/postBox.jsx';
+import PostBox from '../components/postBox/postBox.jsx';
 
-const { createApolloFetch } = require('apollo-fetch');
-const { addReqHeaders } = require('../lib/addReqHeaders.js')
+//MemeSharer API
+const { globalPosts } = require('../APIFetches/globalPosts')
+const { feedPosts } = require('../APIFetches/feedPosts')
+const { refreshAccessToken } = require('../APIFetches/refreshAccessToken')
 
-
+const { hasInvalidAccessToken } = require('../lib/hasInvalidAccessToken')
 
 
 class Feed extends Component {
@@ -82,7 +84,7 @@ class Feed extends Component {
       this.globalScrollNumPosts = this.state.globalLoadedPosts;
     }
 
-    if(this.globalLoadingPosts === true)
+    if(this.globalLoadingPosts)
         return false;
 
     return root.getBoundingClientRect().bottom <= this.globalHalfDownPage;
@@ -100,18 +102,14 @@ class Feed extends Component {
   {
     //if there are more posts to be loaded
     if(this.state.globalHasMorePosts)
-    {
       this.globalQueryPosts();
-    }
   }
 
   followingLoadMorePosts()
   {
     //if there are more posts to be loaded
     if(this.state.followingHasMorePosts)
-    {
       this.followingQueryPosts();
-    }
   }
   ////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,60 +119,13 @@ class Feed extends Component {
     async function postsQuery() {
       try{
 
-        if(false === this.state.globalHasMorePosts)
+        if(!this.state.globalHasMorePosts)
             return;
-
-        var queryPostsVariables={
-          "index": (this.state.globalLoadedPosts - 5).toString()
-        };
-
-        //calls database query
-        var fetch = createApolloFetch({
-          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
-        });
-        //sets the authorization request header
-        addReqHeaders(fetch);
-
-        //binds the variables for query to fetch
-        fetch = fetch.bind(queryPostsVariables)
-
-        let queryPostsResponse = await fetch({
-          query:
-          `
-          query globalPosts($index: String!){
-            PostsAndHasNext: globalPosts(index: $index){
-              posts{
-                errors{
-                  msg
-                }
-                fileId
-                fileType
-                user{
-                  id
-                  name
-                  email
-                  profileUrl
-                }
-                id
-                caption
-                likeCount
-                dislikeCount
-                comments{
-                  text
-                  userId
-                  user{
-                    id
-                    name
-                  }
-                  id
-                }
-              }
-            hasNext
-            }
-          }
-          `,
-          variables: queryPostsVariables
-        });
+          
+        var queryPostsResponse = await globalPosts(
+          (this.state.globalLoadedPosts - 5).toString()
+        )
+        
 
         //add the new posts to the posts array
         let posts = this.state.globalPosts;
@@ -184,7 +135,6 @@ class Feed extends Component {
         this.setState({globalHasMorePosts: queryPostsResponse.data.PostsAndHasNext.hasNext});
         this.setState({globalLoadedPosts: this.state.globalLoadedPosts + 5});
         this.globalLoadingPosts = false;
-
 
       } catch(err) {
         console.log(err);
@@ -208,62 +158,17 @@ class Feed extends Component {
         if(!this.state.followingHasMorePosts)
           return;
 
-        var queryPostsVariables={
-          "input": {
-            "index": (this.state.followingLoadedPosts - 5).toString(),
-            "userId": JSON.parse(localStorage.getItem('user')).id
-          }
-        };
+        var queryPostsResponse = await feedPosts(
+          (this.state.followingLoadedPosts - 5).toString(),
+          JSON.parse(localStorage.getItem('user')).id
+        )
 
-
-        //calls database query
-        var fetch = createApolloFetch({
-          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
-        });
-        //sets the authorization request header
-        addReqHeaders(fetch);        
-
-        //binds the variables for query to fetch
-        fetch = fetch.bind(queryPostsVariables)
-
-        let queryPostsResponse = await fetch({
-          query:
-          `
-          query feedPosts($input: feedPostsInput!){
-            PostsAndHasNext: feedPosts(input: $input){
-              posts{
-                errors{
-                  msg
-                }
-                fileId
-                fileType
-                user{
-                  id
-                  name
-                  email
-                  profileUrl
-                }
-                id
-                caption
-                likeCount
-                dislikeCount
-                comments{
-                  text
-                  userId
-                  user{
-                    id
-                    name
-                  }
-                  id
-                }
-              }
-            hasNext
-            }
-          }
-          `,
-          variables: queryPostsVariables
-        });
-
+        //if invalid accessToken, try to refresh it, then call function again
+        if(hasInvalidAccessToken(queryPostsResponse)){
+          if(await refreshAccessToken())
+            this.followingQueryPosts()
+          return
+        }
 
         //add the new posts to the posts array
         let posts = this.state.followingPosts;
@@ -276,7 +181,7 @@ class Feed extends Component {
 
 
       } catch(err) {
-        //console.log(err);
+        console.log(err);
       }
 
       }
@@ -288,7 +193,7 @@ class Feed extends Component {
   }
 
   navBarType() {
-    return ( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
+    return ( !localStorage.getItem('user') || !JSON.parse(localStorage.getItem('user')).id )
               ? "navBarWithSignIn" : "navBarWithoutSignIn";
   }
 
@@ -315,7 +220,7 @@ class Feed extends Component {
 
 
   scrollToFollowing(){
-    if(false === this.onGlobalTab)
+    if(!this.onGlobalTab)
     {
       //scroll to top
       document.body.scrollTop = 0; // For Safari

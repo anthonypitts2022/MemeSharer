@@ -3,10 +3,13 @@ import NavBarWithSignIn from '../components/navBarWithSignIn.jsx';
 import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
 import UserContext from '../contexts/UserContext.js';
 import Footer from "../components/Footer.jsx";
-import PostBox from '../components/postBox.jsx';
-const { createApolloFetch } = require('apollo-fetch');
-const { addReqHeaders } = require('../lib/addReqHeaders.js')
+import PostBox from '../components/postBox/postBox.jsx';
 
+//MemeSharer API
+const { getPost } = require('../APIFetches/getPost.js')
+const { refreshAccessToken } = require('../APIFetches/refreshAccessToken')
+
+const { hasInvalidAccessToken } = require('../lib/hasInvalidAccessToken')
 
 
 
@@ -56,7 +59,7 @@ class PostPage extends Component {
       this.scrollNumPosts = this.state.loadedPosts;
     }
 
-    if(this.loadingPosts === true)
+    if(this.loadingPosts)
         return false;
 
     return root.getBoundingClientRect().bottom <= this.halfDownPage;
@@ -74,9 +77,7 @@ class PostPage extends Component {
   {
     //if there are more posts to be loaded
     if(this.state.hasMorePosts)
-    {
-      this.queryPosts();
-    }
+      this.queryPosts()
   }
   ////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,59 +87,18 @@ class PostPage extends Component {
     async function postsQuery() {
       try{
 
-        if(false === this.state.hasMorePosts)
+        if(!this.state.hasMorePosts)
             return;
 
-        var queryPostsVariables={
-          id: window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
-        };
-
-
-        //calls database query
-        var fetch = createApolloFetch({
-          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
-        });
-        //sets the authorization request header
-        addReqHeaders(fetch);
-
-        //binds the variables for query to fetch
-        fetch = fetch.bind(queryPostsVariables)
-
-        let queryPostsResponse = await fetch({
-          query:
-          `
-          query getAPost($id: String!){
-            Post: getAPost(id: $id){
-              errors{
-                msg
-              }
-              fileId
-              fileType
-              user{
-                id
-                name
-                email
-                profileUrl
-              }
-              id
-              caption
-              likeCount
-              dislikeCount
-              comments{
-                text
-                userId
-                user{
-                  id
-                  name
-                }
-                id
-              }
-            }
-          }
-          `,
-          variables: queryPostsVariables
-        });
-
+        var queryPostsResponse = await getPost(
+          window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
+        )
+        //if invalid accessToken, try to refresh it, then call function again
+        if(hasInvalidAccessToken(queryPostsResponse)){
+          if(await refreshAccessToken())
+            this.queryPosts()
+          return
+        }
 
         //add the new posts to the posts array
         let posts = this.state.posts;
@@ -151,7 +111,7 @@ class PostPage extends Component {
 
 
       } catch(err) {
-        //console.log(err);
+        console.log(err);
       }
 
       }
@@ -161,7 +121,7 @@ class PostPage extends Component {
   }
 
   navBarType() {
-    return ( localStorage.getItem('user')==null || JSON.parse(localStorage.getItem('user')).id===undefined )
+    return ( !localStorage.getItem('user') || !JSON.parse(localStorage.getItem('user')).id )
               ? "navBarWithSignIn" : "navBarWithoutSignIn";
   }
 

@@ -21,10 +21,9 @@
 // Modules
 //---------------------------------
 require("module-alias/register");
-const { logger } = require("@lib/logger");
 const validateID = require("../../validation/validateID.js");
-const { handleErrors } = require("@lib/handle-errors.js");
-const { AuthenticateToken } = require('../../../lib/AuthenticateToken')
+const { handleErrors } = require("@lib/handleErrors.js");
+const { AuthenticateAccessToken } = require('../../../lib/AuthenticateAccessToken')
 
 
 
@@ -44,13 +43,14 @@ const userQuery = async (root, { id }) => {
 
     // Validate the input and return errors if any
     const { msg, isValid } = validateID(id);
-    if (!isValid) throw handleErrors("001", JSON.stringify(msg))
+    if (!isValid) throw handleErrors.invalidIDInput(msg)
 
     const user = await User.findOne({ id: id });
     return user;
 
   } catch (err) {
-    //logger.error(`${err}`);
+    console.log(err)
+    handleErrors.error(err)
   }
 };
 
@@ -60,24 +60,25 @@ const usersQuery = async (_, __, { req }) => {
   try {
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return handleErrors("001", authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to this query
-    if(!authTokenData.hasPermission(`users`)) {
-      throw handleErrors("001", 'Signed in user does not have access to this query')
+    if(!accessTokenData.hasPermission(`users`)) {
+      throw handleErrors.permissionDenied('Signed in user does not have access to this query')
     }
 
     const users = await User.find()
-    .skip(0)
-    .limit(200);
+      .skip(0)
+      .limit(200);
 
     return users;
 
-  } catch (e) {
-    //logger.error(`${e}`);
+  } catch (err) {
+    console.log(err)
+    handleErrors.error(err)
   }
 };
 

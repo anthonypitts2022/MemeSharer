@@ -4,11 +4,11 @@
 !desc  : Contains all permissions mutations
 ******************************************************************************/
 require("module-alias/register");
-const { handleErrors } = require("@config/handleGQLErrors");
+const { handleErrors } = require("@lib/handleErrors");
 const { logSuccess, logFail } = require("@config/logger");
 const { logger } = require("@config/logger.js");
-const { AuthenticateToken } = require('../../../lib/AuthenticateToken')
-const { addReqHeaders } = require('../../../lib/addReqHeaders.js')
+const { AuthenticateAccessToken } = require('../../../lib/AuthenticateAccessToken')
+const { deleteUserRolesByRoleID } = require('../../../APIFetches/deleteUserRolesByRoleID')
 
 
 const { createApolloFetch } = require("apollo-fetch");
@@ -29,13 +29,13 @@ const createRoleMutation = async (_, { input }, { req }) => {
     validateInput(input, "createRoleMutation");
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to create a role
-    if(!authTokenData.hasPermission(`createRole`)) 
+    if(!accessTokenData.hasPermission(`createRole`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to create a role`)
 
     let role = await Role.findOne({ roleName: input.roleName });
@@ -60,13 +60,13 @@ const createPermissionMutation = async (_, { permName }, { req }) => {
     validateInput({ permName: permName }, "createPermissionMutation");
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //invalid user auth token or not signed in
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to create a permission
-    if(!authTokenData.hasPermission(`createPermission`)) 
+    if(!accessTokenData.hasPermission(`createPermission`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to create a permission`)
 
     let permission = await Permission.findOne({ permName: permName });
@@ -90,13 +90,13 @@ const addRolePermissionMutation = async (_, { input }, { req }) => {
     validateInput(input, "addRolePermissionMutation");
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //invalid user auth token or not signed in
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to add role permission
-    if(!authTokenData.hasPermission(`addRolePermission`)) 
+    if(!accessTokenData.hasPermission(`addRolePermission`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to add role permission`)
 
     var permission = await Permission.findById(input.permID);
@@ -128,13 +128,13 @@ const addUserRoleMutation = async (_, { input }, { req }) => {
     validateInput(input, "addUserRoleMutation");
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //invalid user auth token or not signed in
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to add user role
-    if(!authTokenData.hasPermission(`addUserRole`)) 
+    if(!accessTokenData.hasPermission(`addUserRole`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to add user role`)
 
     var role = await Role.findById(input.roleID);
@@ -165,13 +165,13 @@ const removePermissionFromRoleMutation = async (_, { input }, { req }) => {
   try {
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //invalid user auth token or not signed in
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to remove permission from role
-    if(!authTokenData.hasPermission(`removePermissionFromRole`)) 
+    if(!accessTokenData.hasPermission(`removePermissionFromRole`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to remove permission from role`)
 
     var rolePermissionToDelete = await RolePermission.deleteOne({
@@ -190,13 +190,13 @@ const deleteRoleMutation = async (_, { id }, { req }) => {
   try {
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //invalid user auth token or not signed in
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to delete a role
-    if(!authTokenData.hasPermission(`deleteRole`)) 
+    if(!accessTokenData.hasPermission(`deleteRole`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to delete a role`)
 
     //check if role exists
@@ -208,22 +208,7 @@ const deleteRoleMutation = async (_, { id }, { req }) => {
     await RolePermission.deleteMany({ roleID: id });
     await Role.findByIdAndDelete(id);
     
-    var fetch = createApolloFetch({
-      uri: `${process.env.ssl}://${process.env.website_name}:${process.env.gatewayms_port}/gateway`
-    });
-    //sets the authorization request header
-    addReqHeaders(fetch, req.headers.authorization);
-
-    await fetch({
-      query: `
-      mutation deleteUserRolesByRoleID($id: String!){
-        deleteUserRolesByRoleID(id: $id)
-      }
-      `,
-      variables: {
-        id: id
-      }
-    });
+    await deleteUserRolesByRoleID(id)
 
     return true;
   } catch (err) {
@@ -237,13 +222,13 @@ const removeUserRoleMutation = async (_, { input }, { req }) => {
     validateInput(input, "removeUserRoleMutation");
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //invalid user auth token or not signed in
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to remove user role
-    if(!authTokenData.hasPermission(`removeUserRole`)) 
+    if(!accessTokenData.hasPermission(`removeUserRole`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to remove a user role`)
 
     let deleted = await UserRole.deleteMany({
@@ -263,13 +248,13 @@ const deletePermissionMutation = async (_, { permissionID }, { req }) => {
   try {
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //invalid user auth token or not signed in
-    if(authTokenData.errors) return handleErrors.invalidAuthToken(authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't have access to delete a permission
-    if(!authTokenData.hasPermission(`deletePermission`)) 
+    if(!accessTokenData.hasPermission(`deletePermission`)) 
       return handleErrors.permissionDenied(`Signed in user doesn't have access to delete a permission`)
 
     var perm = await Permission.findById(permissionID);

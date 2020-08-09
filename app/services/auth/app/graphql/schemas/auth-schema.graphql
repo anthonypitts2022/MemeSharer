@@ -1,0 +1,13 @@
+
+# queries on the auth microservice
+#extend type Query {
+#}
+
+# mutations on the auth microservice
+extend type Mutation {
+  getAuthTokensFromLogin(googleToken: String!): Boolean
+  refreshAccessToken: Boolean
+}
+
+
+

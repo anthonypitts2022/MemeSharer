@@ -3,10 +3,13 @@ import NavBarWithSignIn from '../components/navBarWithSignIn.jsx';
 import NavBarWithoutSignIn from '../components/navBarWithoutSignIn.jsx';
 import UserContext from '../contexts/UserContext.js';
 import Footer from "../components/Footer.jsx";
-import PostBox from '../components/postBox.jsx';
-const { createApolloFetch } = require('apollo-fetch');
-const { addReqHeaders } = require('../lib/addReqHeaders.js')
+import PostBox from '../components/postBox/postBox.jsx';
 
+//MemeSharer API
+const { userPosts } = require('../APIFetches/userPosts.js')
+const { refreshAccessToken } = require('../APIFetches/refreshAccessToken')
+
+const { hasInvalidAccessToken } = require('../lib/hasInvalidAccessToken')
 
 
 
@@ -56,7 +59,7 @@ class Feed extends Component {
       this.scrollNumPosts = this.state.loadedPosts;
     }
 
-    if(this.loadingPosts === true)
+    if(this.loadingPosts)
         return false;
 
     return root.getBoundingClientRect().bottom <= this.halfDownPage;
@@ -74,9 +77,7 @@ class Feed extends Component {
   {
     //if there are more posts to be loaded
     if(this.state.hasMorePosts)
-    {
-      this.queryPosts();
-    }
+      this.queryPosts()
   }
   ////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,65 +87,19 @@ class Feed extends Component {
     async function postsQuery() {
       try{
 
-        if(false === this.state.hasMorePosts)
-            return;
+        if(!this.state.hasMorePosts)
+          return;
 
-        var queryPostsVariables={
-          input: {
-            "index": (this.state.loadedPosts - 5).toString(),
-            "userId": this.props.match.params.userId
-          }
-        };
-
-
-        //calls database query
-        var fetch = createApolloFetch({
-          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
-        });
-        //sets the authorization request header
-        addReqHeaders(fetch);
-
-        //binds the variables for query to fetch
-        fetch = fetch.bind(queryPostsVariables)
-
-        let queryPostsResponse = await fetch({
-          query:
-          `
-          query userPosts($input: userPostsInput!){
-            PostsAndHasNext: userPosts(input: $input){
-              posts{
-                errors{
-                  msg
-                }
-                fileId
-                fileType
-                user{
-                  id
-                  name
-                  email
-                  profileUrl
-                }
-                id
-                caption
-                likeCount
-                dislikeCount
-                comments{
-                  text
-                  userId
-                  user{
-                    id
-                    name
-                  }
-                  id
-                }
-              }
-            hasNext
-            }
-          }
-          `,
-          variables: queryPostsVariables
-        });
-
+        var queryPostsResponse = await userPosts(
+          (this.state.loadedPosts - 5).toString(),
+          this.props.match.params.userId
+        )
+        //if invalid accessToken, try to refresh it, then call function again
+        if(hasInvalidAccessToken(queryPostsResponse)){
+          if(await refreshAccessToken())
+            this.queryPosts()
+          return
+        }
 
         //add the new posts to the posts array
         let posts = this.state.posts;
@@ -157,7 +112,7 @@ class Feed extends Component {
 
 
       } catch(err) {
-        //console.log(err);
+        console.log(err);
       }
 
       }

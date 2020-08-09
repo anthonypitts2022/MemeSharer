@@ -9,6 +9,7 @@ export ssl=$([ $NODE_ENV == development ] && echo http || echo https)
 # MongoDB environments
 export MEMESHARER_posts_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
 export MEMESHARER_perms_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
+export MEMESHARER_auth_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
 export MEMESHARER_user_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
 export MEMESHARER_gateway_dbConnection=mongodb://socialMediaFeedUsr:Qrfiuj48726rr36@localhost:27017/socialMediaFeedDB
 
@@ -17,6 +18,8 @@ export gatewayms_port=3300
 export userms_port=3301
 export postsms_port=3302
 export permsms_port=3303
+export authms_port=3304
+export client_port=3000
 
 #website name
 export website_name=$([ $NODE_ENV == development ] && echo localhost || echo www.memesharer.com)
@@ -26,20 +29,35 @@ export gatewayms_address=$ssl://$website_name:$gatewayms_port
 export userms_address=$ssl://$website_name:$userms_port
 export postsms_address=$ssl://$website_name:$postsms_port
 export permsms_address=$ssl://$website_name:$permsms_port
+export authms_address=$ssl://$website_name:$authms_port
 
 #HTTPS SSL key files
 export sslPrivateKeyFilePath=/etc/letsencrypt/live/memesharer.com/privkey.pem
 export sslFullChainKeyFilePath=/etc/letsencrypt/live/memesharer.com/fullchain.pem
 
-#JWT signature key files
-export signaturePrivateKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key
-export signaturePublicKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key.pub
+#JWT Access Token signature key files
+export accessTokenSignaturePrivateKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key
+export accessTokenSignaturePublicKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key.pub
 
-# Encryption Auth Token Key file
-export encryptionAuthKeyFilePath=/home/anthony/.ssh/encryptionAuthKey.key
+#JWT Refresh Token signature key files
+export refreshTokenSignaturePrivateKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key
+export refreshTokenSignaturePublicKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key.pub
 
-# Encryption Auth Token IV file
-export encryptionAuthIVFilePath=/home/anthony/.ssh/encryptionAuthIV.key
+#JWT Refresh Token Secret signature key files
+export refreshTokenSecretSignaturePrivateKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key
+export refreshTokenSecretSignaturePublicKeyFilePath=/home/anthony/.ssh/signatureRSAKey.key.pub
+
+# Access Token encryption File Paths
+export accessTokenEncryptionKeyFilePath=/home/anthony/.ssh/encryptionAuthKey.key
+export accessTokenEncryptionIVFilePath=/home/anthony/.ssh/encryptionAuthIV.key
+
+# Refresh Token encryption File Paths
+export refreshTokenEncryptionKeyFilePath=/home/anthony/.ssh/encryptionAuthKey.key
+export refreshTokenEncryptionIVFilePath=/home/anthony/.ssh/encryptionAuthIV.key
+
+# Refresh Token Secret encryption File Paths
+export refreshTokenSecretEncryptionKeyFilePath=/home/anthony/.ssh/encryptionAuthKey.key
+export refreshTokenSecretEncryptionIVFilePath=/home/anthony/.ssh/encryptionAuthIV.key
 
 #google API sign in clientID
 export googleSignInClientID=476731474183-m4mk97e3v7hikda986n95qih07eqpi2e.apps.googleusercontent.com

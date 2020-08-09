@@ -20,9 +20,9 @@
 //---------------------------------
 // Modules
 //---------------------------------
-const { handleErrors } = require("../../utils/handle-errors.js");
+const { handleErrors } = require("../../../lib/handleErrors.js");
 const { logger } = require("app-root-path").require("/config/logger.js");
-const { AuthenticateToken } = require('../../../lib/AuthenticateToken')
+const { AuthenticateAccessToken } = require('../../../lib/AuthenticateAccessToken')
 const validateID = require("../../validation/validateID.js");
 
 //---------------------------------
@@ -48,7 +48,7 @@ const globalPostsQuery = async (root, { index }) => {
     // limit to 5 posts
 
     if(isNaN(index))
-        return handleErrors("001", {index: "index not a number"});
+        return handleErrors.invalidIndex("index not a number");
     index = parseInt(index);
 
 
@@ -67,8 +67,9 @@ const globalPostsQuery = async (root, { index }) => {
 
     return {posts: posts, hasNext: hasNext};
 
-  } catch (e) {
+  } catch (err) {
     logger.error(e.message);
+    return handleErrors.error(err)
   }
 };
 
@@ -79,8 +80,8 @@ const postLikeCountQuery = async (root, { postId }) => {
     const likeCount = await Like.countDocuments({postId: postId, isLike: true});
     return likeCount;
 
-  } catch (e) {
-    return handleErrors("001", {postId: "post does not exist."});
+  } catch (err) {
+    return handleErrors.noExistingPost()
   }
 };
 
@@ -90,8 +91,8 @@ const postDislikeCountQuery = async (root, { postId }) => {
     const dislikeCount = await Like.countDocuments({postId: postId, isLike: false});
     return dislikeCount;
 
-  } catch (e) {
-    return handleErrors("001", {postId: "post does not exist."});
+  } catch (err) {
+    return handleErrors.noExistingPost()
   }
 };
 
@@ -99,7 +100,7 @@ const userPostsQuery = async (root, { input }) => {
   try {
     //checks if user id was provided
     if(!input || !input.userId){
-      return handleErrors("001", {user: "Did not recieve userid"});
+      return handleErrors.noUserID("Did not recieve userid");
     }
 
 
@@ -109,7 +110,7 @@ const userPostsQuery = async (root, { input }) => {
     // limit to 5 posts
 
     if(isNaN(input.index))
-        return handleErrors("001", {index: "index not a number"});
+        return handleErrors.invalidIndex("index not a number");
     index = parseInt(input.index);
 
 
@@ -130,8 +131,9 @@ const userPostsQuery = async (root, { input }) => {
 
     return {posts: posts, hasNext: hasNext};
 
-  } catch (e) {
-    logger.error(e.message);
+  } catch (err) {
+    logger.error(err.message);
+    return handleErrors.error(err)
   }
 };
 
@@ -151,8 +153,9 @@ const isFollowingQuery = async (root, { input } ) => {
        return true;
      }
 
-  } catch (e) {
-    logger.error(e.message);
+  } catch (err) {
+    logger.error(err.message);
+    return handleErrors.error(err)
   }
 };
 
@@ -163,8 +166,9 @@ const likedQuery = async (root, { input } ) => {
 
      return like
 
-  } catch (e) {
-    logger.error(e.message);
+  } catch (err) {
+    logger.error(err.message);
+    return handleErrors.error(err)
   }
 };
 
@@ -176,14 +180,15 @@ const getAPostQuery = async (root, { id } ) => {
 
      //check if post does not exist
      if(!post){
-       return handleErrors("001", {postId: "post does not exist."});
+       return handleErrors.noExistingPost()
      }
      else{
        return post
      }
 
-  } catch (e) {
-    logger.error(e.message);
+  } catch (err) {
+    logger.error(err.message);
+    return handleErrors.error(err)
   }
 };
 
@@ -191,27 +196,26 @@ const getAPostQuery = async (root, { id } ) => {
 const feedPostsQuery = async (root, { input }, { req } ) => {
   //function to return most recent posts from a users followers (for the followers feed)
 
-  try{
+  try{    
     // sort the returned posts in more recent to least recent order
     // skip() will skip the first "index" number of documents
-    // limit to 5 posts
-    
+    // limit to 5 posts  
     if(isNaN(input.index))
-        return handleErrors("001", {index: "index not a number"});
+        return handleErrors.invalidIndex("index not a number");
     index = parseInt(input.index);
 
     const { msg, isValid } = validateID(input.userId);
-    if (!isValid) return handleErrors("001", msg)
+    if (!isValid) return handleErrors.invalidIDInput(msg)
     
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return handleErrors("001", authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)    
 
     //if signed in user doesn't match requested user feed
-    if(!authTokenData.hasMatchingUserID(input.userId))
-      return handleErrors("001", 'Signed in user does not match requested user feed')
+    if(!accessTokenData.hasMatchingUserID(input.userId))
+      return handleErrors.permissionDenied('Signed in user does not match requested user feed')
 
     //get all followee id's of current user
     let followships = await Followship.find({followerId: input.userId})
@@ -239,8 +243,9 @@ const feedPostsQuery = async (root, { input }, { req } ) => {
 
     return {posts: posts, hasNext: hasNext};
 
-  } catch (e) {
-    logger.error(e.message);
+  } catch (err) {
+    logger.error(err.message);
+    return handleErrors.error(err)
   }
 };
 

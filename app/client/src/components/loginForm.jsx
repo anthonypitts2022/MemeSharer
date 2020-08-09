@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import GoogleLogin from "react-google-login";
 import UserContext from '../contexts/UserContext.js';
-const { createApolloFetch } = require('apollo-fetch');
-const { addReqHeaders } = require('../lib/addReqHeaders.js')
-const { setResHeaders } = require('../lib/setResHeaders.js')
 
-
+//MemeSharer API
+const { createUpdateUser } = require('../APIFetches/createUpdateUser.js')
+const { getAuthTokens } = require('../APIFetches/getAuthTokens.js')
 
 
 class LoginForm extends Component {
@@ -22,67 +21,36 @@ class LoginForm extends Component {
   responseGoogle(googleResponse) {
     signIn(googleResponse);
     async function signIn(googleResponse) {
-      try{
-
-        if(!googleResponse.profileObj || !googleResponse.profileObj.name 
-          || !googleResponse.profileObj.email || !googleResponse.profileObj.googleId 
-          || !googleResponse.profileObj.imageUrl)
-        {
+      try{        
+        
+        if(!googleResponse || !googleResponse.tokenId){
           console.log("Invalid response from google login.");
           return
         }
 
+        var google_id_token = googleResponse.tokenId
+        
         //clear all current user data in local storage
         localStorage.removeItem('user')
-        localStorage.removeItem('authToken')
 
-        //calls backend mutation
-        var fetch = createApolloFetch({
-          uri: `${process.env.REACT_APP_ssl}://${process.env.REACT_APP_website_name}:${process.env.REACT_APP_gatewayms_port}/gateway`
-        });
-
-        //sets the authorization request header
-        addReqHeaders(fetch);
-        //get the response authorization header and store in localStorage
-        setResHeaders(fetch)
-
-        fetch = fetch.bind(googleResponse)
-        var loginResponse = await fetch({
-          query:
-          `
-          mutation createOrUpdateUser($input: CreateUserInput){
-            User: createOrUpdateUser(input: $input){
-              errors{
-                msg
-              }
-              id
-              name
-              email
-              profileUrl
-            }
-          }
-          `,
-          variables: {
-            input: {
-              id: googleResponse.profileObj.googleId,
-              email: googleResponse.profileObj.email,
-              name: googleResponse.profileObj.name,
-              profileUrl: googleResponse.profileObj.imageUrl
-            }
-          }
-        })
-
-        //check if valid return from login mutation
-        if(!loginResponse.data || !loginResponse.data.User || loginResponse.data.User.errors){
-          console.log("error in login: "+JSON.stringify(loginResponse.data && loginResponse.data.User && loginResponse.data.User.errors));
+        //call get Auth Tokens API on Auth MicroService
+        var getAuthTokensResponse = await getAuthTokens(google_id_token);
+        if(getAuthTokensResponse.errors || !getAuthTokensResponse.data || !getAuthTokensResponse.data.getAuthTokensFromLogin){
+          console.log('failed to get access and refresh tokens from auth microservice');
           return
         }
 
-
-        localStorage.setItem('user', JSON.stringify(loginResponse.data.User)); //JSON.parse(dict) to undo
-
+        //call create update user API on user MicroService
+        var createUpdateUserResponse = await createUpdateUser(google_id_token)
+        if(!createUpdateUserResponse || !createUpdateUserResponse.data || !createUpdateUserResponse.data.User || createUpdateUserResponse.data.errors){
+          console.log('Failed to create or update user');
+          return
+        }
+        
+        //set user object and go to the home page
+        localStorage.setItem('user', JSON.stringify(createUpdateUserResponse.data.User)); //JSON.parse(dict) to undo
         window.location = "/";
-
+        
       }
       catch(err) {
         console.log(err);

@@ -34,9 +34,6 @@ type Post {
   fileId: String
   fileType: String
   user: PostUser
-  errors: Error
-  success: Success
-  bulkAddReport: [BulkAddReport]
 }
 
 type Like {
@@ -45,9 +42,6 @@ type Like {
   user: PostUser
   postId: String
   isLike: Boolean
-  errors: Error
-  success: Success
-  bulkAddReport: [BulkAddReport]
 }
 
 type Comment {
@@ -56,9 +50,6 @@ type Comment {
   user: PostUser
   postId: String
   text: String
-  errors: Error
-  success: Success
-  bulkAddReport: [BulkAddReport]
 }
 
 type Followship {
@@ -77,6 +68,12 @@ type PostUser {
 type PostsAndHasNext {
   posts: [Post]
   hasNext: Boolean
+}
+
+type File {
+  filename: String!
+  mimetype: String!
+  encoding: String!
 }
 
 
@@ -130,21 +127,4 @@ input createCommentInput{
 input userPostsInput{
   userId: String!
   index: String!
-}
-
-#===============================================================================
-# Messages
-#===============================================================================
-
-type Error {
-  msg: String
-}
-
-type Success {
-  msg: String
-}
-
-type BulkAddReport {
-  msg: String
-  val: String
 }

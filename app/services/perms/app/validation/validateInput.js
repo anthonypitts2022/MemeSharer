@@ -6,7 +6,7 @@
 // Modules
 require("module-alias/register");
 const Validator = require("validator");
-const { handleErrors } = require("@config/handleGQLErrors");
+const { handleErrors } = require("@lib/handleErrors");
 const isEmpty = require("./is-empty");
 
 const validateRoleName = (roleName, errors) => {

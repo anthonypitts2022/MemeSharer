@@ -1,4 +1,4 @@
-const { logger } = require("app-root-path").require("/config/logger.js");
+const { logger } = require('../lib/logger.js')
 const mongoose = require("mongoose");
 
 module.exports = () => {

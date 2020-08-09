@@ -4,7 +4,7 @@ const { corsConfig } = require("./cors.js");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { createServer } = require("./graphql.js");
-const { httpLog } = require("./logger.js");
+const { httpLog } = require("../lib/logger.js");
 
 
 module.exports = async function() {

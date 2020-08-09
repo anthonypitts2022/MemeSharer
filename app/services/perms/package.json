@@ -12,6 +12,8 @@
   "dependencies": {
     "@apollo/federation": "^0.12.1",
     "apollo-fetch": "^0.7.0",
+    "axios": "^0.19.2",
+    "cookie": "^0.4.1",
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",

@@ -1,10 +1,11 @@
 let http = require('http');
 let https = require('https');
-const { logger } = require("app-root-path").require("/config/logger.js");
+const { logger } = require('../lib/logger.js')
 const { corsConfig } = require("./cors.js");
 const { GatewayMicroServiceDataTransfer } = require("./GatewayDataTransfer.js");
 const { ApolloServer } = require("apollo-server-express");
 const { ApolloGateway } = require("@apollo/gateway");
+const { formatGQLError } = require("../lib/formatGQLError");
 const fs = require("fs");
 
 
@@ -21,6 +22,10 @@ const gateway = new ApolloGateway({
     {
       name: "perms",
       url: `${process.env.permsms_address}/perms`
+    },
+    {
+      name: "auth",
+      url: `${process.env.authms_address}/auth`
     }
   ],
   buildService({ url }) {
@@ -37,40 +42,18 @@ const createServer = async app => {
     schema,
     executor,
     context: ({ req, res }) => {
-      var env = process.env.NODE_ENV;
-      var reqAuthToken = req.headers.authorization;
-      var resAuthToken;
       return {
         req,
-        res,
-        reqAuthToken,
-        resAuthToken,
-        env
+        res
       };
     },
-    plugins: [
-      {
-        requestDidStart() {
-          return {
-            willSendResponse({ context, response }) {
-              // Append authToken from context to the outgoing client's response headers
-              if(context && context.resAuthToken){
-                response.http.headers.set('Authorization', context.resAuthToken);
-                response.http.headers.set('Access-Control-Expose-Headers', 'Authorization');
-              }
-            }
-          };
-        }
-      }
-    ],
     subscriptions: false,
-    formatError: err => {
-      return { message: err.message };
-    }
+    formatError: err => formatGQLError(err)
   });
   server.applyMiddleware({
     app,
     path,
+    cors: corsConfig,
     tracing: true,
     cacheControl: {
       defaultMaxAge: 3500
@@ -81,9 +64,9 @@ const createServer = async app => {
   //production https server
   if(process.env.NODE_ENV=="production"){
     //https certificate files
-    let privateKey = fs.readFileSync(`${process.env.sslPrivateKeyFilePath}`, 'utf8');
-    let certificate = fs.readFileSync(`${process.env.sslFullChainKeyFilePath}`, 'utf8');
-    let credentials = {
+    var privateKey = fs.readFileSync(`${process.env.sslPrivateKeyFilePath}`, 'utf8');
+    var certificate = fs.readFileSync(`${process.env.sslFullChainKeyFilePath}`, 'utf8');
+    var credentials = {
     	key: privateKey,
     	cert: certificate
     };

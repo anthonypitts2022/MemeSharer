@@ -21,9 +21,9 @@
 //---------------------------------
 // Modules
 //---------------------------------
-const { handleErrors } = require("../../utils/handle-errors.js");
+const { handleErrors } = require("../../../lib/handleErrors.js");
 const { logger } = require("app-root-path").require("/config/logger.js");
-const { AuthenticateToken } = require('../../../lib/AuthenticateToken')
+const { AuthenticateAccessToken } = require('../../../lib/AuthenticateAccessToken')
 
 
 //---------------------------------
@@ -57,25 +57,25 @@ const validateFollowshipInput = require('../../validation/validateFollowshipInpu
 
 // @access : Private, User
 // @desc   : Create a Post Object
-const createPostMutation = async (parent, { input }, { req }) => {
+const createPostMutation = async (_, { input }, { req }) => {
   try {
 
     // Validate the Post input and return errors if any
     const { msg, isValid } = validatePostInput(input);
-    if (!isValid) return handleErrors("001", msg)
+    if (!isValid) return handleErrors.invalidPostInput(msg)
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return handleErrors("001", authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
-    //if signed in usern't does match the userId being created with the post
-    if(!authTokenData.hasMatchingUserID(input.userId)) 
-      return handleErrors("001", 'Signed in user does not match the user creating the post')
+    //if signed in user doesn't match the userId being created with the post
+    if(!accessTokenData.hasMatchingUserID(input.userId)) 
+      return handleErrors.permissionDenied('Signed in user does not match the user creating the post')
 
     // if caption is empty, make it ""
-    let caption = input.caption === "undefined" ? "" : input.caption;
+    let caption = !input.caption ? "" : input.caption;
 
     // Create a Post object based on the input
     var newPost = new Post({
@@ -84,13 +84,13 @@ const createPostMutation = async (parent, { input }, { req }) => {
       fileType: input.fileType,
       caption: caption
     });
-    newPost.save();
+    newPost.save();    
 
     return newPost;
-    // Initiate sending the new post to the database
+   
   } catch (err) {
-    // Database response after post has been created
-    //console.log(err);
+    console.log(err);
+    return handleErrors.error(err)
   }
 };
 
@@ -101,26 +101,26 @@ const createPostMutation = async (parent, { input }, { req }) => {
 
 // @access : Private, User
 // @desc   : Create a Comment Object
-const createCommentMutation = async (parent, { input }, { req }) => {
+const createCommentMutation = async (_, { input }, { req }) => {
   try {
 
     // Validate the Post input and return errors if any
     const { msg, isValid } = validateCommentInput(input);
-    if (!isValid) return handleErrors("001", msg)
+    if (!isValid) return handleErrors.invalidCommentInput(msg)
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return handleErrors("001", authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //checks if the post does not exist
     var post = await Post.findById(input.postId)
-    if(!post) return handleErrors("001", {postId: "post does not exist"})
+    if(!post) return handleErrors.noExistingPost()
 
     //if signed in user doesn't match the userId creating the comment
-    if(!authTokenData.hasMatchingUserID(input.userId)) 
-      return handleErrors("001", 'Signed in user does not match the user creating the comment')
+    if(!accessTokenData.hasMatchingUserID(input.userId)) 
+      return handleErrors.permissionDenied('Signed in user does not match the user creating the comment')
 
     // Create a Comment object based on the input
     var newComment = new Comment({
@@ -132,8 +132,8 @@ const createCommentMutation = async (parent, { input }, { req }) => {
     return newComment;
     // Initiate sending the new post to the database
   } catch (err) {
-    // Database response after post has been created
     console.log(err);
+    return handleErrors.error(err);
   }
 };
 
@@ -144,26 +144,26 @@ const createCommentMutation = async (parent, { input }, { req }) => {
 
 // @access : Private, User
 // @desc   : Update a caption on a post object
-const editCaptionMutation = async (parent, { input }, { req }) => {
+const editCaptionMutation = async (_, { input }, { req }) => {
   try {
     
     // Validate the Post input and return errors if any
     const { msg, isValid } = validateCaptionInput(input.newCaption);
-    if (!isValid) return handleErrors("001", msg)
+    if (!isValid) return handleErrors.invalidCaptionInput(msg)
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);    
+    const accessTokenData = new AuthenticateAccessToken(req);    
     
     //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return handleErrors("001", authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //checks if the post does not exist
     var post = await Post.findById(input.postId)    
-    if(!post) return handleErrors("001", {postId: "post does not exist"})
+    if(!post) return handleErrors.noExistingPost()
 
     //if signed in user doesn't own the post
-    if(!authTokenData.hasMatchingUserID(post.userId))
-      return handleErrors("001", 'Signed in user does not own this post')
+    if(!accessTokenData.hasMatchingUserID(post.userId))
+      return handleErrors.permissionDenied('Signed in user does not own this post')
 
     let updatedPost = await Post.findOneAndUpdate(
       {
@@ -177,7 +177,8 @@ const editCaptionMutation = async (parent, { input }, { req }) => {
     return updatedPost;
 
   } catch (err) {
-    //console.log(err);
+    console.log(err);
+    return handleErrors.error(err)
   }
 };
 
@@ -189,43 +190,43 @@ const editCaptionMutation = async (parent, { input }, { req }) => {
 
 // @access : Private, User
 // @desc   : Create a Like Object
-const createLikeMutation = async (parent, { input }, { req }) => {
+const createLikeMutation = async (_, { input }, { req }) => {
   try {
 
     // Validate the Like input and return errors if any
     const { msg, isValid } = validateLikeInput(input);
-    if (!isValid) return handleErrors("001", msg)
+    if (!isValid) return handleErrors.invalidLikeInput(msg)
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return handleErrors("001", authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //checks if the post does not exist
     var post = await Post.findById(input.postId)
-    if(!post) return handleErrors("001", {postId: "post does not exist"})
+    if(!post) return handleErrors.noExistingPost()
 
     //if signed in user doesn't match the userId creating the like
-    if(!authTokenData.hasMatchingUserID(input.userId)) 
-      return handleErrors("001", 'Signed in user does not match the user creating the like')
+    if(!accessTokenData.hasMatchingUserID(input.userId)) 
+      return handleErrors.permissionDenied('Signed in user does not match the user creating the like')
 
     //--------check if already liked or disliked--------//
     var priorLike = await Like.findOne({userId: input.userId, postId: input.postId});
     if(priorLike){
 
       //if trying to like something already liked
-      if(priorLike.isLike==true && input.isLike==true){
-        return handleErrors("001", {isLike: "already liked"})
+      if(priorLike.isLike && input.isLike){
+        return handleErrors.alreadyLiked("already liked")
       }
 
       //if trying to dislike something already disliked
-      if(priorLike.isLike==false && input.isLike==false){
-        return handleErrors("001", {isLike: "already disliked"})
+      if(!priorLike.isLike && !input.isLike){
+        return handleErrors.alreadyDisliked("already disliked")
       }
 
       //if trying to like something that was disliked
-      if(priorLike.isLike==false && input.isLike==true){
+      if(!priorLike.isLike && input.isLike){
         //change the dislike to like
         await Like.updateOne({
           postId: input.postId,
@@ -240,7 +241,7 @@ const createLikeMutation = async (parent, { input }, { req }) => {
       }
 
       //if trying to dislike something that was liked
-      if(priorLike.isLike==true && input.isLike==false){
+      if(priorLike.isLike && !input.isLike){
         //change the dislike to like
         await Like.updateOne({
           postId: input.postId,
@@ -266,10 +267,10 @@ const createLikeMutation = async (parent, { input }, { req }) => {
     newLike.save();
 
     return newLike;
-    // Initiate sending the new like to the database
+
   } catch (err) {
-    // Database response after like has been created
-    //console.log(err);
+    console.log(err);
+    return handleErrors.error(err)
   }
 };
 
@@ -280,7 +281,7 @@ const createLikeMutation = async (parent, { input }, { req }) => {
 
 // @access : Private, User
 // @desc   : Delete a Post Object
-const deletePostMutation = async (parent, { id }, { req }) => {
+const deletePostMutation = async (_, { id }, { req }) => {
   
   try {
 
@@ -290,10 +291,10 @@ const deletePostMutation = async (parent, { id }, { req }) => {
   
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
-    //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return false
+    //invalid user auth token or not signed in
+    if(accessTokenData.errors) return false
 
     let post = await Post.findById(id);
     //if post doesn't exist
@@ -304,7 +305,7 @@ const deletePostMutation = async (parent, { id }, { req }) => {
     if(!postOwnerID) return false
 
     //if signed in user does not own this post
-    if(!authTokenData.hasMatchingUserID(postOwnerID)) return false
+    if(!accessTokenData.hasMatchingUserID(postOwnerID)) return false
 
     // Delete the post
     let deletedRecord = await post.remove();
@@ -315,28 +316,28 @@ const deletePostMutation = async (parent, { id }, { req }) => {
     
 
   } catch (err) {
-    //console.log(`deletePostMutation: Failed to delete Student. ${err}.`);
-    return;
+    console.log(err);
+    return handleErrors.error(err)
   }
 };
 
 // @access : Private (user)
 // @desc   : Creates a Followship
-const createFollowshipMutation = async (parent, { input }, { req }) => {
+const createFollowshipMutation = async (_, { input }, { req }) => {
   try {
     // Validate the input and return errors if any
     const { msg, isValid } = validateFollowshipInput(input);
-    if (!isValid) return handleErrors("001", JSON.stringify(msg))
+    if (!isValid) return handleErrors.invalidFollowshipInput(msg)
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return handleErrors("001", authTokenData.errors)
+    if(accessTokenData.errors) return handleErrors.invalidAccessToken(accessTokenData.errors)
 
     //if signed in user doesn't match the userId creating the followship
-    if(!authTokenData.hasMatchingUserID(input.followerId)) 
-      return handleErrors("001", 'Signed in user does not match the user creating the followship')
+    if(!accessTokenData.hasMatchingUserID(input.followerId)) 
+      return handleErrors.permissionDenied('Signed in user does not match the user creating the followship')
     
     let followship = await Followship.findOne({ followerId: input.followerId, followeeId: input.followeeId });
     // Throw errors if already exists
@@ -356,35 +357,31 @@ const createFollowshipMutation = async (parent, { input }, { req }) => {
     // Initiate sending the new object to the database
     let savedNewFollowship = await newFollowship.save();
 
-
-    // Database response after object has been created
     return savedNewFollowship;
 
   } catch (err) {
-    logger.error(
-      `createFollowshipMutation: Failed to create Followship record. ${err}.`
-    );
-    return;
+    console.log(err);
+    return handleErrors.error(err)
   }
 };
 
 // @access : super
 // @desc   : Delete a Followship
-const deleteFollowshipMutation = async (parent, { input }, { req }) => {
+const deleteFollowshipMutation = async (_, { input }, { req }) => {
   try {
 
     // Validate the input and return errors if any
     const { msg, isValid } = validateFollowshipInput(input);
-    if (!isValid) return handleErrors("001", JSON.stringify(msg))
+    if (!isValid) return handleErrors.invalidFollowshipInput(msg)
 
     //Get the signed-in user's decrypted auth token payload
-    const authTokenData = new AuthenticateToken(req);
+    const accessTokenData = new AuthenticateAccessToken(req);
 
     //'invalid user auth token or not signed in'
-    if(authTokenData.errors) return false
+    if(accessTokenData.errors) return false
 
     //if signed in user doesn't match the userId deleting the followship
-    if(!authTokenData.hasMatchingUserID(input.followerId)) return false
+    if(!accessTokenData.hasMatchingUserID(input.followerId)) return false
 
     // Initiate the models by finding if the object below exists
     let followship = await Followship.findOne({ followerId: input.followerId, followeeId: input.followeeId });
@@ -410,10 +407,38 @@ const deleteFollowshipMutation = async (parent, { input }, { req }) => {
     }
 
   } catch (err) {
-    logger.error(
-      `deleteFollowshipMutation: Failed to delete Followship. ${err}.`
-    );
-    return;
+    console.log(err);
+    return handleErrors.error(err)
+  }
+};
+
+
+// @access : user
+// @desc   : Upload the file for a post
+const uploadPostFileMutation = async (_, { file }, { req }) => {
+  try {
+
+    //Get the signed-in user's decrypted auth token payload
+    const accessTokenData = new AuthenticateAccessToken(req);
+
+    //'invalid user auth token or not signed in'
+    if(accessTokenData.errors) return false
+
+    const { stream, filename, mimetype, encoding } = await file;
+
+    // 1. Validate file metadata.
+
+    // 2. Stream file contents into cloud storage:
+    // https://nodejs.org/api/stream.html
+
+    // 3. Record the file upload in your DB.
+    // const id = await recordFile( … )
+
+    return { filename, mimetype, encoding };
+
+  } catch (err) {
+    console.log(err);
+    return handleErrors.error(err)
   }
 };
 
@@ -426,4 +451,5 @@ module.exports = {
   editCaptionMutation,
   createFollowshipMutation,
   deleteFollowshipMutation,
+  uploadPostFileMutation
 };

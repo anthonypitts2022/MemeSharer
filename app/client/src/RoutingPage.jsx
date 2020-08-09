@@ -11,6 +11,8 @@ import UserAgreementPage from './pages/UserAgreementPage';
 import "bootstrap/dist/css/bootstrap.css";
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { UserProvider } from './contexts/UserContext.js';
+const { refreshAccessToken } = require('./APIFetches/refreshAccessToken')
+
 
 
 
@@ -18,12 +20,22 @@ class RoutingPage extends Component {
 
   constructor(props){
     super(props);
+
+    //parse the userInfo object in localStorage
+    var userInfo = localStorage.getItem('user')
+    if(userInfo)
+      userInfo = JSON.parse(userInfo)
+
     this.state = {
-      user_name: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).name.split(" ")[0],
-      user_email: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).email,
-      user_profileUrl: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).profileUrl,
-      user_id: localStorage.getItem('user')==null ? undefined : JSON.parse(localStorage.getItem('user')).id,
+      user_name: userInfo && userInfo.name && userInfo.name.split(" ")[0],
+      user_email: userInfo && userInfo.email,
+      user_profileUrl: userInfo && userInfo.profileUrl,
+      user_id: userInfo && userInfo.id,
     };
+
+    // Refresh access token every 10 minutes
+    window.setInterval(async function(){ await refreshAccessToken() }, 600000)
+
   }
 
 
