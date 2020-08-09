@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "apollo-link-http": "^1.5.16",
-    "apollo-server-express": "^2.9.16",
+    "apollo-server-express": "^2.14.2",
     "app-root-path": "^2.2.1",
     "body-parser": "^1.19.0",
     "colors": "^1.4.0",
