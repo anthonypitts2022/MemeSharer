@@ -29,7 +29,7 @@
     "node-jose": "^1.1.4",
     "node-rsa": "^1.0.8",
     "shortid": "^2.2.15",
-    "validator": "^11.1.0"
+    "validator": "^13.7.0"
   },
   "_moduleAliases": {
     "@lib": "./lib"
