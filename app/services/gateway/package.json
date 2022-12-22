@@ -16,7 +16,7 @@
     "cookie": "^0.4.1",
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "module-alias": "^2.2.2",
     "mongoose": "^5.5.8",
     "shortid": "^2.2.14",
